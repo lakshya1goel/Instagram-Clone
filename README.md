@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # insta_clone
 
 A new Flutter project.
@@ -15,6 +14,5 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
-=======
+
 # Instagram-Clone
->>>>>>> c87fb9524f53eed350e51d74cc8e9bbd90bce566
