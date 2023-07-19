@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:insta_clone/Pages/login_page.dart';
+import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Utils/routes.dart';
 
 void main() {
