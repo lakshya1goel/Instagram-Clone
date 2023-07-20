@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Utils/routes.dart';
 class LoginPage extends StatefulWidget {
@@ -12,6 +10,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String username="";
   String password="";
+  int selectedIndex=-1;
+  List<String> lang=[
+    'English (US)', 'Afrikaans', 'Bahasa Indonesia', 'Bahasa Melayu', 'Dansk', 'Deutsch', 'English (UK)', 'Filipino', 'Hrvatski'
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +23,20 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 95),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: GestureDetector(
+                  onTap: (){
+                    _bottomSheet(context);
+                  },
+                  child: Text("English (US)",
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 60),
               _centerWidget(),
               SizedBox(height: 60),
               _bottomWidget()
@@ -30,6 +45,58 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void _bottomSheet(context){
+    showModalBottomSheet(context: context, builder: (BuildContext bcon){
+      return Container(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+            child: Container(
+              height: 500.0,
+              child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.close),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text("Select your language",
+                    style: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Card(
+                    child: SingleChildScrollView(
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: lang.length ,
+                          itemBuilder: (context,index){
+                            return ListTile(
+                              title: Text(
+                                lang[index],
+                              ),
+                              trailing:Checkbox(
+                                value: selectedIndex==index,
+                                onChanged: (bool? newValue){
+                                  setState(() {
+                                    selectedIndex=newValue! ? index: -1;
+                                  });
+                                },
+                              ),
+                            );
+                          }
+                      ),
+                    ),
+                  ),
+                ),
+              ]
+        ),
+            ),
+      ));
+    });
   }
 
 
@@ -46,6 +113,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+
   Widget _bottomWidget(){
     return Form(
       child: Padding(
@@ -55,6 +123,7 @@ class _LoginPageState extends State<LoginPage> {
             TextFormField(
               decoration: InputDecoration(
                 hintText: "Username, email address or mobile number",
+                hintStyle: TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0)
                 ),
@@ -68,6 +137,7 @@ class _LoginPageState extends State<LoginPage> {
               child: TextFormField(
                 decoration: InputDecoration(
                   hintText: "Password",
+                  hintStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0)
                   ),
