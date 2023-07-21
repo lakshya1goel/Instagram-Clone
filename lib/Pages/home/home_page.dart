@@ -1,5 +1,4 @@
 import 'package:animated_dashed_circle/animated_dashed_circle.dart';
-import 'package:animated_dashed_circle/animated_dashed_circle_view.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Services/home_story.dart';
 import 'package:insta_clone/Services/post.dart';
@@ -12,7 +11,7 @@ class HomePage extends StatefulWidget {
 
   final List<post> posts = [
     post(UserName: '43.paras.57', Likes: 52, Description: 'hey its my new pic', Image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', ProfilePic: 'https://instagram.fagr1-3.fna.fbcdn.net/v/t51.2885-19/340046144_1573819893114923_1993567904210653388_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fagr1-3.fna.fbcdn.net&_nc_cat=111&_nc_ohc=OimvTRSrIeUAX_H8GIg&edm=ACWDqb8BAAAA&ccb=7-5&oh=00_AfBzB8cbLWkBcrgg6UcZON6FVX_LGJL_kw3TvtbsRB3Q-g&oe=64BD7F89&_nc_sid=ee9879'),
-    post(UserName: '43.paras.57', Likes: 52, Description: 'hey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pic', Image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', ProfilePic: 'https://instagram.fagr1-3.fna.fbcdn.net/v/t51.2885-19/340046144_1573819893114923_1993567904210653388_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fagr1-3.fna.fbcdn.net&_nc_cat=111&_nc_ohc=OimvTRSrIeUAX_H8GIg&edm=ACWDqb8BAAAA&ccb=7-5&oh=00_AfBzB8cbLWkBcrgg6UcZON6FVX_LGJL_kw3TvtbsRB3Q-g&oe=64BD7F89&_nc_sid=ee9879'),
+    post(UserName: '43.paras.57', Likes: 52, Description: 'hey its my new pic hey its my new pic hey its my new pic hey its my new pic hey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pic', Image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', ProfilePic: 'https://instagram.fagr1-3.fna.fbcdn.net/v/t51.2885-19/340046144_1573819893114923_1993567904210653388_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fagr1-3.fna.fbcdn.net&_nc_cat=111&_nc_ohc=OimvTRSrIeUAX_H8GIg&edm=ACWDqb8BAAAA&ccb=7-5&oh=00_AfBzB8cbLWkBcrgg6UcZON6FVX_LGJL_kw3TvtbsRB3Q-g&oe=64BD7F89&_nc_sid=ee9879'),
     post(UserName: '43.paras.57', Likes: 52, Description: 'hey its my new pic', Image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', ProfilePic: 'https://instagram.fagr1-3.fna.fbcdn.net/v/t51.2885-19/340046144_1573819893114923_1993567904210653388_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fagr1-3.fna.fbcdn.net&_nc_cat=111&_nc_ohc=OimvTRSrIeUAX_H8GIg&edm=ACWDqb8BAAAA&ccb=7-5&oh=00_AfBzB8cbLWkBcrgg6UcZON6FVX_LGJL_kw3TvtbsRB3Q-g&oe=64BD7F89&_nc_sid=ee9879')
 
   ];
@@ -51,19 +50,19 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const Spacer(),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.notifications,
-                      size: 25,
+                  Container(
+                    height: 25,
+                    width: 25,
+                    child: const Image(
+                      image: AssetImage('assets/Icons/heart.png'),
                     ),
                   ),
-                  const SizedBox(width: 20),
-                  Transform.rotate(
-                    angle: -45 * (3.14 / 180),
-                    child: const Icon(
-                      Icons.send_sharp,
-                      size: 25,
+                  const SizedBox(width: 10),
+                  Container(
+                    height: 25,
+                    width: 25,
+                    child: const Image(
+                      image: AssetImage('assets/Icons/send.png'),
                     ),
                   ),
                 ],
@@ -74,7 +73,7 @@ class _HomePageState extends State<HomePage> {
               delegate: SliverChildListDelegate(
                 [
                   SizedBox(
-                    height: 140,
+                    height: 120,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: widget.stories.length,
@@ -115,7 +114,6 @@ class _HomePageState extends State<HomePage> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                      bool liked = false;
                   return Column(
                     children: [
                       const Divider(
@@ -146,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   const Spacer(),
                                   const Icon(
-                                    Icons.settings, // TODO: 3 dots ka icon lagega
+                                    Icons.more_vert,
                                     color: Colors.white,
                                   )
                                 ],
@@ -157,56 +155,76 @@ class _HomePageState extends State<HomePage> {
                                 widget.posts[index].Image,
                               ),
                             ),
-                            Row(
+                             Row(
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: IconButton(
-                                    onPressed: () {  },
-                                    icon :const Icon(Icons.favorite_outline),
-                                  ),
-                                ),
+                                const SizedBox(width: 5,),
                                 const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Icon(
-                                    Icons.comment,
-                                    size: 20,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Transform.rotate(
-                                    angle: -45 * (3.14 / 180),
-                                    child: const Icon(
-                                      Icons.send_sharp,
-                                      size: 25,
-                                      color: Colors.white,
+                                  padding:  EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    child: SizedBox(
+                                      height: 25,
+                                      width: 25,
+                                      child: Image(
+                                        image: AssetImage('assets/Icons/heart.png'),
+                                      ),
                                     ),
-                                  ),
+                                  )
                                 ),
-                                const Spacer(),
-                                const Icon(
-                                  Icons.save_alt,
-                                  size: 20,
-                                  color: Colors.white,
+                                 Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    child: Container(
+                                      height: 30,
+                                      width: 30,
+                                      child: const Image(
+                                        image: AssetImage('assets/Icons/chat.png'),
+                                      ),
+                                    ),
+                                  )
+                                ),
+                                 Padding(
+                                  padding:  const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    child: Container(
+                                      height: 25,
+                                      width: 25,
+                                      child: const Image(
+                                        image: AssetImage('assets/Icons/send.png'),
+                                      ),
+                                    ),
+                                  )
+                                ),
+                                 const Spacer(),
+                                Container(
+                                  height: 25,
+                                  width: 25,
+                                  child: const Image(
+                                    image: AssetImage('assets/Icons/Saved.png'),
+                                  ),
                                 ),
                               ],
                             ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                '${widget.posts[index].Likes} likes',
-                                style: const TextStyle(
-                                  color: Colors.white,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(13, 0, 0, 0),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '${widget.posts[index].Likes} likes',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: ExpandableText(
-                                text: widget.posts[index].Description,
-                                maxLines: 3, // Set the number of lines before the "more" button appears
+                            SizedBox(height: 10),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(13, 0, 0, 0),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: ExpandableText(
+                                  text: '${widget.posts[index].UserName} ${widget.posts[index].Description}',
+                                  maxLines: 3, // Set the number of lines before the "more" button appears
+                                ),
                               ),
                             )
                           ],
@@ -223,41 +241,53 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.transparent,
           type: BottomNavigationBarType.fixed,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              label: 'ICON1',
-              icon: Icon(
-                Icons.home,
-                color: Colors.white,
+              label: '',
+              icon: Container(
+                height: 20,
+                width: 20,
+                child: const Image(
+                  image: AssetImage('assets/Icons/home.png'),
+                ),
               ),
             ),
             BottomNavigationBarItem(
-              label: 'ICON2',
-              icon: Icon(
-                Icons.home,
-                color: Colors.white,
+              label: '',
+              icon: Container(
+                height: 20,
+                width: 20,
+                child: const Image(
+                  image: AssetImage('assets/Icons/search.png'),
+                ),
               ),
             ),
             BottomNavigationBarItem(
-              label: 'ICON3',
-              icon: Icon(
-                Icons.home,
-                color: Colors.white,
+              label: '',
+              icon: Container(
+                height: 20,
+                width: 20,
+                child: const Image(
+                  image: AssetImage('assets/Icons/upload.png'),
+                ),
               ),
             ),
             BottomNavigationBarItem(
-              label: 'ICON4',
-              icon: Icon(
-                Icons.home,
-                color: Colors.white,
+              label: '',
+              icon: Container(
+                height: 20,
+                width: 20,
+                child: const Image(
+                  image: AssetImage('assets/Icons/Reels.png'),
+                ),
               ),
             ),
-            BottomNavigationBarItem(
-              label: 'ICON5',
-              icon: Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
+            const BottomNavigationBarItem(
+              label: '',
+              icon: CircleAvatar(
+                backgroundImage: NetworkImage('https://bit.ly/43IEnby'),
+                radius: 15,
+              )
             ),
           ],
         ),
