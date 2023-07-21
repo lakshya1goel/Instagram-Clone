@@ -114,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
 
-  Widget _bottomWidget(){
+  Widget _bottomWidget() {
     return Form(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -125,11 +125,11 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: "Username, email address or mobile number",
                 hintStyle: TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0)
+                    borderRadius: BorderRadius.circular(10.0)
                 ),
               ),
-              onChanged: (value){
-                username=value;
+              onChanged: (value) {
+                username = value;
               },
             ),
             Padding(
@@ -142,8 +142,8 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(10.0)
                   ),
                 ),
-                onChanged: (value){
-                  password=value;
+                onChanged: (value) {
+                  password = value;
                 },
               ),
             ),
@@ -151,22 +151,23 @@ class _LoginPageState extends State<LoginPage> {
               width: 500.0,
               child: ElevatedButton(
                 style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ))
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ))
                 ),
-                  onPressed: (){
+                onPressed: () {
 
-                  },
-                  child: Text("Log In"),
+                },
+                child: Text("Log In"),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top:15.0),
+              padding: const EdgeInsets.only(top: 15.0),
               child: GestureDetector(
-                onTap: (){
+                  onTap: () {
 
-                },
+                  },
                   child: Text("Forgotten Password?",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -181,19 +182,21 @@ class _LoginPageState extends State<LoginPage> {
               width: 500.0,
               child: ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white),
                   side: MaterialStateProperty.all<BorderSide>(
-                    BorderSide(width: 2.0,color: Colors.blue),
+                    BorderSide(width: 2.0, color: Colors.blue),
                   ),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    )),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      )),
                   elevation: MaterialStateProperty.all<double>(0.0),
                 ),
-                  onPressed: (){
+                onPressed: () {
 
-                  },
-                  child: Text("Create new account",
+                },
+                child: Text("Create new account",
                   style: TextStyle(
                     color: Colors.blue,
                   ),),
