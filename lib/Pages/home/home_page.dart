@@ -1,19 +1,25 @@
+import 'package:animated_dashed_circle/animated_dashed_circle.dart';
+import 'package:animated_dashed_circle/animated_dashed_circle_view.dart';
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Services/home_story.dart';
 import 'package:insta_clone/Services/post.dart';
-import 'package:insta_clone/Services/story.dart';
 import 'package:insta_clone/Utils/expandable_text.dart';
+import 'Stories.dart';
 
 class HomePage extends StatefulWidget {
+  // final String username;
   HomePage({super.key});
 
-  List<post> posts = [
+  final List<post> posts = [
     post(UserName: '43.paras.57', Likes: 52, Description: 'hey its my new pic', Image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', ProfilePic: 'https://instagram.fagr1-3.fna.fbcdn.net/v/t51.2885-19/340046144_1573819893114923_1993567904210653388_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fagr1-3.fna.fbcdn.net&_nc_cat=111&_nc_ohc=OimvTRSrIeUAX_H8GIg&edm=ACWDqb8BAAAA&ccb=7-5&oh=00_AfBzB8cbLWkBcrgg6UcZON6FVX_LGJL_kw3TvtbsRB3Q-g&oe=64BD7F89&_nc_sid=ee9879'),
-    post(UserName: '43.paras.57', Likes: 52, Description: 'hey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pic', Image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', ProfilePic: 'https://instagram.fagr1-3.fna.fbcdn.net/v/t51.2885-19/340046144_1573819893114923_1993567904210653388_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fagr1-3.fna.fbcdn.net&_nc_cat=111&_nc_ohc=OimvTRSrIeUAX_H8GIg&edm=ACWDqb8BAAAA&ccb=7-5&oh=00_AfBzB8cbLWkBcrgg6UcZON6FVX_LGJL_kw3TvtbsRB3Q-g&oe=64BD7F89&_nc_sid=ee9879'),
+    post(UserName: '43.paras.57', Likes: 52, Description: 'hey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pic', Image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', ProfilePic: 'https://instagram.fagr1-3.fna.fbcdn.net/v/t51.2885-19/340046144_1573819893114923_1993567904210653388_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fagr1-3.fna.fbcdn.net&_nc_cat=111&_nc_ohc=OimvTRSrIeUAX_H8GIg&edm=ACWDqb8BAAAA&ccb=7-5&oh=00_AfBzB8cbLWkBcrgg6UcZON6FVX_LGJL_kw3TvtbsRB3Q-g&oe=64BD7F89&_nc_sid=ee9879'),
     post(UserName: '43.paras.57', Likes: 52, Description: 'hey its my new pic', Image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', ProfilePic: 'https://instagram.fagr1-3.fna.fbcdn.net/v/t51.2885-19/340046144_1573819893114923_1993567904210653388_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fagr1-3.fna.fbcdn.net&_nc_cat=111&_nc_ohc=OimvTRSrIeUAX_H8GIg&edm=ACWDqb8BAAAA&ccb=7-5&oh=00_AfBzB8cbLWkBcrgg6UcZON6FVX_LGJL_kw3TvtbsRB3Q-g&oe=64BD7F89&_nc_sid=ee9879')
 
   ];
-  List<story> stories = [
-    story(Image: 'https://instagram.fagr1-3.fna.fbcdn.net/v/t51.2885-19/340046144_1573819893114923_1993567904210653388_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fagr1-3.fna.fbcdn.net&_nc_cat=111&_nc_ohc=OimvTRSrIeUAX_H8GIg&edm=ACWDqb8BAAAA&ccb=7-5&oh=00_AfBzB8cbLWkBcrgg6UcZON6FVX_LGJL_kw3TvtbsRB3Q-g&oe=64BD7F89&_nc_sid=ee9879', UserName: 'Your Story')
+  final List<home_story> stories = [
+    home_story(Imgae: 'https://bit.ly/43IEnby', username: '43.paras.57'),
+    home_story(Imgae: 'https://bit.ly/43IEnby', username: '43.paras.57'),
+    home_story(Imgae: 'https://bit.ly/43IEnby', username: '43.paras.57'),
   ];
 
   @override
@@ -68,32 +74,31 @@ class _HomePageState extends State<HomePage> {
               delegate: SliverChildListDelegate(
                 [
                   SizedBox(
-                    height: 100,
+                    height: 140,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: widget.stories.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                          padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                           child: Column(
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.pink,
-                                  radius: 30,
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.black,
-                                    radius: 28,
-                                    child: CircleAvatar(
-                                      backgroundImage: NetworkImage(widget.stories[index].Image),
-                                      radius: 25,
-                                    ),
+                                child: InkWell(
+                                  onTap: (){
+
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>StoriesPage(selected_page: index,)));
+                                  },
+                                  child: AnimatedDashedCircle().show(
+                                    image: NetworkImage(widget.stories[index].Imgae),
+                                    contentColor: Colors.black,
+                                    height: 80,
                                   ),
                                 ),
                               ),
                               Text(
-                                widget.stories[index].UserName,
+                                index == 0?'Your Story':widget.stories[index].username,
                                 style: const TextStyle(
                                     color: Colors.white
                                 ),
@@ -110,9 +115,10 @@ class _HomePageState extends State<HomePage> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
+                      bool liked = false;
                   return Column(
                     children: [
-                      Divider(
+                      const Divider(
                         color: Colors.grey,
                         thickness: 0.1,
                       ),
@@ -131,10 +137,10 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     radius: 15,
                                   ),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
                                     widget.posts[index].UserName,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.white
                                     ),
                                   ),
@@ -155,14 +161,13 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: const Icon(
-                                    Icons.favorite_border,
-                                    size: 30,
-                                    color: Colors.white,
+                                  child: IconButton(
+                                    onPressed: () {  },
+                                    icon :const Icon(Icons.favorite_outline),
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                const Padding(
+                                  padding: EdgeInsets.all(8.0),
                                   child: Icon(
                                     Icons.comment,
                                     size: 20,
@@ -180,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 const Icon(
                                   Icons.save_alt,
                                   size: 20,
@@ -192,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 '${widget.posts[index].Likes} likes',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                 ),
                               ),
