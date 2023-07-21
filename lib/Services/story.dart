@@ -1,5 +1,6 @@
 class story{
-  String Image;
   String UserName;
-  story({required this.Image, required this.UserName});
+  String ProfilePic;
+  List<String> Stories;
+  story({required this.UserName, required this.ProfilePic, required this.Stories});
 }
