@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Pages/authentication/signup/create_account.dart';
+import 'package:insta_clone/Pages/home/home_page.dart';
 import 'package:insta_clone/Utils/routes.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,6 +13,7 @@ class _LoginPageState extends State<LoginPage> {
   String username="";
   String password="";
   int selectedIndex=-1;
+  bool _obscureText=true;
   List<String> lang=[
     'English (US)', 'Afrikaans', 'Bahasa Indonesia', 'Bahasa Melayu', 'Dansk', 'Deutsch', 'English (UK)', 'Filipino', 'Hrvatski'
   ];
@@ -57,7 +60,12 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.close),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.of(context).pop();
+                  },
+                    child: Icon(Icons.close)
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text("Select your language",
@@ -135,11 +143,21 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 15.0),
               child: TextFormField(
+                obscureText: _obscureText,
                 decoration: InputDecoration(
                   hintText: "Password",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0)
+                  ),
+                  suffixIcon: GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        _obscureText= !_obscureText;
+                      }
+                      );
+                    },
+                    child: Icon(_obscureText ? Icons.visibility_off : Icons.visibility,),
                   ),
                 ),
                 onChanged: (value) {
@@ -157,7 +175,8 @@ class _LoginPageState extends State<LoginPage> {
                         ))
                 ),
                 onPressed: () {
-
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePage()));
                 },
                 child: Text("Log In"),
               ),
@@ -196,10 +215,15 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
 
                 },
-                child: Text("Create new account",
-                  style: TextStyle(
-                    color: Colors.blue,
-                  ),),
+                child: TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+                  },
+                  child: Text("Create new account",
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),),
+                ),
               ),
             ),
           ],

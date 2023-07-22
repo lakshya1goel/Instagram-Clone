@@ -64,7 +64,7 @@ flutter:
   assets:
      - assets/images/home_page/
      - assets/Icons/
-    - assets/images/authentication/
+     - assets/images/authentication/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
