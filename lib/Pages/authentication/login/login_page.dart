@@ -145,19 +145,14 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                      MaterialPageRoute(builder: (context) => Wrapper()));
                 },
-                child: TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Wrapper()));
-                  },
-                  child: const Text(
-                      'Log in',
-                    style: TextStyle(
+                child: const Text(
+                  'Log in',
+                  style: TextStyle(
                       color: Colors.white
-                    ),
                   ),
-                )
+                ),
               ),
             ),
             Padding(
