@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:insta_clone/Pages/home/home_page.dart';
+import 'package:insta_clone/Pages/home/wrapper.dart';
 import 'package:insta_clone/Services/story.dart';
 import 'package:story/story_image.dart';
 import 'package:story/story_page_view.dart';
