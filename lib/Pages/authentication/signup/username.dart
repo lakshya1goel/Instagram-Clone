@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
-import 'package:insta_clone/Pages/authentication/signup/save_login_info.dart';
-import 'package:insta_clone/Pages/authentication/signup/username.dart';
-class DobPage extends StatefulWidget {
-  const DobPage({super.key});
+import 'package:insta_clone/Pages/authentication/signup/dob_page.dart';
+class UserName extends StatefulWidget {
+  const UserName({super.key});
 
   @override
-  State<DobPage> createState() => _DobPageState();
+  State<UserName> createState() => _UserNameState();
 }
 
-class _DobPageState extends State<DobPage> {
+class _UserNameState extends State<UserName> {
+  String username="";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,12 +24,12 @@ class _DobPageState extends State<DobPage> {
                   GestureDetector(
                       onTap: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => SaveInfo()));
+                            MaterialPageRoute(builder: (context) => DobPage()));
                       },
                       child: Icon(Icons.arrow_back_outlined)),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 20.0),
-                    child: Text("What's your date of birth?",
+                    child: Text("Create a username",
                       style: TextStyle(
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold,
@@ -38,33 +38,18 @@ class _DobPageState extends State<DobPage> {
                   ),
                   Padding(
                       padding: EdgeInsets.only(bottom: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                              Text(
-                              "Use your own date of birth, even if this account is for a business, a pet or something else. No one will see it unless you choose to share it."),
-                              TextButton(
-                                onPressed: (){
-
-                                },
-                                  child: Text("Why I need to provide my date of birth?",
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                  ),),
-                              )
-                            ],
-                      )
+                      child: Text("Add a username or use our suggestions. You can change this at any time.")
                   ),
                   TextFormField(
                     decoration: InputDecoration(
-                      hintText: "Birthday",
+                      hintText: "Username",
                       hintStyle: TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0)
                       ),
                     ),
                     onChanged: (value){
-
+                        username=value;
                     },
                   ),
                   Padding(
@@ -81,14 +66,14 @@ class _DobPageState extends State<DobPage> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => UserName()));
+
                         },
                         child: Text("Next"),
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 320.0,
+                    height: 380.0,
                   ),
                   Center(
                     child: GestureDetector(
