@@ -10,93 +10,67 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String username="";
   String password="";
-  int selectedIndex=-1;
+  int selectedIndex=0;
+  String language = "English (US)";
   List<String> lang=[
     'English (US)', 'Afrikaans', 'Bahasa Indonesia', 'Bahasa Melayu', 'Dansk', 'Deutsch', 'English (UK)', 'Filipino', 'Hrvatski'
   ];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0),
-                child: GestureDetector(
-                  onTap: (){
-                    _bottomSheet(context);
-                  },
-                  child: Text("English (US)",
-                    style: TextStyle(
-                      color: Colors.grey,
+    return GestureDetector(
+      onTap: (){
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: TextButton(
+                    onPressed: (){
+                      _bottomSheet(context);
+                    },
+                    child: Text(
+                        language,
+                      style: TextStyle(
+                        color: Colors.grey
+                      ),
                     ),
-                  ),
+                  )
                 ),
-              ),
-              SizedBox(height: 60),
-              _centerWidget(),
-              SizedBox(height: 60),
-              _bottomWidget()
-            ],
-          ) ,
+                SizedBox(height: 60),
+                _centerWidget(),
+                SizedBox(height: 60),
+                _bottomWidget()
+              ],
+            ) ,
+          ),
         ),
       ),
     );
   }
 
   void _bottomSheet(context){
-    showModalBottomSheet(context: context, builder: (BuildContext bcon){
-      return Container(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-            child: Container(
-              height: 500.0,
-              child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.close),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text("Select your language",
-                    style: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Card(
-                    child: SingleChildScrollView(
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: lang.length ,
-                          itemBuilder: (context,index){
-                            return ListTile(
-                              title: Text(
-                                lang[index],
-                              ),
-                              trailing:Checkbox(
-                                value: selectedIndex==index,
-                                onChanged: (bool? newValue){
-                                  setState(() {
-                                    selectedIndex=newValue! ? index: -1;
-                                  });
-                                },
-                              ),
-                            );
-                          }
-                      ),
-                    ),
-                  ),
-                ),
-              ]
-        ),
-            ),
-      ));
-    });
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext icon) {
+        return LanguageSelectionWidget(
+          lang: lang,
+          selectedIndex: lang.indexOf(language),
+          onChanged: (int? index) {
+            setState(() {
+              language = lang[index!];
+              Navigator.pop(context);
+            });
+          },
+        );
+      },
+    );
   }
 
 
@@ -208,3 +182,67 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+class LanguageSelectionWidget extends StatelessWidget {
+  final List<String> lang;
+  final int selectedIndex;
+  final Function(int?)? onChanged;
+
+  LanguageSelectionWidget({
+    required this.lang,
+    required this.selectedIndex,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Container(
+          height: 500.0,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.close),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  "Select your language",
+                  style: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Card(
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: lang.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(lang[index]),
+                        trailing: Radio(
+                          value: index,
+                          groupValue: selectedIndex,
+                          onChanged: onChanged,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
