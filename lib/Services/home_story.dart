@@ -1,5 +1,6 @@
 class home_story{
   String Imgae;
   String username;
-  home_story({required this.Imgae,required this.username});
+  bool seen;
+  home_story({required this.Imgae,required this.username,required this.seen});
 }

@@ -15,10 +15,10 @@ class HomePage extends StatefulWidget {
     post(UserName: '43.paras.57', Likes: 52, Description: 'hey its my new pic', Image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', ProfilePic: 'https://instagram.fagr1-3.fna.fbcdn.net/v/t51.2885-19/340046144_1573819893114923_1993567904210653388_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fagr1-3.fna.fbcdn.net&_nc_cat=111&_nc_ohc=OimvTRSrIeUAX_H8GIg&edm=ACWDqb8BAAAA&ccb=7-5&oh=00_AfBzB8cbLWkBcrgg6UcZON6FVX_LGJL_kw3TvtbsRB3Q-g&oe=64BD7F89&_nc_sid=ee9879')
 
   ];
-  final List<home_story> stories = [
-    home_story(Imgae: 'https://bit.ly/43IEnby', username: '43.paras.57'),
-    home_story(Imgae: 'https://bit.ly/43IEnby', username: '43.paras.57'),
-    home_story(Imgae: 'https://bit.ly/43IEnby', username: '43.paras.57'),
+  List<home_story> stories = [
+    home_story(Imgae: 'https://bit.ly/43IEnby', username: '43.paras.57-1', seen: false),
+    home_story(Imgae: 'https://bit.ly/43IEnby', username: '43.paras.57-2', seen: false),
+    home_story(Imgae: 'https://bit.ly/43IEnby', username: '43.paras.57-3', seen: false),
   ];
 
   @override
@@ -85,21 +85,63 @@ class _HomePageState extends State<HomePage> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: InkWell(
-                                  onTap: (){
+                                  onTap: ()async{
+                                   await Navigator.push(context, MaterialPageRoute(builder: (context)=>StoriesPage(selected_page: index, status: widget.stories)));
+                                    setState(() {
+                                      home_story My_story = widget.stories[0];
+                                      List<home_story> remainingItems = List.from(widget.stories.sublist(1));
+                                      remainingItems.sort((a, b) => a.seen ? 1 : -1);
+                                      widget.stories = [My_story, ...remainingItems];
+                                    });
 
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>StoriesPage(selected_page: index,)));
                                   },
-                                  child: AnimatedDashedCircle().show(
-                                    image: NetworkImage(widget.stories[index].Imgae),
-                                    contentColor: Colors.black,
-                                    height: 80,
-                                  ),
+                                  child: CircleAvatar(
+                                    radius: 45,
+                                    child: Container(
+                                      decoration: !widget.stories[index].seen ? const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [Color(0xFF9B2282),Color(0xFFEEA863)]
+                                          )
+                                      ) : BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.grey[700]
+                                      ),
+                                      child: CircleAvatar(
+                                        radius: !widget.stories[index].seen ?45:45.2,
+                                        backgroundColor: Colors.transparent,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.black,
+                                          radius: !widget.stories[index].seen ?42.5:43.6,
+                                          child: Stack(
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 40,
+                                                backgroundImage: NetworkImage(widget.stories[index].Imgae),
+                                              ),
+                                              index == 0?Positioned(
+                                                left: 55,
+                                                top: 55,
+                                                child: Icon(
+                                                    Icons.add_circle,
+                                                  color: Colors.blue,
+                                                ),
+                                              ):SizedBox()
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
                                 ),
                               ),
                               Text(
-                                index == 0?'Your Story':widget.stories[index].username,
+                                widget.stories[index].username,
                                 style: const TextStyle(
-                                    color: Colors.white
+                                    color: Colors.white,
+                                    fontSize: 10
                                 ),
                               ),
                             ],
@@ -157,8 +199,8 @@ class _HomePageState extends State<HomePage> {
                             ),
                              Row(
                               children: [
-                                const SizedBox(width: 5,),
-                                const Padding(
+                                 const SizedBox(width: 5,),
+                                 const Padding(
                                   padding:  EdgeInsets.all(8.0),
                                   child: InkWell(
                                     child: SizedBox(
@@ -252,32 +294,32 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               label: '',
-              icon: Container(
+              icon: SizedBox(
                 height: 20,
                 width: 20,
-                child: const Image(
+                child: Image(
                   image: AssetImage('assets/Icons/search.png'),
                 ),
               ),
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               label: '',
-              icon: Container(
+              icon: SizedBox(
                 height: 20,
                 width: 20,
-                child: const Image(
+                child:  Image(
                   image: AssetImage('assets/Icons/upload.png'),
                 ),
               ),
             ),
-            BottomNavigationBarItem(
+           const  BottomNavigationBarItem(
               label: '',
-              icon: Container(
+              icon: SizedBox(
                 height: 20,
                 width: 20,
-                child: const Image(
+                child: Image(
                   image: AssetImage('assets/Icons/Reels.png'),
                 ),
               ),

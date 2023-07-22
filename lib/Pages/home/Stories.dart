@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Pages/home/home_page.dart';
 import 'package:insta_clone/Services/story.dart';
 import 'package:story/story_image.dart';
 import 'package:story/story_page_view.dart';
 
+import '../../Services/home_story.dart';
+
 class StoriesPage extends StatefulWidget {
   final int selected_page;
-  StoriesPage({super.key, required this.selected_page});
+  final List<home_story> status;
+  StoriesPage({super.key, required this.selected_page,required this.status});
 
   @override
   State<StoriesPage> createState() => _StoriesPageState();
@@ -44,6 +48,10 @@ class _StoriesPageState extends State<StoriesPage> {
         itemBuilder: (context, pageIndex, storyIndex) {
           final user = widget.stories[pageIndex+widget.selected_page];
           final story = widget.stories[pageIndex+widget.selected_page].Stories[storyIndex];
+          if(storyIndex == widget.stories[pageIndex+widget.selected_page].Stories.length-1){
+            widget.status[pageIndex+widget.selected_page].seen = true;
+
+          }
           return Stack(
             children: [
               Positioned.fill(
@@ -87,7 +95,6 @@ class _StoriesPageState extends State<StoriesPage> {
                   ],
                 ),
               ),
-
             ],
           );
         },
