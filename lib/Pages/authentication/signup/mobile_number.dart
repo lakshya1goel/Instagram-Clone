@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
-import 'package:insta_clone/Pages/authentication/signup/dob_page.dart';
-import 'package:insta_clone/Pages/authentication/signup/password.dart';
-class SaveInfo extends StatefulWidget {
-  const SaveInfo({super.key});
+import 'package:insta_clone/Pages/authentication/signup/username.dart';
+class MobileNumber extends StatefulWidget {
+  const MobileNumber({super.key});
 
   @override
-  State<SaveInfo> createState() => _SaveInfoState();
+  State<MobileNumber> createState() => _MoblieNumberState();
 }
 
-class _SaveInfoState extends State<SaveInfo> {
-  bool save=false;
+class _MoblieNumberState extends State<MobileNumber> {
+  String phone_num="";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,12 +25,12 @@ class _SaveInfoState extends State<SaveInfo> {
                   GestureDetector(
                       onTap: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => PassWord()));
+                            MaterialPageRoute(builder: (context) => UserName()));
                       },
                       child: Icon(Icons.arrow_back_outlined)),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 20.0),
-                    child: Text("Save your login info?",
+                    child: Text("What's your mobile number?",
                       style: TextStyle(
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold,
@@ -38,28 +38,44 @@ class _SaveInfoState extends State<SaveInfo> {
                     ),
                   ),
                   Padding(
-                      padding: EdgeInsets.only(bottom: 20.0),
-                      child: Text(
-                          "We'll save the login info for your new account, so you won't need to enter it the next time you log in.")
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: Text("Enter the mobile number on which you can be contacted. No one will see this on your profile.")
                   ),
-                  SizedBox(
-                    width: 500.0,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all<
-                            RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        hintText: "Mobile number",
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0)
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => DobPage()),
-                        );
-                        save=true;
+                      onChanged: (value){
+                          phone_num=value;
                       },
-                      child: Text("Save"),
+                    ),
+                  ),
+                  Text("You may receive SMS notifications from us for security and login purposes."),
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.0),
+                    child: SizedBox(
+                      width: 500.0,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+
+                        },
+                        child: Text("Next"),
+                      ),
                     ),
                   ),
                   Padding(
@@ -73,29 +89,29 @@ class _SaveInfoState extends State<SaveInfo> {
                           side: MaterialStateProperty.all<BorderSide>(
                             BorderSide(width: 2.0, color: Colors.grey),
                           ),
-                          shape: MaterialStateProperty.all<
-                              RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                          ),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              )),
                           elevation: MaterialStateProperty.all<double>(0.0),
                         ),
                         onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => DobPage())
-                          );
-                          save=false;
+
                         },
-                        child: Text("Not Now",
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),),
+                        child: TextButton(
+                          onPressed: (){
+
+                          },
+                          child: Text("Sign up with email address",
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),),
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 400.0,
+                    height: 280.0,
                   ),
                   Center(
                     child: GestureDetector(
@@ -116,8 +132,8 @@ class _SaveInfoState extends State<SaveInfo> {
       ),
     );
   }
-  void _showMyDialogAlready(BuildContext context) {
-    showDialog(context: context, builder: (BuildContext context) {
+  void _showMyDialogAlready(BuildContext context){
+    showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
         title: Text("Already have an account?",
           style: TextStyle(
@@ -127,7 +143,7 @@ class _SaveInfoState extends State<SaveInfo> {
         ),
         actions: [
           TextButton(
-            onPressed: () {
+            onPressed: (){
               Navigator.of(context).pop();
             },
             child: Text("CONTINUE CREATING ACCOUNT",
@@ -138,9 +154,8 @@ class _SaveInfoState extends State<SaveInfo> {
             ),
           ),
           TextButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginPage()));
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
             },
             child: Text("LOGIN",
               style: TextStyle(

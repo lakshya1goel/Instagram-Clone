@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Pages/authentication/signup/dob_page.dart';
+import 'package:insta_clone/Pages/authentication/signup/mobile_number.dart';
 class UserName extends StatefulWidget {
   const UserName({super.key});
 
@@ -66,7 +67,7 @@ class _UserNameState extends State<UserName> {
                           ),
                         ),
                         onPressed: () {
-
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MobileNumber()));
                         },
                         child: Text("Next"),
                       ),

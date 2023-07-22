@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Pages/authentication/signup/dob_page.dart';
+import 'package:insta_clone/Pages/authentication/signup/mobile_number.dart';
 import 'package:insta_clone/Pages/authentication/signup/save_login_info.dart';
 import 'package:insta_clone/Pages/home/home_page.dart';
 import 'package:insta_clone/Utils/routes.dart';
@@ -27,6 +28,8 @@ class MyApp extends StatelessWidget {
         "/home" :(context) => HomePage(),
         "/saveinfo": (context) => SaveInfo(),
         "/dob": (context) => DobPage(),
+        "/username": (context) => DobPage(),
+        "/mobile": (context) => MobileNumber(),
       },
     );
   }

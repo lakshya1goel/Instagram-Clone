@@ -10,6 +10,7 @@ class DobPage extends StatefulWidget {
 }
 
 class _DobPageState extends State<DobPage> {
+  String dob="";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +65,7 @@ class _DobPageState extends State<DobPage> {
                       ),
                     ),
                     onChanged: (value){
-
+                        dob=value;
                     },
                   ),
                   Padding(
