@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:insta_clone/Pages/authentication/signup/create_account.dart';
+import 'package:flutter/services.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
-import 'package:insta_clone/Pages/authentication/signup/save_login_info.dart';
-class PassWord extends StatefulWidget {
-  const PassWord({super.key});
+import 'package:insta_clone/Pages/authentication/signup/username.dart';
+class MobileNumber extends StatefulWidget {
+  const MobileNumber({super.key});
 
   @override
-  State<PassWord> createState() => _PassWordState();
+  State<MobileNumber> createState() => _MoblieNumberState();
 }
 
-class _PassWordState extends State<PassWord> {
-  bool _obscureText = true;
-  String password="";
+class _MoblieNumberState extends State<MobileNumber> {
+  String phone_num="";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,12 +25,12 @@ class _PassWordState extends State<PassWord> {
                   GestureDetector(
                       onTap: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => SignUp()));
+                            MaterialPageRoute(builder: (context) => UserName()));
                       },
                       child: Icon(Icons.arrow_back_outlined)),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 20.0),
-                    child: Text("Create a password",
+                    child: Text("What's your mobile number?",
                       style: TextStyle(
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold,
@@ -39,31 +38,26 @@ class _PassWordState extends State<PassWord> {
                     ),
                   ),
                   Padding(
-                      padding: EdgeInsets.only(bottom: 20.0),
-                      child: Text(
-                          "Create a password with at least 6 letters or numbers. It should be something that others can't guess.")
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: Text("Enter the mobile number on which you can be contacted. No one will see this on your profile.")
                   ),
-                  TextFormField(
-                    obscureText: _obscureText,
-                    decoration: InputDecoration(
-                      hintText: "Password",
-                      hintStyle: TextStyle(color: Colors.grey),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0)
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        hintText: "Mobile number",
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0)
+                        ),
                       ),
-                      suffixIcon: GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            _obscureText= !_obscureText;
-                          });
-                        },
-                        child: Icon(_obscureText ? Icons.visibility_off : Icons.visibility,),
-                      ),
+                      onChanged: (value){
+                          phone_num=value;
+                      },
                     ),
-                    onChanged: (value){
-                      password=value;
-                    },
                   ),
+                  Text("You may receive SMS notifications from us for security and login purposes."),
                   Padding(
                     padding: EdgeInsets.only(top: 20.0),
                     child: SizedBox(
@@ -78,16 +72,46 @@ class _PassWordState extends State<PassWord> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => SaveInfo())
-                          );
+
                         },
                         child: Text("Next"),
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: SizedBox(
+                      width: 500.0,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Colors.white),
+                          side: MaterialStateProperty.all<BorderSide>(
+                            BorderSide(width: 2.0, color: Colors.grey),
+                          ),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              )),
+                          elevation: MaterialStateProperty.all<double>(0.0),
+                        ),
+                        onPressed: () {
+
+                        },
+                        child: TextButton(
+                          onPressed: (){
+
+                          },
+                          child: Text("Sign up with email address",
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),),
+                        ),
+                      ),
+                    ),
+                  ),
                   SizedBox(
-                    height: 350.0,
+                    height: 280.0,
                   ),
                   Center(
                     child: GestureDetector(
@@ -108,9 +132,8 @@ class _PassWordState extends State<PassWord> {
       ),
     );
   }
-
-  void _showMyDialogAlready(BuildContext context) {
-    showDialog(context: context, builder: (BuildContext context) {
+  void _showMyDialogAlready(BuildContext context){
+    showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
         title: Text("Already have an account?",
           style: TextStyle(
@@ -120,7 +143,7 @@ class _PassWordState extends State<PassWord> {
         ),
         actions: [
           TextButton(
-            onPressed: () {
+            onPressed: (){
               Navigator.of(context).pop();
             },
             child: Text("CONTINUE CREATING ACCOUNT",
@@ -131,9 +154,8 @@ class _PassWordState extends State<PassWord> {
             ),
           ),
           TextButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginPage()));
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
             },
             child: Text("LOGIN",
               style: TextStyle(
@@ -148,4 +170,3 @@ class _PassWordState extends State<PassWord> {
     );
   }
 }
-

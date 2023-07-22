@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:insta_clone/Pages/authentication/signup/create_account.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Pages/authentication/signup/save_login_info.dart';
-class PassWord extends StatefulWidget {
-  const PassWord({super.key});
+import 'package:insta_clone/Pages/authentication/signup/username.dart';
+class DobPage extends StatefulWidget {
+  const DobPage({super.key});
 
   @override
-  State<PassWord> createState() => _PassWordState();
+  State<DobPage> createState() => _DobPageState();
 }
 
-class _PassWordState extends State<PassWord> {
-  bool _obscureText = true;
-  String password="";
+class _DobPageState extends State<DobPage> {
+  String dob="";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,12 +25,12 @@ class _PassWordState extends State<PassWord> {
                   GestureDetector(
                       onTap: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => SignUp()));
+                            MaterialPageRoute(builder: (context) => SaveInfo()));
                       },
                       child: Icon(Icons.arrow_back_outlined)),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 20.0),
-                    child: Text("Create a password",
+                    child: Text("What's your date of birth?",
                       style: TextStyle(
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold,
@@ -39,29 +38,34 @@ class _PassWordState extends State<PassWord> {
                     ),
                   ),
                   Padding(
-                      padding: EdgeInsets.only(bottom: 20.0),
-                      child: Text(
-                          "Create a password with at least 6 letters or numbers. It should be something that others can't guess.")
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                              Text(
+                              "Use your own date of birth, even if this account is for a business, a pet or something else. No one will see it unless you choose to share it."),
+                              TextButton(
+                                onPressed: (){
+
+                                },
+                                  child: Text("Why I need to provide my date of birth?",
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                  ),),
+                              )
+                            ],
+                      )
                   ),
                   TextFormField(
-                    obscureText: _obscureText,
                     decoration: InputDecoration(
-                      hintText: "Password",
+                      hintText: "Birthday",
                       hintStyle: TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0)
                       ),
-                      suffixIcon: GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            _obscureText= !_obscureText;
-                          });
-                        },
-                        child: Icon(_obscureText ? Icons.visibility_off : Icons.visibility,),
-                      ),
                     ),
                     onChanged: (value){
-                      password=value;
+                        dob=value;
                     },
                   ),
                   Padding(
@@ -78,16 +82,14 @@ class _PassWordState extends State<PassWord> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => SaveInfo())
-                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => UserName()));
                         },
                         child: Text("Next"),
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 350.0,
+                    height: 320.0,
                   ),
                   Center(
                     child: GestureDetector(
@@ -108,9 +110,8 @@ class _PassWordState extends State<PassWord> {
       ),
     );
   }
-
-  void _showMyDialogAlready(BuildContext context) {
-    showDialog(context: context, builder: (BuildContext context) {
+  void _showMyDialogAlready(BuildContext context){
+    showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
         title: Text("Already have an account?",
           style: TextStyle(
@@ -120,7 +121,7 @@ class _PassWordState extends State<PassWord> {
         ),
         actions: [
           TextButton(
-            onPressed: () {
+            onPressed: (){
               Navigator.of(context).pop();
             },
             child: Text("CONTINUE CREATING ACCOUNT",
@@ -131,9 +132,8 @@ class _PassWordState extends State<PassWord> {
             ),
           ),
           TextButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginPage()));
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
             },
             child: Text("LOGIN",
               style: TextStyle(
@@ -148,4 +148,3 @@ class _PassWordState extends State<PassWord> {
     );
   }
 }
-

@@ -9,6 +9,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  String name="";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +43,9 @@ class _SignUpState extends State<SignUp> {
                           borderRadius: BorderRadius.circular(10.0)
                       ),
                     ),
+                    onChanged: (value){
+                      name=value;
+                    },
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 20.0),
