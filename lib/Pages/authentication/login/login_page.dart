@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Pages/home/wrapper.dart';
 import 'package:insta_clone/Pages/authentication/signup/create_account.dart';
-import 'package:insta_clone/Pages/home/home_page.dart';
 import 'package:insta_clone/Utils/routes.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -147,7 +147,17 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => HomePage()));
                 },
-                child: Text("Log In"),
+                child: TextButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Wrapper()));
+                  },
+                  child: const Text(
+                      'Log in',
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
+                  ),
+                )
               ),
             ),
             Padding(
