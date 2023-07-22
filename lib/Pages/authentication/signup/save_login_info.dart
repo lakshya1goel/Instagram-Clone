@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:insta_clone/Pages/authentication/signup/create_account.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
-import 'package:insta_clone/Pages/authentication/signup/save_login_info.dart';
-class PassWord extends StatefulWidget {
-  const PassWord({super.key});
+import 'package:insta_clone/Pages/authentication/signup/password.dart';
+class SaveInfo extends StatefulWidget {
+  const SaveInfo({super.key});
 
   @override
-  State<PassWord> createState() => _PassWordState();
+  State<SaveInfo> createState() => _SaveInfoState();
 }
 
-class _PassWordState extends State<PassWord> {
-  bool _obscureText = true;
-  String password="";
+class _SaveInfoState extends State<SaveInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,12 +23,12 @@ class _PassWordState extends State<PassWord> {
                   GestureDetector(
                       onTap: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => SignUp()));
+                            MaterialPageRoute(builder: (context) => PassWord()));
                       },
                       child: Icon(Icons.arrow_back_outlined)),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 20.0),
-                    child: Text("Create a password",
+                    child: Text("Save your login info?",
                       style: TextStyle(
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold,
@@ -41,53 +38,56 @@ class _PassWordState extends State<PassWord> {
                   Padding(
                       padding: EdgeInsets.only(bottom: 20.0),
                       child: Text(
-                          "Create a password with at least 6 letters or numbers. It should be something that others can't guess.")
+                          "We'll save the login info for your new account, so you won't need to enter it the next time you log in.")
                   ),
-                  TextFormField(
-                    obscureText: _obscureText,
-                    decoration: InputDecoration(
-                      hintText: "Password",
-                      hintStyle: TextStyle(color: Colors.grey),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0)
+                  SizedBox(
+                    width: 500.0,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all<
+                            RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                        ),
                       ),
-                      suffixIcon: GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            _obscureText= !_obscureText;
-                          });
-                        },
-                        child: Icon(_obscureText ? Icons.visibility_off : Icons.visibility,),
-                      ),
+                      onPressed: () {
+
+                      },
+                      child: Text("Save"),
                     ),
-                    onChanged: (value){
-                      password=value;
-                    },
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 20.0),
+                    padding: EdgeInsets.only(top: 10.0),
                     child: SizedBox(
                       width: 500.0,
                       child: ElevatedButton(
                         style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Colors.white),
+                          side: MaterialStateProperty.all<BorderSide>(
+                            BorderSide(width: 2.0, color: Colors.grey),
+                          ),
                           shape: MaterialStateProperty.all<
                               RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),
                           ),
+                          elevation: MaterialStateProperty.all<double>(0.0),
                         ),
                         onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => SaveInfo())
-                          );
+
                         },
-                        child: Text("Next"),
+                        child: Text("Not Now",
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),),
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 350.0,
+                    height: 400.0,
                   ),
                   Center(
                     child: GestureDetector(
@@ -108,7 +108,6 @@ class _PassWordState extends State<PassWord> {
       ),
     );
   }
-
   void _showMyDialogAlready(BuildContext context) {
     showDialog(context: context, builder: (BuildContext context) {
       return AlertDialog(
@@ -148,4 +147,3 @@ class _PassWordState extends State<PassWord> {
     );
   }
 }
-
