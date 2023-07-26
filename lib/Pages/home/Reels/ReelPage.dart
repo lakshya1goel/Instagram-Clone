@@ -176,63 +176,111 @@ class _ReelsState extends State<Reels> {
                           widget.reels[index].Liked
                               ? InkWell(
                                   onTap: () {
+                                    widget.reels[index].Likes--;
                                     setState(() {
                                       widget.reels[index].Liked =
                                           !widget.reels[index].Liked;
                                     });
                                   },
-                                  child: const SizedBox(
-                                    height: 27,
-                                    width: 27,
-                                    child: Image(
-                                      image:
-                                          AssetImage('assets/Icons/Loved.png'),
+                                  child: SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: Column(
+                                      children: [
+                                        Image(
+                                          height: 27,
+                                          width: 27,
+                                          image:
+                                              AssetImage('assets/Icons/Loved.png'),
+                                        ),
+                                        SizedBox(height: 5,),
+                                        Text(
+                                          '${widget.reels[index].Likes}',
+                                          style: TextStyle(
+                                              color: Colors.white
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                 )
                               : InkWell(
                                   onTap: () {
+                                    widget.reels[index].Likes++;
                                     setState(() {
                                       widget.reels[index].Liked =
                                           !widget.reels[index].Liked;
                                     });
                                   },
-                                  child: const SizedBox(
-                                    height: 27,
-                                    width: 27,
-                                    child: Image(
-                                      image:
+                                  child:  SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: Column(
+                                      children: [
+                                        Image(
+                                          height: 27,
+                                          width: 27,
+                                          image:
                                           AssetImage('assets/Icons/love.png'),
+                                        ),
+                                        SizedBox(height: 5,),
+                                        Text(
+                                          '${widget.reels[index].Likes}',
+                                          style: TextStyle(
+                                              color: Colors.white
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
-                          SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.03),
-                          const InkWell(
+                          InkWell(
                             child: SizedBox(
-                              height: 37,
-                              width: 37,
-                              child: Image(
-                                image: AssetImage('assets/Icons/chat.png'),
+                              height: 60,
+                              width: 60,
+                              child: Column(
+                                children: [
+                                  Image(
+                                    height: 37,
+                                    width: 37,
+                                    image: AssetImage('assets/Icons/chat.png'),
+                                  ),
+                                  SizedBox(height: 5,),
+                                  Text(
+                                    '${widget.reels[index].Comments}',
+                                    style: TextStyle(
+                                      color: Colors.white
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
                           ),
                           SizedBox(
                               height:
-                                  MediaQuery.of(context).size.height * 0.03),
-                          const InkWell(
+                                  MediaQuery.of(context).size.height * 0.02),
+                          InkWell(
                             child: SizedBox(
-                              height: 26,
-                              width: 26,
-                              child: Image(
-                                image: AssetImage('assets/Icons/send.png'),
+                              height: 60,
+                              width: 60,
+                              child: Column(
+                                children: [
+                                  Image(
+                                    height: 26,
+                                    width: 26,
+                                    image: AssetImage('assets/Icons/send.png'),
+                                  ),
+                                  SizedBox(height: 5,),
+                                  Text(
+                                    '${widget.reels[index].Shares}',
+                                    style: TextStyle(
+                                        color: Colors.white
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
                           ),
-                          SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.03),
                           IconButton(
                             onPressed: () {},
                             icon: const Icon(

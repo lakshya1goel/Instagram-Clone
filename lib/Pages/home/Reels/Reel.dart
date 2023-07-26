@@ -62,16 +62,13 @@ class _ReelViewState extends State<ReelView> {
       child: Stack(
         children: [
           _chewieController != null && _chewieController!.videoPlayerController.value.isInitialized
-              ? FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      child: Chewie(
-                        controller: _chewieController!,
+              ? SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: Chewie(
+                    controller: _chewieController!,
 
-                      )),
-                )
+                  ))
               : const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -80,20 +77,6 @@ class _ReelViewState extends State<ReelView> {
                     Text('Loading...')
                   ],
                 ),
-          // Positioned(
-          //   bottom: 0,
-          //   width: MediaQuery.of(context).size.width,
-          //   child: VideoProgressIndicator(
-          //     _videoPlayerController,
-          //     allowScrubbing: true,
-          //
-          //     colors: const VideoProgressColors(
-          //       backgroundColor: Colors.grey,
-          //       bufferedColor: Colors.grey,
-          //       playedColor: Colors.white,
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
