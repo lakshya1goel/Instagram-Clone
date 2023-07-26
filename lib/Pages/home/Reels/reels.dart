@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:insta_clone/Utils/expandable_text.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:card_swiper/card_swiper.dart';
-import '../../Services/Story/reel.dart';
+import '../../../Services/Story/reel.dart';
 
 class Reels extends StatefulWidget {
   Reels({super.key});
@@ -98,26 +97,8 @@ class _ReelsState extends State<Reels> {
                 itemBuilder: (context, index) {
                   return Stack(
                     children: [
-                      Center(
-                        child: _chewieController != null &&
-                                _chewieController!
-                                    .videoPlayerController.value.isInitialized
-                            ? FittedBox(
-                                fit: BoxFit.cover,
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height,
-                                  child: Chewie(
-                                    controller: _chewieController!,
-                                  ),
-                                ),
-                              )
-                            : const Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircularProgressIndicator(),
-                                ],
-                              ),
+                      const Center(
+                        child: Placeholder(),
                       ),
                       if(index == 0)
                       Positioned(

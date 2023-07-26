@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Pages/home/homepage.dart';
 import 'package:insta_clone/Pages/home/profile.dart';
-import 'package:insta_clone/Pages/home/reels.dart';
+import 'package:insta_clone/Pages/home/Reels/reels.dart';
 import 'package:insta_clone/Pages/home/search.dart';
 import 'package:insta_clone/Pages/home/upload.dart';
 
