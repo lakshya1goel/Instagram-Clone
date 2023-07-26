@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
         Description: 'hey its my new pic',
         Image:
             'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80',
-        ProfilePic:'https://bit.ly/43IEnby',
+        ProfilePic:'https://bit.ly/3qdxC3s',
         Liked: false),
     post(
         UserName: '43.paras.57',
@@ -24,7 +24,7 @@ class HomePage extends StatefulWidget {
             'hey its my new pic hey its my new pic hey its my new pic hey its my new pic hey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pic',
         Image:
             'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80',
-        ProfilePic:'https://bit.ly/43IEnby',
+        ProfilePic:'https://bit.ly/3qdxC3s',
         Liked: false),
     post(
         UserName: '43.paras.57',
@@ -32,40 +32,40 @@ class HomePage extends StatefulWidget {
         Description: 'hey its my new pic',
         Image:
             'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80',
-        ProfilePic:'https://bit.ly/43IEnby',
+        ProfilePic:'https://bit.ly/3qdxC3s',
         Liked: false)
   ];
   List<home_story> stories = [
     home_story(
-        Imgae: 'https://bit.ly/43IEnby',
+        Imgae: 'https://bit.ly/3qdxC3s',
         username: '43.paras.57-1',
         seen: false),
     home_story(
-        Imgae: 'https://bit.ly/43IEnby',
+        Imgae: 'https://bit.ly/3qdxC3s',
         username: '43.paras.57-1',
         seen: false),
     home_story(
-        Imgae: 'https://bit.ly/43IEnby',
+        Imgae: 'https://bit.ly/3qdxC3s',
         username: '43.paras.57-1',
         seen: false),
     home_story(
-        Imgae: 'https://bit.ly/43IEnby',
+        Imgae: 'https://bit.ly/3qdxC3s',
         username: '43.paras.57-1',
         seen: false),
     home_story(
-        Imgae: 'https://bit.ly/43IEnby',
+        Imgae: 'https://bit.ly/3qdxC3s',
         username: '43.paras.57-1',
         seen: false),
     home_story(
-        Imgae: 'https://bit.ly/43IEnby',
+        Imgae: 'https://bit.ly/3qdxC3s',
         username: '43.paras.57-1',
         seen: false),
     home_story(
-        Imgae: 'https://bit.ly/43IEnby',
+        Imgae: 'https://bit.ly/3qdxC3s',
         username: '43.paras.57-2',
         seen: false),
     home_story(
-        Imgae: 'https://bit.ly/43IEnby',
+        Imgae: 'https://bit.ly/3qdxC3s',
         username: '43.paras.57-3',
         seen: false),
   ];
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                 height: 25,
                 width: 25,
                 child: const Image(
-                  image: AssetImage('assets/Icons/heart.png'),
+                  image: AssetImage('assets/Icons/love.png'),
                 ),
               ),
               const SizedBox(width: 10),

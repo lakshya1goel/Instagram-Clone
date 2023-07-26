@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Pages/home/homepage.dart';
 import 'package:insta_clone/Pages/home/profile.dart';
-import 'package:insta_clone/Pages/home/Reels/reels.dart';
+import 'package:insta_clone/Pages/home/Reels/ReelPage.dart';
 import 'package:insta_clone/Pages/home/search.dart';
 import 'package:insta_clone/Pages/home/upload.dart';
 
@@ -75,7 +75,7 @@ class _WrapperState extends State<Wrapper> {
               const BottomNavigationBarItem(
                 label: '',
                 icon: CircleAvatar(
-                  backgroundImage: NetworkImage('https://bit.ly/43IEnby'),
+                  backgroundImage: NetworkImage('https://bit.ly/3qdxC3s'),
                   radius: 15,
                 )
               ),
