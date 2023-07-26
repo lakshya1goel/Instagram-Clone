@@ -164,6 +164,7 @@ class _StoryHighlights extends StatefulWidget {
 }
 
 class _StoryHighlightsState extends State<_StoryHighlights> {
+  int currentHighlightIndex = 0;
   List<profile_highlight> tiles=[
     profile_highlight(desc: "My pics", image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80'),
     profile_highlight(desc: "Hehe", image: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/825fb915-d6a8-4bd2-ba12-ba661266a6f9/dfndnu7-e10d71e6-3427-4bda-a7f1-8dc8a55fb968.png/v1/fill/w_894,h_894,q_70,strp/bigred_cute_anime_boy_with_black_hair_and_big_blue_by_sketchesbydani_dfndnu7-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTAyNCIsInBhdGgiOiJcL2ZcLzgyNWZiOTE1LWQ2YTgtNGJkMi1iYTEyLWJhNjYxMjY2YTZmOVwvZGZuZG51Ny1lMTBkNzFlNi0zNDI3LTRiZGEtYTdmMS04ZGM4YTU1ZmI5NjgucG5nIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.8v_PPYlfNxvYxB4wNAtsR4TPaGugUJcqnx6SSJLEWTU'),
@@ -171,8 +172,94 @@ class _StoryHighlightsState extends State<_StoryHighlights> {
     profile_highlight(desc: "My pics1", image: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/825fb915-d6a8-4bd2-ba12-ba661266a6f9/dfndnu7-e10d71e6-3427-4bda-a7f1-8dc8a55fb968.png/v1/fill/w_894,h_894,q_70,strp/bigred_cute_anime_boy_with_black_hair_and_big_blue_by_sketchesbydani_dfndnu7-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTAyNCIsInBhdGgiOiJcL2ZcLzgyNWZiOTE1LWQ2YTgtNGJkMi1iYTEyLWJhNjYxMjY2YTZmOVwvZGZuZG51Ny1lMTBkNzFlNi0zNDI3LTRiZGEtYTdmMS04ZGM4YTU1ZmI5NjgucG5nIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.8v_PPYlfNxvYxB4wNAtsR4TPaGugUJcqnx6SSJLEWTU'),
     profile_highlight(desc: "Hehe1", image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80'),
     profile_highlight(desc: "Bye1", image: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/825fb915-d6a8-4bd2-ba12-ba661266a6f9/dfndnu7-e10d71e6-3427-4bda-a7f1-8dc8a55fb968.png/v1/fill/w_894,h_894,q_70,strp/bigred_cute_anime_boy_with_black_hair_and_big_blue_by_sketchesbydani_dfndnu7-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTAyNCIsInBhdGgiOiJcL2ZcLzgyNWZiOTE1LWQ2YTgtNGJkMi1iYTEyLWJhNjYxMjY2YTZmOVwvZGZuZG51Ny1lMTBkNzFlNi0zNDI3LTRiZGEtYTdmMS04ZGM4YTU1ZmI5NjgucG5nIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.8v_PPYlfNxvYxB4wNAtsR4TPaGugUJcqnx6SSJLEWTU'),
-
   ];
+
+  void _showFullScreenImage(List<profile_highlight> highlights, int currentIndex) {
+    setState(() {
+      currentHighlightIndex = currentIndex;
+    });
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          return Scaffold(
+            backgroundColor: Colors.black,
+            body: GestureDetector(
+              onTapUp: (details) {
+                double screenWidth = MediaQuery.of(context).size.width;
+                double tapX = details.globalPosition.dx;
+                double tapRatio = tapX / screenWidth;
+                double threshold = 0.5;
+                if (tapRatio < threshold && currentIndex!=0) {
+                  _showPreviousImage();
+                } else if((tapRatio > threshold && currentIndex!=tiles.length-1)){
+                  _showNextImage();
+                }
+                else{
+                  Navigator.of(context).pop();
+                }
+              },
+              onHorizontalDragEnd: (details) {
+                if (details.primaryVelocity! < 0) {
+                  _showNextImage();
+                } else if (details.primaryVelocity! > 0) {
+                  _showPreviousImage();
+                }
+              },
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 50.0,
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+                        child: Container(
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: NetworkImage(highlights[currentIndex].image),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        highlights[currentIndex].desc,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: Hero(
+                      tag: highlights[currentIndex].image,
+                      child: Image.network(highlights[currentIndex].image),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+  void _showPreviousImage() {
+    if (currentHighlightIndex > 0) {
+      _showFullScreenImage(tiles, currentHighlightIndex - 1);
+    }
+  }
+
+  void _showNextImage() {
+    if (currentHighlightIndex < tiles.length - 1) {
+      _showFullScreenImage(tiles, currentHighlightIndex + 1);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -188,23 +275,26 @@ class _StoryHighlightsState extends State<_StoryHighlights> {
             child: Column(
               children: [
                 Expanded(
-                  child: Container(
-                    height: 62,
-                    width: 62,
-                    padding: const EdgeInsets.all(2.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      shape: BoxShape.circle,
-                    ),
+                  child: InkWell(
+                    onTap: () => _showFullScreenImage(tiles, index),
                     child: Container(
-                      height: 60,
-                      width: 60,
+                      height: 62,
+                      width: 62,
+                      padding: const EdgeInsets.all(2.0),
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey,
                         border: Border.all(color: Colors.grey),
-                        image: DecorationImage(
-                          image: NetworkImage(highlight.image),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Container(
+                        height: 60,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey,
+                          border: Border.all(color: Colors.grey),
+                          image: DecorationImage(
+                            image: NetworkImage(highlight.image),
+                          ),
                         ),
                       ),
                     ),
