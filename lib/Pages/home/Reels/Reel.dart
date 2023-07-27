@@ -13,9 +13,7 @@ class ReelView extends StatefulWidget {
 }
 
 class _ReelViewState extends State<ReelView> {
-
-  bool muted  = false;
-
+  bool muted = false;
   late VideoPlayerController _videoPlayerController;
   ChewieController? _chewieController;
 
@@ -48,12 +46,11 @@ class _ReelViewState extends State<ReelView> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         setState(() {
-          if(muted){
+          if (muted) {
             _videoPlayerController.setVolume(0);
-          }
-          else{
+          } else {
             _videoPlayerController.setVolume(100);
           }
           muted = !muted;
@@ -61,20 +58,21 @@ class _ReelViewState extends State<ReelView> {
       },
       child: Stack(
         children: [
-          _chewieController != null && _chewieController!.videoPlayerController.value.isInitialized
+          _chewieController != null &&
+                  _chewieController!.videoPlayerController.value.isInitialized
               ? SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                   child: Chewie(
                     controller: _chewieController!,
-
-                  ))
+                  ),
+                )
               : const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircularProgressIndicator(),
                     SizedBox(height: 10),
-                    Text('Loading...')
+                    Text('Loading...'),
                   ],
                 ),
         ],

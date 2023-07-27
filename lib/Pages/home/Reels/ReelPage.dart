@@ -43,6 +43,9 @@ class Reels extends StatefulWidget {
 
 class _ReelsState extends State<Reels> {
 
+  bool _isFavorited = false;
+
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -55,8 +58,24 @@ class _ReelsState extends State<Reels> {
               itemBuilder: (context, index) {
                 return Stack(
                   children: [
-                    Center(
-                      child: ReelView(Reel: widget.reels[index]),
+                    GestureDetector(
+                      onDoubleTap: () {
+                        if(widget.reels[index].Liked == false){
+                          widget.reels[index].Likes++;
+                        }
+                        setState(() {
+                          widget.reels[index].Liked = true;
+                          _isFavorited = true;
+                        });
+                        Future.delayed(Duration(milliseconds: 500), () {
+                          setState(() {
+                            _isFavorited = false;
+                          });
+                        });
+                      },
+                      child: Center(
+                        child: ReelView(Reel: widget.reels[index]),
+                      ),
                     ),
                     if(index == 0)
                     Positioned(
@@ -71,6 +90,17 @@ class _ReelsState extends State<Reels> {
                         ),
                       ),
                     ),
+                      Center(
+                        child: AnimatedOpacity(
+                          opacity: _isFavorited ? 1.0 : 0.0,
+                          duration: Duration(milliseconds: 300),
+                          child: Icon(
+                            Icons.favorite,
+                            size: 100,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     Positioned(
                       top: MediaQuery.of(context).size.height -
                           MediaQuery.of(context).size.height / 5,
