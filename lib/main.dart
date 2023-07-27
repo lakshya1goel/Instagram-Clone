@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
+import 'package:insta_clone/Pages/home/search.dart';
+import 'package:insta_clone/Pages/authentication/signup/username.dart';
+import 'package:insta_clone/Pages/home/profile.dart';
 import 'package:insta_clone/Pages/home/wrapper.dart';
 import 'package:flutter/services.dart';
 import 'package:insta_clone/Pages/authentication/signup/dob_page.dart';
@@ -20,7 +23,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: "/home",
+      initialRoute: "/",
       routes: {
         "/": (context) => LoginPage(),
         "/home" :(context) => Wrapper(),
@@ -31,6 +34,8 @@ class MyApp extends StatelessWidget {
         "/dob": (context) => DobPage(),
         "/username": (context) => DobPage(),
         "/mobile": (context) => MobileNumber(),
+        "/search": (context) => Search(),
+        "/profile": (context) => Profile(),
       },
     );
   }

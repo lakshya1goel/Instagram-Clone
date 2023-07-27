@@ -144,7 +144,8 @@ class _LoginPageState extends State<LoginPage> {
                         ))
                 ),
                 onPressed: () {
-                  Navigator.push(context,
+
+                  Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => Wrapper()));
                 },
                 child: const Text(
