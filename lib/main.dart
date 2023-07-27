@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:insta_clone/Pages/authentication/signup/dob_page.dart';
 import 'package:insta_clone/Pages/authentication/signup/mobile_number.dart';
 import 'package:insta_clone/Pages/authentication/signup/save_login_info.dart';
-import 'package:insta_clone/Utils/routes.dart';
 import 'package:insta_clone/Pages/authentication/signup/create_account.dart';
 import 'package:insta_clone/Pages/authentication/signup/password.dart';
 
@@ -32,7 +31,7 @@ class MyApp extends StatelessWidget {
         "/password": (context) => PassWord(),
         "/saveinfo": (context) => SaveInfo(),
         "/dob": (context) => DobPage(),
-        "/username": (context) => DobPage(),
+        "/username": (context) => UserName(),
         "/mobile": (context) => MobileNumber(),
         "/search": (context) => Search(),
         "/profile": (context) => Profile(),
