@@ -39,6 +39,7 @@ dependencies:
   animated_dashed_circle: ^0.0.4
   pinch_zoom_release_unzoom: ^1.0.1
   insta_like_button: ^0.1.1
+  insta_assets_picker: ^1.5.2
 
 dev_dependencies:
   flutter_test:
