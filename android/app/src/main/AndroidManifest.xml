@@ -2,7 +2,7 @@
     package="com.example.insta_clone">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="insta_clone"
+        android:label="Instagram"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
