@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:insta_clone/Pages/home/wrapper.dart';
-import 'package:insta_clone/Services/story.dart';
+import 'package:insta_clone/Services/Home/story.dart';
 import 'package:story/story_image.dart';
 import 'package:story/story_page_view.dart';
-
-import '../../Services/home_story.dart';
+import '../../Services/Home/home_story.dart';
 
 class StoriesPage extends StatefulWidget {
   final int selected_page;
