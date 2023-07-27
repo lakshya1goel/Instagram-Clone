@@ -34,6 +34,13 @@ class _WrapperState extends State<Wrapper> {
             items: [
               BottomNavigationBarItem(
                 label: '',
+                activeIcon: Container(
+                  height: 20,
+                  width: 20,
+                  child: const Image(
+                    image: AssetImage('assets/Icons/home_selected.png'),
+                  ),
+                ),
                 icon: Container(
                   height: 20,
                   width: 20,
@@ -64,6 +71,13 @@ class _WrapperState extends State<Wrapper> {
               ),
              const  BottomNavigationBarItem(
                 label: '',
+                activeIcon: SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: Image(
+                    image: AssetImage('assets/Icons/Reels_selected.png'),
+                  ),
+                ),
                 icon: SizedBox(
                   height: 20,
                   width: 20,
@@ -73,13 +87,18 @@ class _WrapperState extends State<Wrapper> {
                 ),
               ),
               const BottomNavigationBarItem(
-                label: '',
+                label: '.',
                 icon: CircleAvatar(
                   backgroundImage: NetworkImage('https://bit.ly/43IEnby'),
                   radius: 15,
                 )
               ),
             ],
+            selectedLabelStyle: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: Colors.red
+            ),
             currentIndex: _selectedIndex,
             onTap: _onItemTapped,
           ),
