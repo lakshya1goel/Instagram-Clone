@@ -57,6 +57,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.7.0"
+
   clock:
     dependency: transitive
     description:
@@ -73,6 +74,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.1"
+  crypto:
+    dependency: transitive
+    description:
+      name: crypto
+      sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.3"
   csslib:
     dependency: transitive
     description:
@@ -97,6 +106,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.8"
+  extended_image:
+    dependency: transitive
+    description:
+      name: extended_image
+      sha256: e77d18f956649ba6e5ecebd0cb68542120886336a75ee673788145bd4c3f0767
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.0.2"
+  extended_image_library:
+    dependency: transitive
+    description:
+      name: extended_image_library
+      sha256: bb8d08c504ebc73d476ec1c99451a61f12e95538869e734fc4f55a3a2d5c98ec
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.5.3"
   fake_async:
     dependency: transitive
     description:
@@ -136,6 +161,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fraction:
+    dependency: transitive
+    description:
+      name: fraction
+      sha256: "40caa63dc2b80f2800e3c12d0be3e787a9705e4f241eb0a53302b022c0339aa8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.1"
   html:
     dependency: transitive
     description:
@@ -152,6 +185,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+
+  http_client_helper:
+    dependency: transitive
+    description:
+      name: http_client_helper
+      sha256: "8a9127650734da86b5c73760de2b404494c968a3fd55602045ffec789dac3cb1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   http_parser:
     dependency: transitive
     description:
@@ -160,6 +202,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  insta_assets_crop:
+    dependency: transitive
+    description:
+      name: insta_assets_crop
+      sha256: "800ba2e5ececd170a70da573e3d94460c9abf50621335c859e8155c6b592b460"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
+  insta_assets_picker:
+    dependency: "direct main"
+    description:
+      name: insta_assets_picker
+      sha256: c3c9a3fcf4820081ca51393d33d731bf3c803946d54d0640abfd780bf37e1ceb
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.2"
   insta_like_button:
     dependency: "direct main"
     description:
@@ -248,6 +306,62 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.4.0"
+  path_provider:
+    dependency: transitive
+    description:
+      name: path_provider
+      sha256: "3087813781ab814e4157b172f1a11c46be20179fcc9bea043e0fba36bc0acaa2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.15"
+  path_provider_android:
+    dependency: transitive
+    description:
+      name: path_provider_android
+      sha256: "2cec049d282c7f13c594b4a73976b0b4f2d7a1838a6dd5aaf7bd9719196bee86"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.27"
+  path_provider_foundation:
+    dependency: transitive
+    description:
+      name: path_provider_foundation
+      sha256: "916731ccbdce44d545414dd9961f26ba5fbaa74bcbb55237d8e65a623a8c7297"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.4"
+  path_provider_linux:
+    dependency: transitive
+    description:
+      name: path_provider_linux
+      sha256: ffbb8cc9ed2c9ec0e4b7a541e56fd79b138e8f47d2fb86815f15358a349b3b57
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.11"
+  path_provider_platform_interface:
+    dependency: transitive
+    description:
+      name: path_provider_platform_interface
+      sha256: "57585299a729335f1298b43245842678cb9f43a6310351b18fb577d6e33165ec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.6"
+  path_provider_windows:
+    dependency: transitive
+    description:
+      name: path_provider_windows
+      sha256: "1cb68ba4cd3a795033de62ba1b7b4564dace301f952de6bfb3cd91b202b6ee96"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.7"
+  photo_manager:
+    dependency: transitive
+    description:
+      name: photo_manager
+      sha256: df31e29a81831d1ec136d80ba4a43a90077994ada6acd565fcfbd8ed181ca0e8
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.7.0"
   pinch_zoom_release_unzoom:
     dependency: "direct main"
     description:
@@ -256,6 +370,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  platform:
+    dependency: transitive
+    description:
+      name: platform
+      sha256: "4a451831508d7d6ca779f7ac6e212b4023dd5a7d08a27a63da33756410e32b76"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -405,6 +527,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  wechat_assets_picker:
+    dependency: transitive
+    description:
+      name: wechat_assets_picker
+      sha256: "30683da7b34d9c5a3d9851817926feb044e46d687967453fb77bec2fd8fc9514"
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.6.1"
   win32:
     dependency: transitive
     description:
@@ -421,6 +551,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.3.0"
+  xdg_directories:
+    dependency: transitive
+    description:
+      name: xdg_directories
+      sha256: e0b1147eec179d3911f1f19b59206448f78195ca1d20514134e10641b7d7fbff
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
 sdks:
   dart: ">=3.0.0 <4.0.0"
-  flutter: ">=3.3.0"
+  flutter: ">=3.10.0"
