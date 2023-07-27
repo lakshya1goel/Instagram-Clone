@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
+import 'package:insta_clone/Pages/home/search.dart';
 import 'package:insta_clone/Pages/authentication/signup/username.dart';
 import 'package:insta_clone/Pages/home/profile.dart';
 import 'package:insta_clone/Pages/home/wrapper.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         "/dob": (context) => DobPage(),
         "/username": (context) => UserName(),
         "/mobile": (context) => MobileNumber(),
+        "/search": (context) => Search(),
         "/profile": (context) => Profile(),
       },
     );
