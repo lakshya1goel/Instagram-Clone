@@ -44,6 +44,7 @@ dependencies:
   card_swiper: ^3.0.1
   chewie: ^1.7.0
   insta_assets_picker: ^1.5.2
+  firebase_core: ^2.15.0
 
 dev_dependencies:
   flutter_test:
