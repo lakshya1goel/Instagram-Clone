@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Pages/home/search.dart';
@@ -10,8 +11,11 @@ import 'package:insta_clone/Pages/authentication/signup/mobile_number.dart';
 import 'package:insta_clone/Pages/authentication/signup/save_login_info.dart';
 import 'package:insta_clone/Pages/authentication/signup/create_account.dart';
 import 'package:insta_clone/Pages/authentication/signup/password.dart';
+import 'package:insta_clone/firebase_options.dart';
 
-void main() {
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
   runApp(const MyApp());
 }
 
