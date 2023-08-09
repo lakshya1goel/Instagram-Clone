@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Pages/home/chatting_system/chat_contacts.dart';
 import 'package:insta_like_button/insta_like_button.dart';
 import 'package:insta_clone/Services/Home/home_story.dart';
 import 'package:insta_clone/Services/Home/post.dart';
@@ -109,8 +110,21 @@ class _HomePageState extends State<HomePage> {
               Container(
                 height: 25,
                 width: 25,
-                child: const Image(
-                  image: AssetImage('assets/Icons/send.png'),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ChatContact()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.transparent, // Set the button's background color to transparent
+                    elevation: 0, // Remove elevation
+                    padding: EdgeInsets.zero, // Remove padding
+                  ),
+                  child: const Image(
+                    image: AssetImage('assets/Icons/send.png'),
+                  ),
                 ),
               ),
             ],
