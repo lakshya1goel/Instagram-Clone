@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Pages/home/homepage.dart';
 import 'package:insta_clone/Pages/home/wrapper.dart';
@@ -144,8 +145,13 @@ class _LoginPageState extends State<LoginPage> {
                         ))
                 ),
                 onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Wrapper()));
+                  FirebaseAuth.instance.signInWithEmailAndPassword(email: username, password: password).then((value) {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => Wrapper()));
+                  }).onError((error, stackTrace) {
+                    print("No User with this email id");
+                  });
+
                 },
                 child: const Text(
                   'Log in',

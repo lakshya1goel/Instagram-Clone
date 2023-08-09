@@ -8,27 +8,27 @@ import 'Stories.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
-  final List<post> posts = [
-    post(
-        UserName: '43.paras.57',
-        Likes: 52,
+  final List<Post> posts = [
+    Post(
+        userName: '43.paras.57',
+        likes: 52,
         Description: 'hey its my new pic',
         Image:
             'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80',
         ProfilePic:'https://bit.ly/3qdxC3s',
         Liked: false),
-    post(
-        UserName: '43.paras.57',
-        Likes: 52,
+    Post(
+        userName: '43.paras.57',
+        likes: 52,
         Description:
             'hey its my new pic hey its my new pic hey its my new pic hey its my new pic hey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pic',
         Image:
             'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80',
         ProfilePic:'https://bit.ly/3qdxC3s',
         Liked: false),
-    post(
-        UserName: '43.paras.57',
-        Likes: 52,
+    Post(
+        userName: '43.paras.57',
+        likes: 52,
         Description: 'hey its my new pic',
         Image:
             'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80',
@@ -241,7 +241,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                widget.posts[index].UserName,
+                                widget.posts[index].userName,
                                 style: const TextStyle(color: Colors.white),
                               ),
                               const Spacer(),
@@ -265,7 +265,7 @@ class _HomePageState extends State<HomePage> {
                                 setState(() {
                                   if (widget.posts[index].Liked) {
                                   } else {
-                                    widget.posts[index].Likes++;
+                                    widget.posts[index].likes++;
                                     widget.posts[index].Liked = true;
                                   }
                                 });
@@ -282,7 +282,7 @@ class _HomePageState extends State<HomePage> {
                               InkWell(
                                 onTap: () {
                                   setState(() {
-                                    widget.posts[index].Likes--;
+                                    widget.posts[index].likes--;
                                     widget.posts[index].Liked =
                                         !widget.posts[index].Liked;
                                   });
@@ -299,7 +299,7 @@ class _HomePageState extends State<HomePage> {
                               InkWell(
                                 onTap: () {
                                   setState(() {
-                                    widget.posts[index].Likes++;
+                                    widget.posts[index].likes++;
                                     widget.posts[index].Liked =
                                         !widget.posts[index].Liked;
                                   });
@@ -351,7 +351,7 @@ class _HomePageState extends State<HomePage> {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              '${widget.posts[index].Likes} likes',
+                              '${widget.posts[index].likes} likes',
                               style: const TextStyle(
                                 color: Colors.white,
                               ),
@@ -365,7 +365,7 @@ class _HomePageState extends State<HomePage> {
                             alignment: Alignment.centerLeft,
                             child: ExpandableText(
                               text:
-                                  '${widget.posts[index].UserName} ${widget.posts[index].Description}',
+                                  '${widget.posts[index].userName} ${widget.posts[index].Description}',
                               maxLines:
                                   3, // Set the number of lines before the "more" button appears
                             ),

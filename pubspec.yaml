@@ -45,6 +45,7 @@ dependencies:
   chewie: ^1.7.0
   insta_assets_picker: ^1.5.2
   firebase_core: ^2.15.0
+  firebase_auth: ^4.7.2
 
 dev_dependencies:
   flutter_test:
