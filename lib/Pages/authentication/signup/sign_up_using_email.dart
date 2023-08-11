@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:insta_clone/Models/user_model1.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Pages/authentication/signup/username.dart';
-
+import 'package:insta_clone/Services/database.dart';
 class EmailAddress extends StatefulWidget {
   final UserModelPrimary user;
   final String password;
@@ -81,7 +81,9 @@ class _EmailAddressState extends State<EmailAddress> {
                           .createUserWithEmailAndPassword(
                               email: widget.user.emailAddress,
                               password: widget.password)
-                          .then((value) {
+                          .then((value) async {
+                        await Database(uid: value.user!.uid).updateUserData(widget.user);
+                        print(widget.user);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -92,8 +94,8 @@ class _EmailAddressState extends State<EmailAddress> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text("Some Error Occured"),
-                                content: const Text(
-                                    "Some error occured during signing up please check your internet connection and try again"),
+                                content:  Text(
+                                    error.toString()),
                                 actions: [
                                   TextButton(
                                       onPressed: () {

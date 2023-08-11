@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:insta_clone/Pages/home/homepage.dart';
 import 'package:insta_clone/Pages/home/wrapper.dart';
 import 'package:insta_clone/Pages/authentication/signup/create_account.dart';
 class LoginPage extends StatefulWidget {
@@ -101,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
             TextFormField(
               decoration: InputDecoration(
                 hintText: "Username, email address or mobile number",
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0)
                 ),
@@ -239,8 +238,8 @@ class LanguageSelectionWidget extends StatelessWidget {
                 },
                 icon: Icon(Icons.close),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
+              const Padding(
+                padding: EdgeInsets.only(top: 10.0),
                 child: Text(
                   "Select your language",
                   style: TextStyle(
