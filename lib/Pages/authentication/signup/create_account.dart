@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/user_model1.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Pages/authentication/signup/password.dart';
 class SignUp extends StatefulWidget {
@@ -9,14 +10,14 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  String name="";
+  UserModelPrimary user = UserModelPrimary(userName: '', name: '', profilePic: '', number: '', emailAddress: '', followers: [], following: [], allPosts: [ ], allReels: []);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           child: SingleChildScrollView(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,8 +26,8 @@ class _SignUpState extends State<SignUp> {
                     onTap: (){
                       _showMyDialogBack(context);
                     },
-                      child: Icon(Icons.arrow_back_outlined)),
-                  Padding(
+                      child: const Icon(Icons.arrow_back_outlined)),
+                  const Padding(
                     padding: EdgeInsets.symmetric(vertical: 20.0),
                     child: Text("What's your name?",
                     style: TextStyle(
@@ -38,17 +39,17 @@ class _SignUpState extends State<SignUp> {
                   TextFormField(
                     decoration: InputDecoration(
                       hintText: "Full name",
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0)
                       ),
                     ),
                     onChanged: (value){
-                      name=value;
+                      user.name=value;
                     },
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 20.0),
+                    padding: const EdgeInsets.only(top: 20.0),
                     child: SizedBox(
                       width: 500.0,
                       child: ElevatedButton(
@@ -61,13 +62,13 @@ class _SignUpState extends State<SignUp> {
                         ),
                           onPressed: (){
                             Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => PassWord()));
+                                MaterialPageRoute(builder: (context) => Password(user: user)));
                           },
-                          child: Text("Next"),
+                          child: const Text("Next"),
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 420.0,
                   ),
                   Center(
@@ -75,7 +76,7 @@ class _SignUpState extends State<SignUp> {
                       onTap: (){
                         _showMyDialogAlready(context);
                       },
-                      child: Text("Already have an account?",
+                      child: const Text("Already have an account?",
                       style: TextStyle(
                         color: Colors.blue,
                       ),
@@ -92,19 +93,19 @@ class _SignUpState extends State<SignUp> {
   void _showMyDialogBack(BuildContext context){
     showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
-        title: Text("Do you want to stop creating your account?",
+        title: const Text("Do you want to stop creating your account?",
         style: TextStyle(
           fontWeight: FontWeight.bold,
             fontSize: 18.0,
         ),
         ),
-        content: Text("If you stop now, you'll lose any progress you've made."),
+        content: const Text("If you stop now, you'll lose any progress you've made."),
         actions: [
           TextButton(
           onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
           },
-              child: Text("STOP CREATING ACCOUNT",
+              child: const Text("STOP CREATING ACCOUNT",
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -116,7 +117,7 @@ class _SignUpState extends State<SignUp> {
             onPressed: (){
               Navigator.of(context).pop();
             },
-            child: Text("CONTINUE CREATING ACCOUNT",
+            child: const Text("CONTINUE CREATING ACCOUNT",
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
@@ -133,7 +134,7 @@ class _SignUpState extends State<SignUp> {
   void _showMyDialogAlready(BuildContext context){
     showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
-        title: Text("Already have an account?",
+        title: const Text("Already have an account?",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18.0,
@@ -144,7 +145,7 @@ class _SignUpState extends State<SignUp> {
             onPressed: (){
               Navigator.of(context).pop();
             },
-            child: Text("CONTINUE CREATING ACCOUNT",
+            child: const Text("CONTINUE CREATING ACCOUNT",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 15.0,
@@ -153,9 +154,9 @@ class _SignUpState extends State<SignUp> {
           ),
           TextButton(
             onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
             },
-            child: Text("LOGIN",
+            child: const Text("LOGIN",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 15.0,

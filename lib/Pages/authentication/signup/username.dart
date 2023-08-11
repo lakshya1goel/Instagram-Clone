@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/user_model1.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Pages/authentication/signup/dob_page.dart';
-import 'package:insta_clone/Pages/authentication/signup/mobile_number.dart';
+import 'package:insta_clone/Pages/authentication/signup/sign_up_using_email.dart';
 class UserName extends StatefulWidget {
-  const UserName({super.key});
+  final UserModelPrimary user;
+  final String password;
+  const UserName({super.key,required this.user,required this.password});
 
   @override
   State<UserName> createState() => _UserNameState();
 }
 
 class _UserNameState extends State<UserName> {
-  String username="";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +27,7 @@ class _UserNameState extends State<UserName> {
                   GestureDetector(
                       onTap: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => DobPage()));
+                            MaterialPageRoute(builder: (context) => DobPage(user: widget.user,password: widget.password,)));
                       },
                       child: Icon(Icons.arrow_back_outlined)),
                   Padding(
@@ -50,7 +52,7 @@ class _UserNameState extends State<UserName> {
                       ),
                     ),
                     onChanged: (value){
-                        username=value;
+                        widget.user.userName = value;
                     },
                   ),
                   Padding(
@@ -67,7 +69,7 @@ class _UserNameState extends State<UserName> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => MobileNumber()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => EmailAddress(user: widget.user,password: widget.password)));
                         },
                         child: Text("Next"),
                       ),

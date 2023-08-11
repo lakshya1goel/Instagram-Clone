@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/user_model1.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Pages/authentication/signup/dob_page.dart';
 import 'package:insta_clone/Pages/authentication/signup/password.dart';
 class SaveInfo extends StatefulWidget {
-  const SaveInfo({super.key});
+  final String password;
+  final UserModelPrimary user;
+  const SaveInfo({super.key,required this.user,required this.password});
 
   @override
   State<SaveInfo> createState() => _SaveInfoState();
@@ -25,7 +28,7 @@ class _SaveInfoState extends State<SaveInfo> {
                   GestureDetector(
                       onTap: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => PassWord()));
+                            MaterialPageRoute(builder: (context) => Password(user: widget.user,)));
                       },
                       child: Icon(Icons.arrow_back_outlined)),
                   Padding(
@@ -55,7 +58,7 @@ class _SaveInfoState extends State<SaveInfo> {
                       ),
                       onPressed: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => DobPage()),
+                            MaterialPageRoute(builder: (context) => DobPage(user:  widget.user,password:widget.password)),
                         );
                         save=true;
                       },
@@ -83,7 +86,7 @@ class _SaveInfoState extends State<SaveInfo> {
                         ),
                         onPressed: () {
                           Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => DobPage())
+                              MaterialPageRoute(builder: (context) => DobPage(user: widget.user,password: widget.password,))
                           );
                           save=false;
                         },

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/user_model1.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Pages/authentication/signup/save_login_info.dart';
 import 'package:insta_clone/Pages/authentication/signup/username.dart';
 class DobPage extends StatefulWidget {
-  const DobPage({super.key});
+  final UserModelPrimary user;
+  final String password;
+  const DobPage({super.key, required this.user,required this.password});
 
   @override
   State<DobPage> createState() => _DobPageState();
@@ -25,7 +28,7 @@ class _DobPageState extends State<DobPage> {
                   GestureDetector(
                       onTap: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => SaveInfo()));
+                            MaterialPageRoute(builder: (context) => SaveInfo(user: widget.user,password: widget.password,)));
                       },
                       child: Icon(Icons.arrow_back_outlined)),
                   Padding(
@@ -82,7 +85,7 @@ class _DobPageState extends State<DobPage> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => UserName()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => UserName(user:  widget.user,password: widget.password)));
                         },
                         child: Text("Next"),
                       ),
