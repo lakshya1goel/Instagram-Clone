@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Pages/home/chatting_system/chat_contacts.dart';
+import 'package:insta_clone/Pages/home/chatting_system/message_screen.dart';
 import 'package:insta_clone/Pages/home/search.dart';
 import 'package:insta_clone/Pages/authentication/signup/username.dart';
 import 'package:insta_clone/Pages/home/profile.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         "/search": (context) => Search(),
         "/profile": (context) => Profile(),
         "/chat_contact": (context) => ChatContact(),
+        "/message_screen": (context) => MessagesScreen(),
       },
     );
   }
