@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/user_model1.dart';
 import 'package:insta_clone/Pages/home/wrapper.dart';
 import 'package:insta_clone/Pages/authentication/signup/create_account.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../Services/database.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -161,8 +164,9 @@ class _LoginPageState extends State<LoginPage> {
                             email: username, password: password)
                         .then((value) async {
                         await setData(value.user!.uid);
+                        UserModelPrimary user = await Database(uid: value.user!.uid).getUserData();
                       Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => Wrapper()));
+                          MaterialPageRoute(builder: (context) => Wrapper(uid: value.user!.uid)));
                     }).onError((error, stackTrace) {
                       showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(
@@ -189,8 +193,9 @@ class _LoginPageState extends State<LoginPage> {
                           .signInWithEmailAndPassword(
                               email: userEmail, password: password).then((value) async {
                                 await setData(value.user!.uid);
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => Wrapper()));
+                                UserModelPrimary user = await Database(uid: value.user!.uid).getUserData();
+                                Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => Wrapper(uid: value.user!.uid,)));
                       }).onError((error, stackTrace) {
                         showDialog(context: context, builder: (BuildContext context){
                           return AlertDialog(
@@ -205,7 +210,17 @@ class _LoginPageState extends State<LoginPage> {
                         });
                       });
                     } else {
-
+                      showDialog(context: context, builder: (context){
+                        return AlertDialog(
+                          title: Text('Some Error Occured'),
+                          content: Text(
+                              'This UserName DoesNot Exist!!!'
+                          ),
+                          actions: [
+                            TextButton(onPressed: (){Navigator.pop(context );}, child: Text('retry'))
+                          ],
+                        );
+                      });
                     }
                   }
                 },

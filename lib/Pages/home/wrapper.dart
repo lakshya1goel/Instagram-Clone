@@ -4,9 +4,13 @@ import 'package:insta_clone/Pages/home/profile.dart';
 import 'package:insta_clone/Pages/home/Reels/ReelPage.dart';
 import 'package:insta_clone/Pages/home/search.dart';
 import 'package:insta_assets_picker/insta_assets_picker.dart';
+import 'package:insta_clone/Services/database.dart';
+
+import '../../Models/user_model1.dart';
 
 class Wrapper extends StatefulWidget {
-  Wrapper({super.key});
+  String uid;
+  Wrapper({super.key,required this.uid});
 
   List<Widget> Widgets = [HomePage(),Search(),Placeholder(),Reels(),Profile()];
 
@@ -80,25 +84,25 @@ class _WrapperState extends State<Wrapper> {
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: Colors.transparent,
             type: BottomNavigationBarType.fixed,
-            items: [
-              BottomNavigationBarItem(
+            items: const [
+               BottomNavigationBarItem(
                 label: '',
-                activeIcon: Container(
+                activeIcon: SizedBox(
                   height: 20,
                   width: 20,
-                  child: const Image(
+                  child:  Image(
                     image: AssetImage('assets/Icons/home_selected.png'),
                   ),
                 ),
-                icon: Container(
+                icon: SizedBox(
                   height: 20,
                   width: 20,
-                  child: const Image(
+                  child:  Image(
                     image: AssetImage('assets/Icons/home.png'),
                   ),
                 ),
               ),
-              const BottomNavigationBarItem(
+               BottomNavigationBarItem(
                 label: '',
                 icon: SizedBox(
                   height: 20,
@@ -108,7 +112,7 @@ class _WrapperState extends State<Wrapper> {
                   ),
                 ),
               ),
-              const BottomNavigationBarItem(
+               BottomNavigationBarItem(
                 label: '',
                 icon: SizedBox(
                   height: 20,
@@ -118,7 +122,7 @@ class _WrapperState extends State<Wrapper> {
                   ),
                 ),
               ),
-             const  BottomNavigationBarItem(
+               BottomNavigationBarItem(
                 label: '',
                 activeIcon: SizedBox(
                   height: 20,
@@ -135,7 +139,7 @@ class _WrapperState extends State<Wrapper> {
                   ),
                 ),
               ),
-              const BottomNavigationBarItem(
+               BottomNavigationBarItem(
                 label: '.',
                 icon: CircleAvatar(
                   backgroundImage: NetworkImage('https://bit.ly/3qdxC3s'),
@@ -143,7 +147,7 @@ class _WrapperState extends State<Wrapper> {
                 )
               ),
             ],
-            selectedLabelStyle: TextStyle(
+            selectedLabelStyle: const TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
               color: Colors.red
@@ -151,6 +155,21 @@ class _WrapperState extends State<Wrapper> {
             currentIndex: _selectedIndex,
             onTap: _onItemTapped,
           ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            print('---------------------------------------------------------');
+            print('---------------------------------------------------------');
+            print(widget.uid);
+            print('--------------------------------------------------------');
+            print('--------------------------------------------------------');
+            UserModelPrimary user = await Database(uid: widget.uid).getUserData();
+            print(user.userName);
+            print('--------------------------------------------------------');
+            print('--------------------------------------------------------');
+
+
+          },
+        ),
         ),
     );
   }

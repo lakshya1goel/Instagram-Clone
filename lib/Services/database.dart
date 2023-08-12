@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:insta_clone/Models/user_model1.dart';
 
 class Database {
@@ -18,10 +17,25 @@ class Database {
       'profilePic':user.profilePic,
       'number':user.number,
       'emailAddress':user.emailAddress,
-      'followers':user.followers,
-      'following': user.following,
-      'allPosts':user.allPosts,
-      'allReels':user.allReels,
     });
   }
+  UserModelPrimary getUserFromSnapShot(DocumentSnapshot snapshot) {
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    return UserModelPrimary(
+      userName: data['userName'],
+      name: data['name'],
+      profilePic: data['profilePic'],
+      number: data['number'],
+      emailAddress: data['emailAddress'],
+      followers: [],
+      following: [],
+      allPosts: [],
+      allReels: [],
+    );
+  }
+    Future<UserModelPrimary> getUserData() async {
+      return databaseReference.doc(uid).get().then((value) {
+        return getUserFromSnapShot(value);
+      });
+    }
 }

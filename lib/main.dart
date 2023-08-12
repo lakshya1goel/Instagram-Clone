@@ -31,11 +31,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: isLoggedIn ? '/home':'/login',
       routes: {
-        "/home" :(context) => Wrapper(),
-        "/login": (context) => LoginPage(),
-        "/signup": (context) => SignUp(),
-        "/search": (context) => Search(),
-        "/profile": (context) => Profile(),
+        "/home" :(context) => Wrapper(uid: uid,),
+        "/login": (context) => const LoginPage(),
+        "/signup": (context) => const SignUp(),
+        "/search": (context) => const Search(),
+        "/profile": (context) => const Profile(),
       },
     );
   }
