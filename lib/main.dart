@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: isLoggedIn ? '/homeProjects/InstagamClone/build/package_info_plus/.transforms/37da98e58b3ab17440533d1d69fd335d/transformed/out/jars/classes.jar!/META-INF/package_info_plus_release.kotlin_module: Module was compiled with an incompatible version of Kotlin. The binary version of its metadata is 1.8.0, expected version is 1.6.0.':'/login',
+      initialRoute: isLoggedIn ? '/home':'/login',
       routes: {
         "/home" :(context) => Wrapper(),
         "/login": (context) => LoginPage(),
