@@ -11,4 +11,6 @@ class UserModelSecondary{
   List<UserModelSecondary> followers;
   List<UserModelSecondary> following;
   UserModelSecondary({required this.userName,required this.name,required this.profilePic,required this.isFollower,required this.isFollowing,required this.followers,required this.following,required this.allPosts,required this.allReels});
+
+
 }
