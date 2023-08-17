@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Pages/authentication/signup/signup_page.dart';
 import 'package:insta_clone/Pages/home/homepage.dart';
 import 'package:insta_clone/Pages/home/wrapper.dart';
 import 'package:insta_clone/Pages/authentication/signup/create_account.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -19,6 +25,48 @@ class _LoginPageState extends State<LoginPage> {
   List<String> lang=[
     'English (US)', 'Afrikaans', 'Bahasa Indonesia', 'Bahasa Melayu', 'Dansk', 'Deutsch', 'English (UK)', 'Filipino', 'Hrvatski'
   ];
+
+
+  TextEditingController emailController= TextEditingController();
+  TextEditingController passwordController= TextEditingController();
+
+  void checkValues(){
+    String email=emailController.text.trim();
+    String password=passwordController.text.trim();
+
+    if(email=="" || password==""){
+      print("Please fill all the fields!");
+    }
+    else{
+      print("SignUp Successfull!");
+      login(email, password);
+    }
+  }
+
+
+  void login(String email, String password) async{
+    UserCredential? credential;
+    try{
+      credential=await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch(ex){
+      print(ex.code.toString());
+    }
+
+    if(credential!=null){
+      String uid=credential.user!.uid;
+      DocumentSnapshot userData= await FirebaseFirestore.instance.collection("users").doc(uid).get();
+      UserModel userModel=UserModel.fromMap(userData.data() as Map<String, dynamic>);
+
+      print("Login successful!");
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => Wrapper()));
+    }
+
+
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -99,8 +147,9 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             TextFormField(
+              controller: emailController,
               decoration: InputDecoration(
-                hintText: "Username, email address or mobile number",
+                hintText: "Email Address",
                 hintStyle: TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0)
@@ -113,6 +162,7 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 15.0),
               child: TextFormField(
+                controller: passwordController,
                 obscureText: _obscureText,
                 decoration: InputDecoration(
                   hintText: "Password",
@@ -145,8 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                         ))
                 ),
                 onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Wrapper()));
+                  checkValues();
                 },
                 child: const Text(
                   'Log in',

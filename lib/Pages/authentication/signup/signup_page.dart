@@ -38,7 +38,7 @@ class _signup_pageState extends State<signup_page> {
       print("Passwords do not match!");
     }
     else{
-      //print("SignUp Successfull!");
+      print("SignUp Successfull!");
       signup(email, password, name, username);
     }
   }
