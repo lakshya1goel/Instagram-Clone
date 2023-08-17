@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/ErrorMessage.dart';
 import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -33,9 +34,11 @@ class _signup_pageState extends State<signup_page> {
 
     if(name=="" || username=="" || email=="" || password=="" || confirmPassword==""){
       print("Please fill all the fields!");
+      ErrorMessage.showAlertDialog(context, "Incomplete Data", "Please fill all the fields");
     }
     else if(password!=confirmPassword){
       print("Passwords do not match!");
+      ErrorMessage.showAlertDialog(context, "Password Mismatch", "The passwords you entered do not match!");
     }
     else{
       print("SignUp Successfull!");
@@ -50,6 +53,8 @@ class _signup_pageState extends State<signup_page> {
       credential=await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch(ex){
       print(ex.code.toString());
+      Navigator.pop(context);
+      ErrorMessage.showAlertDialog(context, "An error occured", ex.message.toString());
     }
 
     if(credential!=null){

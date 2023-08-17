@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/ErrorMessage.dart';
 import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Pages/authentication/signup/signup_page.dart';
 import 'package:insta_clone/Pages/home/homepage.dart';
@@ -36,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if(email=="" || password==""){
       print("Please fill all the fields!");
+      ErrorMessage.showAlertDialog(context, "Incomplete Data", "Please fill all the fields");
     }
     else{
       print("SignUp Successfull!");
@@ -46,10 +48,15 @@ class _LoginPageState extends State<LoginPage> {
 
   void login(String email, String password) async{
     UserCredential? credential;
+
+    ErrorMessage.showLoadingDialog(context, "Logging In...");
+
     try{
       credential=await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch(ex){
       print(ex.code.toString());
+      Navigator.pop(context);
+      ErrorMessage.showAlertDialog(context, "An error occured", ex.message.toString());
     }
 
     if(credential!=null){
@@ -60,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
       print("Login successful!");
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => Wrapper()));
+
     }
 
 
