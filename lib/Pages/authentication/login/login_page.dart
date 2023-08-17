@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Pages/authentication/signup/signup_page.dart';
 import 'package:insta_clone/Pages/home/homepage.dart';
 import 'package:insta_clone/Pages/home/wrapper.dart';
 import 'package:insta_clone/Pages/authentication/signup/create_account.dart';
@@ -191,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 child: TextButton(
                   onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => signup_page()));
                   },
                   child: Text("Create new account",
                     style: TextStyle(
