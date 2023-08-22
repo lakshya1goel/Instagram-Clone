@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChatContact()),
+                      MaterialPageRoute(builder: (context) => ChatContact(userModel: widget.userModel, firebaseUser: widget.firebaseUser,)),
                     );
                   },
                   style: ElevatedButton.styleFrom(

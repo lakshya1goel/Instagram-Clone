@@ -1,12 +1,19 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/ChatRoomModel.dart';
 import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Pages/home/chatting_system/message_screen.dart';
 import '../../../Services/Chats/contacts.dart';
 import '../../../Services/profile_accounts.dart';
+import '../../../main.dart';
 
 class ChatContact extends StatefulWidget {
-  const ChatContact({super.key});
+  final UserModel userModel;
+  final User firebaseUser;
+  ChatContact({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
 
   @override
   State<ChatContact> createState() => _ChatContactState();
@@ -32,7 +39,7 @@ class _ChatContactState extends State<ChatContact> {
         ],
         body:Column(
             children: [
-              buildSearchBar(),
+              buildSearchBar(userModel: widget.userModel, firebaseUser: widget.firebaseUser,),
               //Notes(),
               Contacts(),
             ]
@@ -205,7 +212,9 @@ class _Profile_accountsState extends State<Profile_accounts> {
 
 
 class buildSearchBar extends StatefulWidget {
-  const buildSearchBar({super.key});
+  final UserModel userModel;
+  final User firebaseUser;
+  buildSearchBar({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
 
   @override
   State<buildSearchBar> createState() => _buildSearchBarState();
@@ -231,7 +240,7 @@ class _buildSearchBarState extends State<buildSearchBar> {
               onTap: (){
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SearchMode()),
+                  MaterialPageRoute(builder: (context) => SearchMode(userModel:widget.userModel, firebaseUser: widget.firebaseUser,)),
                 );
               },
               style: TextStyle(color: Colors.white), // Text color
@@ -324,12 +333,13 @@ class _ContactsState extends State<Contacts> {
             itemCount: tiles.length,
             itemBuilder: (context, index) => ChatCard(
               chat: tiles[index],
-               press: ()=> Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MessagesScreen(),
-                ),
-              ),
+               press: (){},
+               // => Navigator.push(
+               //  context,
+               //  MaterialPageRoute(
+               //    builder: (context) => const MessagesScreen(),
+               //  ),
+              // ),
             ),
           ),
     );
@@ -417,7 +427,9 @@ class _ChatCardState extends State<ChatCard> {
 }
 
 class SearchMode extends StatefulWidget {
-  const SearchMode({super.key});
+  final UserModel userModel;
+  final User firebaseUser;
+  SearchMode({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
 
   @override
   State<SearchMode> createState() => _SearchModeState();
@@ -426,6 +438,36 @@ class SearchMode extends StatefulWidget {
 class _SearchModeState extends State<SearchMode> {
   TextEditingController searchController=TextEditingController();
   final _searchFocusNode = FocusNode();
+
+  Future<ChatRoomModel?> getChatroomModel(UserModel targetUser) async {
+    ChatRoomModel? chatRoom;
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection("chatrooms").where("participants.${widget.userModel.uid}", isEqualTo: true).where("participants.${targetUser.uid}", isEqualTo: true).get();
+
+    if(snapshot.docs.length > 0) {
+      // Fetch the existing one
+      print("ChatRoom already exist!");
+      var docData = snapshot.docs[0].data();
+      ChatRoomModel existingChatroom = ChatRoomModel.fromMap(docData as Map<String, dynamic>);
+      chatRoom = existingChatroom;
+    }
+    else {
+      // Create a new one
+      ChatRoomModel newChatroom = ChatRoomModel(
+        chatRoomId: uuid.v1(),
+        lastMsg: "",
+        participants: {
+          widget.userModel.uid.toString(): true,
+          targetUser.uid.toString(): true,
+        },
+      );
+      await FirebaseFirestore.instance.collection("chatrooms").doc(newChatroom.chatRoomId).set(newChatroom.toMap());
+      chatRoom = newChatroom;
+      log("New Chatroom Created!");
+    }
+
+    return chatRoom;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -496,10 +538,18 @@ class _SearchModeState extends State<SearchMode> {
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: ListTile(
-                        onTap: (){
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-                            return MessagesScreen();
-                          }));
+                        onTap: () async{
+                          ChatRoomModel? chatroomModel=await getChatroomModel(searchedUser);
+                          if(chatroomModel!=null){
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
+                              return MessagesScreen(
+                                targetUser: searchedUser,
+                                userModel: widget.userModel,
+                                firebaseUser: widget.firebaseUser,
+                                chatroom: chatroomModel,
+                              );
+                            }));
+                          }
                         },
                         leading: CircleAvatar(
                           radius: 25.0,

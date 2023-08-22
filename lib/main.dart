@@ -18,6 +18,10 @@ import 'package:insta_clone/Pages/authentication/signup/save_login_info.dart';
 import 'package:insta_clone/Pages/authentication/signup/create_account.dart';
 import 'package:insta_clone/Pages/authentication/signup/password.dart';
 import 'package:insta_clone/firebase_options.dart';
+import 'package:uuid/uuid.dart';
+
+
+var uuid=Uuid();
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,8 +57,6 @@ class MyApp extends StatelessWidget {
         "/search": (context) => Search(),
         "/profile": (context) => Profile(),
         "/signup_page": (context) => signup_page(),
-        "/chat_contact": (context) => ChatContact(),
-        "/message_screen": (context) => MessagesScreen(),
       },
     );
   }

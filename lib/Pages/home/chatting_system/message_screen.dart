@@ -1,8 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/ChatRoomModel.dart';
+import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Services/Chats/message.dart';
 
 class MessagesScreen extends StatefulWidget {
-  const MessagesScreen({super.key});
+  final UserModel targetUser;
+  final ChatRoomModel chatroom;
+  final UserModel userModel;
+  final User firebaseUser;
+
+  MessagesScreen({Key? key, required this.targetUser, required this.chatroom, required this.userModel, required this.firebaseUser}) : super(key: key);
 
   @override
   State<MessagesScreen> createState() => _MessagesScreenState();
