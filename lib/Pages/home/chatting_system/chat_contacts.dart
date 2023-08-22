@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Pages/home/chatting_system/message_screen.dart';
 import '../../../Services/Chats/contacts.dart';
 import '../../../Services/profile_accounts.dart';
@@ -422,7 +424,7 @@ class SearchMode extends StatefulWidget {
 }
 
 class _SearchModeState extends State<SearchMode> {
-  String searched="";
+  TextEditingController searchController=TextEditingController();
   final _searchFocusNode = FocusNode();
   @override
   void initState() {
@@ -463,6 +465,7 @@ class _SearchModeState extends State<SearchMode> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextFormField(
+                  controller: searchController,
                   focusNode: _searchFocusNode,
                   style: TextStyle(color: Colors.white), // Text color
                   decoration: InputDecoration(
@@ -471,12 +474,68 @@ class _SearchModeState extends State<SearchMode> {
                     hintStyle: TextStyle(color: Colors.grey),
                     border: InputBorder.none,
                   ),
-                  onChanged: (value) {
-                    searched=value;
+                  onFieldSubmitted: (value){
+                    setState(() {
+
+                    });
                   },
                 ),
               ),
             ),
+          ),
+          StreamBuilder(
+            stream: FirebaseFirestore.instance.collection("users").where("username", isEqualTo: searchController.text).snapshots(),
+            builder: (context, snapshot){
+              if(snapshot.connectionState==ConnectionState.active){
+                if(snapshot.hasData){
+                  QuerySnapshot dataSnapshot=snapshot.data as QuerySnapshot;
+                  if(dataSnapshot.docs.length>0){
+                    Map<String, dynamic> userMap=dataSnapshot.docs[0].data() as Map<String, dynamic>;
+                    UserModel searchedUser=UserModel.fromMap(userMap);
+
+                    return Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ListTile(
+                        onTap: (){
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
+                            return MessagesScreen();
+                          }));
+                        },
+                        leading: CircleAvatar(
+                          radius: 25.0,
+                          backgroundImage: NetworkImage(searchedUser.profilePic!),
+                        ),
+                        title: Text(searchedUser.name!,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        subtitle: Text(searchedUser.username!,
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    );
+                  }
+                  else{
+                    return Text("No Result Found!",
+                      style: TextStyle(color: Colors.white),
+                    );
+                  }
+                }
+                else if(snapshot.hasError){
+                  return Text("An Error Occured!",
+                    style: TextStyle(color: Colors.white),
+                  );
+                }
+                else{
+                  return Text("No Result Found!",
+                    style: TextStyle(color: Colors.white),
+                  );
+                }
+              }
+              else{
+                return CircularProgressIndicator();
+              }
+            } ,
+
           ),
         ],
       ),
