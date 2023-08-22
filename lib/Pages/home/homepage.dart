@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_like_button/insta_like_button.dart';
 import 'package:insta_clone/Services/Home/home_story.dart';
 import 'package:insta_clone/Services/Home/post.dart';
@@ -7,7 +9,9 @@ import 'package:pinch_zoom_release_unzoom/pinch_zoom_release_unzoom.dart';
 import 'Stories.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  final UserModel userModel;
+  final User firebaseUser;
+  HomePage({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
   final List<post> posts = [
     post(
         UserName: '43.paras.57',

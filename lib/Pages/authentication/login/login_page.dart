@@ -11,7 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
 
       print("Login successful!");
       Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => Wrapper()));
+          MaterialPageRoute(builder: (context) => Wrapper(userModel: userModel, firebaseUser: credential!.user!,)));
 
     }
 

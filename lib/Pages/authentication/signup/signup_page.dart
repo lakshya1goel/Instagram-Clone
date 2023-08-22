@@ -243,7 +243,7 @@ void _showMyDialogAlready(BuildContext context){
         ),
         TextButton(
           onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+            //Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
           },
           child: Text("LOGIN",
             style: TextStyle(
