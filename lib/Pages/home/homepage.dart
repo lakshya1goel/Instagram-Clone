@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Models/UserModel.dart';
@@ -13,33 +15,7 @@ class HomePage extends StatefulWidget {
   final UserModel userModel;
   final User firebaseUser;
   HomePage({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
-  final List<post> posts = [
-    post(
-        UserName: '43.paras.57',
-        Likes: 52,
-        Description: 'hey its my new pic',
-        Image:
-            'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80',
-        ProfilePic:'https://bit.ly/3qdxC3s',
-        Liked: false),
-    post(
-        UserName: '43.paras.57',
-        Likes: 52,
-        Description:
-            'hey its my new pic hey its my new pic hey its my new pic hey its my new pic hey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pichey its my new pic',
-        Image:
-            'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80',
-        ProfilePic:'https://bit.ly/3qdxC3s',
-        Liked: false),
-    post(
-        UserName: '43.paras.57',
-        Likes: 52,
-        Description: 'hey its my new pic',
-        Image:
-            'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80',
-        ProfilePic:'https://bit.ly/3qdxC3s',
-        Liked: false)
-  ];
+  final List<Post> posts = [];
   List<home_story> stories = [
     home_story(
         Imgae: 'https://bit.ly/3qdxC3s',
@@ -79,6 +55,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  StreamController postStream = StreamController();
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -111,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const SizedBox(width: 10),
-              Container(
+              SizedBox(
                 height: 25,
                 width: 25,
                 child: ElevatedButton(
@@ -122,9 +99,9 @@ class _HomePageState extends State<HomePage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.transparent, // Set the button's background color to transparent
-                    elevation: 0, // Remove elevation
-                    padding: EdgeInsets.zero, // Remove padding
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    padding: EdgeInsets.zero,
                   ),
                   child: const Image(
                     image: AssetImage('assets/Icons/send.png'),
@@ -253,13 +230,13 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                  widget.posts[index].ProfilePic,
+                                  widget.posts[index].profilePic ?? "",
                                 ),
                                 radius: 15,
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                widget.posts[index].UserName,
+                                widget.posts[index].userName ?? "",
                                 style: const TextStyle(color: Colors.white),
                               ),
                               const Spacer(),
@@ -277,14 +254,13 @@ class _HomePageState extends State<HomePage> {
                               height: height / 2 + height / 12,
                               iconSize: 100,
                               image: NetworkImage(
-                                widget.posts[index].Image,
+                                widget.posts[index].images?[0] ?? '',
                               ),
                               onChanged: () {
                                 setState(() {
-                                  if (widget.posts[index].Liked) {
+                                  if (widget.posts[index].liked ?? false) {
                                   } else {
-                                    widget.posts[index].Likes++;
-                                    widget.posts[index].Liked = true;
+                                    //TODO manage liked
                                   }
                                 });
                               },
@@ -296,13 +272,11 @@ class _HomePageState extends State<HomePage> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width/20,
                             ),
-                            if (widget.posts[index].Liked)
+                            if (widget.posts[index].liked ?? false)
                               InkWell(
                                 onTap: () {
                                   setState(() {
-                                    widget.posts[index].Likes--;
-                                    widget.posts[index].Liked =
-                                        !widget.posts[index].Liked;
+                                    //todo manage disliked
                                   });
                                 },
                                 child: const SizedBox(
@@ -317,9 +291,7 @@ class _HomePageState extends State<HomePage> {
                               InkWell(
                                 onTap: () {
                                   setState(() {
-                                    widget.posts[index].Likes++;
-                                    widget.posts[index].Liked =
-                                        !widget.posts[index].Liked;
+                                    //todo manage liked
                                   });
                                 },
                                 child: const SizedBox(
@@ -369,7 +341,7 @@ class _HomePageState extends State<HomePage> {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              '${widget.posts[index].Likes} likes',
+                              '${widget.posts[index].likes} likes',
                               style: const TextStyle(
                                 color: Colors.white,
                               ),
@@ -383,7 +355,7 @@ class _HomePageState extends State<HomePage> {
                             alignment: Alignment.centerLeft,
                             child: ExpandableText(
                               text:
-                                  '${widget.posts[index].UserName} ${widget.posts[index].Description}',
+                                  '${widget.posts[index].userName} ${widget.posts[index].description}',
                               maxLines:
                                   3, // Set the number of lines before the "more" button appears
                             ),

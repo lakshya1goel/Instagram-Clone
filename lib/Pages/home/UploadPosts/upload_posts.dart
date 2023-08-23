@@ -1,14 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/UserModel.dart';
 import 'crop_result_view.dart';
 import 'package:insta_assets_picker/insta_assets_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PickerScreen extends StatefulWidget {
+  final UserModel user;
   final List<AssetEntity> selectedAssets;
   final StreamController<InstaAssetsExportDetails?> fileStream;
-  const PickerScreen({super.key,required this.selectedAssets,required this.fileStream});
+  const PickerScreen({super.key,required this.selectedAssets,required this.fileStream,required this.user});
 
   @override
   State<PickerScreen> createState() => _PickerScreenState();
@@ -35,7 +37,6 @@ class _PickerScreenState extends State<PickerScreen> {
     // TODO: implement initState
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,6 +51,7 @@ class _PickerScreenState extends State<PickerScreen> {
           return CropResultView(
             selectedAssets: widget.selectedAssets,
             croppedFiles: (snapshot.data != null) ? snapshot.data!.croppedFiles : [],
+            user: widget.user,
           );
         }
       ),
