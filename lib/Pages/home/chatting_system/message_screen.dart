@@ -31,7 +31,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
       MessageModel newMessage = MessageModel(
           msgId: uuid.v1(),
           sender: widget.userModel.uid,
-          createdOn: DateTime.now(),
+          createdOn: Timestamp.now(),
           text: msg,
           seen: false
       );
@@ -99,11 +99,12 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       horizontal: 10
                   ),
                   child: StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection("chatrooms").doc(widget.chatroom.chatRoomId).collection("messages").orderBy("createdon", descending: true).snapshots(),
+                    stream: FirebaseFirestore.instance.collection("chatrooms").doc(widget.chatroom.chatRoomId).collection("messages").orderBy("createdOn", descending: true).snapshots(),
                     builder: (context, snapshot) {
                       if(snapshot.connectionState == ConnectionState.active) {
                         if(snapshot.hasData) {
                           QuerySnapshot dataSnapshot = snapshot.data as QuerySnapshot;
+
 
                           return ListView.builder(
                             reverse: true,
@@ -114,6 +115,14 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               return Row(
                                 mainAxisAlignment: (currentMessage.sender == widget.userModel.uid) ? MainAxisAlignment.end : MainAxisAlignment.start,
                                 children: [
+                                  Visibility(
+                                    visible: currentMessage.sender != widget.userModel.uid,
+                                    child: CircleAvatar(
+                                      radius:15.0,
+                                      backgroundImage:NetworkImage(widget.targetUser.profilePic.toString()),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10.0,),
                                   Container(
                                       margin: EdgeInsets.symmetric(
                                         vertical: 2,
@@ -124,14 +133,31 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                       ),
                                       decoration: BoxDecoration(
                                         color: (currentMessage.sender == widget.userModel.uid) ? Colors.indigo[800] : Colors.grey[800],
-                                        borderRadius: BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.only(
+                                          bottomLeft: (currentMessage.sender != widget.userModel.uid)?Radius.zero: Radius.circular(20.0),
+                                          bottomRight: (currentMessage.sender == widget.userModel.uid)?Radius.zero: Radius.circular(20.0),
+                                          topLeft: Radius.circular(20.0),
+                                          topRight: Radius.circular(20.0),
+                                        ),
+                                      ),
+                                      constraints: BoxConstraints(
+                                        maxWidth: 200, // Set a maximum width for the container
                                       ),
                                       child: Text(
                                         currentMessage.text.toString(),
                                         style: TextStyle(
                                           color: Colors.white,
+                                          fontSize: 16.0,
                                         ),
                                       )
+                                  ),
+                                  SizedBox(width: 10.0,),
+                                  Visibility(
+                                    visible: currentMessage.sender == widget.userModel.uid,
+                                    child: CircleAvatar(
+                                      radius:15.0,
+                                      backgroundImage:NetworkImage(widget.userModel.profilePic.toString()),
+                                    ),
                                   ),
                                 ],
                               );
@@ -159,62 +185,65 @@ class _MessagesScreenState extends State<MessagesScreen> {
                 ),
               ),
 
-              Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 5
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.grey[800],
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 40.0,
-                      width: 40.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.blue,
-                      ),
-                      child: IconButton(
-                          onPressed: (){},
-                          icon: Icon(Icons.camera_alt,
-                            color: Colors.white,)
-                      ),
-                    ),
-                    SizedBox(width: 10.0,),
-                    Flexible(
-                      child: TextField(
-                        controller: messageController,
-                        maxLines: null,
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Message...",
-                            hintStyle: TextStyle(
-                                color: Colors.grey
-                            ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 5
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Colors.grey[800],
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 40.0,
+                        width: 40.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.blue,
                         ),
-                        style: TextStyle(color: Colors.white),
+                        child: IconButton(
+                            onPressed: (){},
+                            icon: Icon(Icons.camera_alt,
+                              color: Colors.white,)
+                        ),
                       ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                      },
-                      icon: Icon(Icons.mic_none, color: Colors.white,),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                      },
-                      icon: Icon(Icons.photo_outlined, color: Colors.white,),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        sendMessage();
-                      },
-                      icon: Icon(Icons.send, color: Colors.white,),
-                    ),
-                  ],
+                      SizedBox(width: 10.0,),
+                      Flexible(
+                        child: TextField(
+                          controller: messageController,
+                          maxLines: null,
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "Message...",
+                              hintStyle: TextStyle(
+                                  color: Colors.grey
+                              ),
+                          ),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                        },
+                        icon: Icon(Icons.mic_none, color: Colors.white,),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                        },
+                        icon: Icon(Icons.photo_outlined, color: Colors.white,),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          sendMessage();
+                        },
+                        icon: Icon(Icons.send, color: Colors.white,),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
