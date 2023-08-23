@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Pages/home/homepage.dart';
 import 'package:insta_clone/Pages/home/profile.dart';
 import 'package:insta_clone/Pages/home/Reels/ReelPage.dart';
@@ -6,9 +8,11 @@ import 'package:insta_clone/Pages/home/search.dart';
 import 'package:insta_assets_picker/insta_assets_picker.dart';
 
 class Wrapper extends StatefulWidget {
-  Wrapper({super.key});
+  final UserModel userModel;
+  final User firebaseUser;
+  Wrapper({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
 
-  List<Widget> Widgets = [HomePage(),Search(),Placeholder(),Reels(),Profile()];
+
 
   @override
   State<Wrapper> createState() => _WrapperState();
@@ -72,11 +76,12 @@ class _WrapperState extends State<Wrapper> {
   }
   @override
   Widget build(BuildContext context) {
+    List<Widget> Widgets = [HomePage(userModel: widget.userModel, firebaseUser: widget.firebaseUser,),Search(),Placeholder(),Reels(),Profile()];
     return Container(
       color: Colors.black,
       child: Scaffold(
           backgroundColor: Colors.black,
-          body: widget.Widgets.elementAt(_selectedIndex),
+          body: Widgets.elementAt(_selectedIndex),
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: Colors.transparent,
             type: BottomNavigationBarType.fixed,

@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/UserModel.dart';
+import 'package:insta_clone/Pages/home/chatting_system/chat_contacts.dart';
 import 'package:insta_like_button/insta_like_button.dart';
 import 'package:insta_clone/Services/Home/home_story.dart';
 import 'package:insta_clone/Services/Home/post.dart';
@@ -7,7 +10,9 @@ import 'package:pinch_zoom_release_unzoom/pinch_zoom_release_unzoom.dart';
 import 'Stories.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  final UserModel userModel;
+  final User firebaseUser;
+  HomePage({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
   final List<post> posts = [
     post(
         UserName: '43.paras.57',
@@ -109,8 +114,21 @@ class _HomePageState extends State<HomePage> {
               Container(
                 height: 25,
                 width: 25,
-                child: const Image(
-                  image: AssetImage('assets/Icons/send.png'),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ChatContact(userModel: widget.userModel, firebaseUser: widget.firebaseUser,)),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.transparent, // Set the button's background color to transparent
+                    elevation: 0, // Remove elevation
+                    padding: EdgeInsets.zero, // Remove padding
+                  ),
+                  child: const Image(
+                    image: AssetImage('assets/Icons/send.png'),
+                  ),
                 ),
               ),
             ],
