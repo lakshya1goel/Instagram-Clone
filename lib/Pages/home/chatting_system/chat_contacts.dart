@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Models/ChatRoomModel.dart';
+import 'package:insta_clone/Models/FirebaseHelper.dart';
 import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Pages/home/chatting_system/message_screen.dart';
-import '../../../Services/Chats/contacts.dart';
 import '../../../Services/profile_accounts.dart';
 import '../../../main.dart';
 
@@ -26,7 +26,40 @@ class _ChatContactState extends State<ChatContact> {
       backgroundColor: Colors.black,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          const _InstagramProfileAppBar(),
+        SliverAppBar(
+        backgroundColor: Colors.black,
+        pinned: true,
+        title: Row(
+          children: [
+            Text(
+              widget.userModel.username.toString(),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0
+              ),
+            ),
+            IconButton(
+                onPressed: (){
+                  _bottomSheet(context);
+                },
+                icon: Icon(Icons.keyboard_arrow_down)),
+          ],
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+            },
+            icon: const Icon(Icons.video_call,
+              size: 30.0,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+            },
+            icon: const Icon(Icons.pages),
+          ),
+        ],
+      ),
           // const SliverToBoxAdapter(),
           SliverPersistentHeader(
             pinned: true,
@@ -41,61 +74,101 @@ class _ChatContactState extends State<ChatContact> {
             children: [
               buildSearchBar(userModel: widget.userModel, firebaseUser: widget.firebaseUser,),
               //Notes(),
-              Contacts(),
+              Container(
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance.collection("chatrooms").where("participants.${widget.userModel.uid}", isEqualTo: true).orderBy("time").snapshots(),
+                  builder: (context, snapshot){
+                    if(snapshot.connectionState==ConnectionState.active){
+                      if(snapshot.hasData){
+                        QuerySnapshot chatRoomSnapshot = snapshot.data as QuerySnapshot;
+
+                        return Expanded(
+                          child: ListView.builder(
+                            itemCount: chatRoomSnapshot.docs.length,
+                            itemBuilder: (context,index){
+                              ChatRoomModel chatRoomModel=ChatRoomModel.fromMap(chatRoomSnapshot.docs[index].data() as Map<String, dynamic>);
+
+                              Map<String, dynamic> participants=chatRoomModel.participants!;
+                              List<String> participantsKeys=participants.keys.toList();
+                              participantsKeys.remove(widget.userModel.uid);
+
+                              return FutureBuilder(
+                                future: FirebaseHelper.getUserModelById(participantsKeys[0]),
+                                builder: (context, userData){
+
+                                  if(userData.connectionState==ConnectionState.done){
+                                    if(userData.data!=null){
+                                      UserModel targetUser=userData.data as UserModel;
+                                      return ListTile(
+                                        onTap: (){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                                            return MessagesScreen(targetUser: targetUser, chatroom: chatRoomModel, userModel: widget.userModel, firebaseUser: widget.firebaseUser);
+                                          }),
+                                          );
+                                        },
+                                        leading: CircleAvatar(
+                                          radius: 25.0,
+                                          backgroundImage: NetworkImage(targetUser.profilePic.toString()),
+                                        ),
+                                        title: Text(targetUser.name.toString(),
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        subtitle: (chatRoomModel.lastMsg.toString()!="") ? Text(chatRoomModel.lastMsg.toString()  ,
+                                          style: TextStyle(color: Colors.grey),
+                                          overflow: TextOverflow.ellipsis ,
+                                          maxLines: 1,
+                                        ):
+                                        Text("Tap to Message"),
+                                        trailing: Icon(Icons.camera_alt_outlined,
+                                          color: Colors.white,
+                                          size: 30.0,
+                                        ),
+                                      );
+                                    }
+                                    else{
+                                      return Container();
+                                    }
+                                  }
+                                  else{
+                                    return Container();
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                        );
+                      }
+                      else if(snapshot.hasError){
+                        return Center(
+                          child: Text(
+                            snapshot.error.toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
+                      }
+                      else{
+                        return Center(
+                          child: Text("No Chats",
+                            style: TextStyle(
+                              color: Colors.white
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                    else{
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+              ),
             ]
         ),
       ),
-    );
-  }
-}
-
-
-class _InstagramProfileAppBar extends StatefulWidget {
-  const _InstagramProfileAppBar({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<_InstagramProfileAppBar> createState() => _InstagramProfileAppBarState();
-}
-
-class _InstagramProfileAppBarState extends State<_InstagramProfileAppBar> {
-  String account="43.paras.57";
-  @override
-  Widget build(BuildContext context) {
-    return SliverAppBar(
-      backgroundColor: Colors.black,
-      pinned: true,
-      title: Row(
-        children: [
-          Text(
-            account,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 22.0
-            ),
-          ),
-          IconButton(
-              onPressed: (){
-                _bottomSheet(context);
-              },
-              icon: Icon(Icons.keyboard_arrow_down)),
-        ],
-      ),
-      actions: [
-        IconButton(
-          onPressed: () {
-          },
-          icon: const Icon(Icons.video_call,
-            size: 30.0,
-          ),
-        ),
-        IconButton(
-          onPressed: () {
-          },
-          icon: const Icon(Icons.pages),
-        ),
-      ],
     );
   }
 }
@@ -288,144 +361,6 @@ class Space extends SliverPersistentHeaderDelegate {
       false;
 }
 
-class Notes extends StatefulWidget {
-  const Notes({super.key});
-
-  @override
-  State<Notes> createState() => _NotesState();
-}
-
-class _NotesState extends State<Notes> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 130.0,
-      color: Colors.white,
-    );
-  }
-}
-
-
-class Contacts extends StatefulWidget {
-  const Contacts({super.key});
-
-  @override
-  State<Contacts> createState() => _ContactsState();
-}
-
-class _ContactsState extends State<Contacts> {
-  List<contacts> tiles=[
-    contacts(image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', name: 'Prerna Jain', msg: "Active Now", time: Duration(minutes: 1), isactive: true),
-    contacts(image: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/825fb915-d6a8-4bd2-ba12-ba661266a6f9/dfndnu7-e10d71e6-3427-4bda-a7f1-8dc8a55fb968.png/v1/fill/w_894,h_894,q_70,strp/bigred_cute_anime_boy_with_black_hair_and_big_blue_by_sketchesbydani_dfndnu7-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTAyNCIsInBhdGgiOiJcL2ZcLzgyNWZiOTE1LWQ2YTgtNGJkMi1iYTEyLWJhNjYxMjY2YTZmOVwvZGZuZG51Ny1lMTBkNzFlNi0zNDI3LTRiZGEtYTdmMS04ZGM4YTU1ZmI5NjgucG5nIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.8v_PPYlfNxvYxB4wNAtsR4TPaGugUJcqnx6SSJLEWTU', name: 'Vedanshi Aggarwal', msg: 'Liked a message', time: Duration(minutes: 25), isactive: true),
-    contacts(image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', name: 'Pushkar Gupta', msg: 'How are u ??', time: Duration(minutes: 45), isactive: false),
-    contacts(image: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/825fb915-d6a8-4bd2-ba12-ba661266a6f9/dfndnu7-e10d71e6-3427-4bda-a7f1-8dc8a55fb968.png/v1/fill/w_894,h_894,q_70,strp/bigred_cute_anime_boy_with_black_hair_and_big_blue_by_sketchesbydani_dfndnu7-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTAyNCIsInBhdGgiOiJcL2ZcLzgyNWZiOTE1LWQ2YTgtNGJkMi1iYTEyLWJhNjYxMjY2YTZmOVwvZGZuZG51Ny1lMTBkNzFlNi0zNDI3LTRiZGEtYTdmMS04ZGM4YTU1ZmI5NjgucG5nIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.8v_PPYlfNxvYxB4wNAtsR4TPaGugUJcqnx6SSJLEWTU', name: 'Aikansh Tiwari', msg: 'Genuine Bro', time: Duration(minutes: 55), isactive: true),
-    contacts(image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', name: 'Lakshya Goel', msg: 'jaldi hi complete kr lenge tension na le', time: Duration(minutes: 58), isactive: true),
-    contacts(image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', name: 'Prerna Jain', msg: "okk byeee", time: Duration(minutes: 1), isactive: false),
-    contacts(image: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/825fb915-d6a8-4bd2-ba12-ba661266a6f9/dfndnu7-e10d71e6-3427-4bda-a7f1-8dc8a55fb968.png/v1/fill/w_894,h_894,q_70,strp/bigred_cute_anime_boy_with_black_hair_and_big_blue_by_sketchesbydani_dfndnu7-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTAyNCIsInBhdGgiOiJcL2ZcLzgyNWZiOTE1LWQ2YTgtNGJkMi1iYTEyLWJhNjYxMjY2YTZmOVwvZGZuZG51Ny1lMTBkNzFlNi0zNDI3LTRiZGEtYTdmMS04ZGM4YTU1ZmI5NjgucG5nIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.8v_PPYlfNxvYxB4wNAtsR4TPaGugUJcqnx6SSJLEWTU', name: 'Vedanshi Aggarwal', msg: 'Liked a message', time: Duration(minutes: 25), isactive: false),
-    contacts(image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', name: 'Pushkar Gupta', msg: 'Hola bro', time: Duration(minutes: 45), isactive: false),
-    contacts(image: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/825fb915-d6a8-4bd2-ba12-ba661266a6f9/dfndnu7-e10d71e6-3427-4bda-a7f1-8dc8a55fb968.png/v1/fill/w_894,h_894,q_70,strp/bigred_cute_anime_boy_with_black_hair_and_big_blue_by_sketchesbydani_dfndnu7-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTAyNCIsInBhdGgiOiJcL2ZcLzgyNWZiOTE1LWQ2YTgtNGJkMi1iYTEyLWJhNjYxMjY2YTZmOVwvZGZuZG51Ny1lMTBkNzFlNi0zNDI3LTRiZGEtYTdmMS04ZGM4YTU1ZmI5NjgucG5nIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.8v_PPYlfNxvYxB4wNAtsR4TPaGugUJcqnx6SSJLEWTU', name: 'Aikansh Tiwari', msg: 'Genuine Bro', time: Duration(minutes: 55), isactive: false),
-    contacts(image: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1365&q=80', name: 'Lakshya Goel', msg: 'chl thik h fir', time: Duration(minutes: 58), isactive: true),
-  ];
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(child:
-          ListView.builder(
-            itemCount: tiles.length,
-            itemBuilder: (context, index) => ChatCard(
-              chat: tiles[index],
-               press: (){},
-               // => Navigator.push(
-               //  context,
-               //  MaterialPageRoute(
-               //    builder: (context) => const MessagesScreen(),
-               //  ),
-              // ),
-            ),
-          ),
-    );
-  }
-}
-
-class ChatCard extends StatefulWidget {
-  const ChatCard({
-    Key? key,
-    required this.chat,
-    required this.press,
-  }) : super(key: key);
-
-  final contacts chat;
-  final VoidCallback press;
-
-  @override
-  State<ChatCard> createState() => _ChatCardState();
-}
-
-class _ChatCardState extends State<ChatCard> {
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: widget.press,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-        child: Row(
-          children: [
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 28,
-                  backgroundImage: NetworkImage(widget.chat.image),
-                ),
-                if (widget.chat.isactive)
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      height: 12,
-                      width: 12,
-                      decoration: BoxDecoration(
-                        color: Colors.lightGreen[600],
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  )
-              ],
-            ),
-            Expanded(
-              child: Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.chat.name,
-                      style:
-                      const TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      '${widget.chat.msg.length > 25 ? widget.chat.msg.substring(0, 25) + "..." : widget.chat.msg +' .'} ${widget.chat.time.inMinutes} m',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Icon(Icons.camera_alt_outlined,
-              color: Colors.grey,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class SearchMode extends StatefulWidget {
   final UserModel userModel;
   final User firebaseUser;
@@ -459,6 +394,7 @@ class _SearchModeState extends State<SearchMode> {
           widget.userModel.uid.toString(): true,
           targetUser.uid.toString(): true,
         },
+        time: Timestamp.now(),
       );
       await FirebaseFirestore.instance.collection("chatrooms").doc(newChatroom.chatRoomId).set(newChatroom.toMap());
       chatRoom = newChatroom;
