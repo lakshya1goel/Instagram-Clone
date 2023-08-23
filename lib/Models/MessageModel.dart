@@ -14,7 +14,7 @@ class MessageModel{
     createdOn=map["createdOn"];
   }
 
-  Map<String, dynamic> fromMap(){
+  Map<String, dynamic> toMap(){
     return{
       "msgId":msgId,
       "sender":sender,
