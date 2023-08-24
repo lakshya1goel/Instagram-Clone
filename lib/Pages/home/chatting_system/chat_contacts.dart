@@ -7,6 +7,7 @@ import 'package:insta_clone/Models/ChatRoomModel.dart';
 import 'package:insta_clone/Models/FirebaseHelper.dart';
 import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Pages/home/chatting_system/message_screen.dart';
+import 'package:insta_clone/Services/Chat/chat_time.dart';
 import '../../../Services/profile_accounts.dart';
 import '../../../main.dart';
 
@@ -76,7 +77,7 @@ class _ChatContactState extends State<ChatContact> {
               //Notes(),
               Container(
                 child: StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection("chatrooms").where("participants.${widget.userModel.uid}", isEqualTo: true).orderBy("time").snapshots(),
+                  stream: FirebaseFirestore.instance.collection("chatrooms").where("participants.${widget.userModel.uid}", isEqualTo: true).orderBy("time", descending: true).snapshots(),
                   builder: (context, snapshot){
                     if(snapshot.connectionState==ConnectionState.active){
                       if(snapshot.hasData){
@@ -113,12 +114,10 @@ class _ChatContactState extends State<ChatContact> {
                                         title: Text(targetUser.name.toString(),
                                           style: TextStyle(color: Colors.white),
                                         ),
-                                        subtitle: (chatRoomModel.lastMsg.toString()!="") ? Text(chatRoomModel.lastMsg.toString()  ,
+                                        subtitle:Text(chatRoomModel.lastMsg.toString(),
                                           style: TextStyle(color: Colors.grey),
-                                          overflow: TextOverflow.ellipsis ,
-                                          maxLines: 1,
-                                        ):
-                                        Text("Tap to Message"),
+                                          overflow: TextOverflow.ellipsis, maxLines: 1,),
+
                                         trailing: Icon(Icons.camera_alt_outlined,
                                           color: Colors.white,
                                           size: 30.0,
@@ -387,14 +386,15 @@ class _SearchModeState extends State<SearchMode> {
     }
     else {
       // Create a new one
+      final chatRoomId = uuid.v1();
       ChatRoomModel newChatroom = ChatRoomModel(
-        chatRoomId: uuid.v1(),
+        chatRoomId: chatRoomId,
         lastMsg: "",
         participants: {
           widget.userModel.uid.toString(): true,
           targetUser.uid.toString(): true,
         },
-        time: Timestamp.now(),
+        time: null,
       );
       await FirebaseFirestore.instance.collection("chatrooms").doc(newChatroom.chatRoomId).set(newChatroom.toMap());
       chatRoom = newChatroom;

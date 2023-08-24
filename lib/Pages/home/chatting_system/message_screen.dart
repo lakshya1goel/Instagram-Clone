@@ -39,6 +39,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
       FirebaseFirestore.instance.collection("chatrooms").doc(widget.chatroom.chatRoomId).collection("messages").doc(newMessage.msgId).set(newMessage.toMap());
 
       widget.chatroom.lastMsg = msg;
+      widget.chatroom.time=Timestamp.now();
       FirebaseFirestore.instance.collection("chatrooms").doc(widget.chatroom.chatRoomId).set(widget.chatroom.toMap());
 
       print("Message Sent!");
