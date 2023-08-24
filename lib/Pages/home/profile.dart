@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Services/profile_accounts.dart';
 import 'package:insta_clone/Services/profile_highlight.dart';
 import 'package:insta_clone/Services/create_items.dart';
@@ -400,7 +402,7 @@ class _ProfileBioState extends State<_ProfileBio> {
 }
 
 class _ProfileInfo extends StatefulWidget {
-  const _ProfileInfo({super.key});
+  const _ProfileInfo();
 
   @override
   State<_ProfileInfo> createState() => _ProfileInfoState();
@@ -409,13 +411,13 @@ class _ProfileInfo extends StatefulWidget {
 class _ProfileInfoState extends State<_ProfileInfo> {
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       children: [
-        const _ProfileImage(),
+         _ProfileImage(),
         Expanded(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
+            children:  [
               _ProfileFollowersCountWidget(
                 count: "11",
                 title: "Posts",
@@ -624,6 +626,11 @@ class _CreateState extends State<Create> {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 return ListTile(
+                  onTap: ()async{
+                    print('hello');
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
+                  },
                   leading: items[index].icon,
                   title: Text(items[index].name,
                   style: TextStyle(

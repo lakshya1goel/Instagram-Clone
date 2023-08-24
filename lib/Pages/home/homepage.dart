@@ -248,9 +248,42 @@ class _HomePageState extends State<HomePage> {
                                         style: const TextStyle(color: Colors.white),
                                       ),
                                       const Spacer(),
-                                      const Icon(
-                                        Icons.more_vert,
-                                        color: Colors.white,
+                                      IconButton(
+                                          onPressed: (){
+                                            showDialog(context: context, builder: (BuildContext context){
+                                              return AlertDialog(
+                                                title: Text('Delete karna hai kya isko'),
+                                                actions: [
+                                                  TextButton(onPressed: (){
+                                                    Navigator.pop(context);
+                                                    if(allPosts.userId == widget.userModel.uid){
+                                                      post.delete();
+                                                    }
+                                                    else{
+                                                      showDialog(
+                                                        context: context,
+                                                        builder:(BuildContext context){
+                                                          return AlertDialog(
+                                                            title: Text('Bhkk apni post delete kar saale'),
+                                                            actions: [
+                                                              TextButton(onPressed:()=> {Navigator.pop(context)}, child: Text('Han han thik hai'))
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  }, child: Text('Han kar de yarr')),
+                                                  TextButton(onPressed: (){
+                                                    Navigator.pop(context);
+                                                  }, child: Text('chodd pade rehne de')),
+                                                ],
+                                              );
+                                            });
+                                          },
+                                          icon: Icon(
+                                            Icons.more_vert,
+                                            color: Colors.white,
+                                          )
                                       )
                                     ],
                                   ),

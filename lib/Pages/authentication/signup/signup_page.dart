@@ -100,6 +100,7 @@ class _signup_pageState extends State<signup_page> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextFormField(
+                    keyboardType: TextInputType.emailAddress,
                     controller: usernameController,
                     decoration: InputDecoration(
                       hintText: "UserName",
