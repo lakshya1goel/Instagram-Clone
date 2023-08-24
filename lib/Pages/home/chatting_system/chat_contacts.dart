@@ -7,7 +7,6 @@ import 'package:insta_clone/Models/ChatRoomModel.dart';
 import 'package:insta_clone/Models/FirebaseHelper.dart';
 import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Pages/home/chatting_system/message_screen.dart';
-import 'package:insta_clone/Services/Chat/chat_time.dart';
 import '../../../Services/profile_accounts.dart';
 import '../../../main.dart';
 
@@ -77,7 +76,7 @@ class _ChatContactState extends State<ChatContact> {
               //Notes(),
               Container(
                 child: StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection("chatrooms").where("participants.${widget.userModel.uid}", isEqualTo: true).orderBy("time", descending: true).snapshots(),
+                  stream: FirebaseFirestore.instance.collection("chatrooms").where("users", arrayContains: widget.userModel.uid).orderBy("time", descending: true).snapshots(),
                   builder: (context, snapshot){
                     if(snapshot.connectionState==ConnectionState.active){
                       if(snapshot.hasData){
@@ -395,6 +394,7 @@ class _SearchModeState extends State<SearchMode> {
           targetUser.uid.toString(): true,
         },
         time: null,
+        users: [widget.userModel.uid.toString(), targetUser.uid.toString()],
       );
       await FirebaseFirestore.instance.collection("chatrooms").doc(newChatroom.chatRoomId).set(newChatroom.toMap());
       chatRoom = newChatroom;
