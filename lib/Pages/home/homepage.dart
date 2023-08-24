@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Models/UserModel.dart';
-import 'package:insta_clone/Pages/home/UploadPosts/upload_to_firebase_and_retrive.dart';
 import 'package:insta_clone/Pages/home/chatting_system/chat_contacts.dart';
 import 'package:insta_like_button/insta_like_button.dart';
 import 'package:insta_clone/Services/Home/home_story.dart';

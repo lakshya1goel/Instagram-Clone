@@ -13,7 +13,7 @@ class UploadPost{
 
 
   void uploadPost(BuildContext context) async {
-    String path = "/posts";
+    String path = "/posts/${user.username}";
     FirebaseFirestore database = FirebaseFirestore.instance;
     FirebaseStorage storage = FirebaseStorage.instance;
     Reference ref = storage.ref();
