@@ -251,7 +251,35 @@ class _HomePageState extends State<HomePage> {
                                       const Spacer(),
                                       IconButton(
                                           onPressed: (){
-                                            post.delete();
+                                            showDialog(context: context, builder: (BuildContext context){
+                                              return AlertDialog(
+                                                title: Text('Delete karna hai kya isko'),
+                                                actions: [
+                                                  TextButton(onPressed: (){
+                                                    Navigator.pop(context);
+                                                    if(allPosts.userId == widget.userModel.uid){
+                                                      post.delete();
+                                                    }
+                                                    else{
+                                                      showDialog(
+                                                        context: context,
+                                                        builder:(BuildContext context){
+                                                          return AlertDialog(
+                                                            title: Text('Bhkk apni post delete kar saale'),
+                                                            actions: [
+                                                              TextButton(onPressed:()=> {Navigator.pop(context)}, child: Text('Han han thik hai'))
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  }, child: Text('Han kar de yarr')),
+                                                  TextButton(onPressed: (){
+                                                    Navigator.pop(context);
+                                                  }, child: Text('chodd pade rehne de')),
+                                                ],
+                                              );
+                                            });
                                           },
                                           icon: Icon(
                                             Icons.more_vert,
