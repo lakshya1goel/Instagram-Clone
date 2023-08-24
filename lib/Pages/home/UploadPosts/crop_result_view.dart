@@ -71,7 +71,7 @@ class _CropResultViewState extends State<CropResultView> {
           ),
         ),
         ElevatedButton(onPressed: (){
-          UploadPost(posts: widget.croppedFiles,user: widget.user,description: descriptionController.text).uploadPost();
+          UploadPost(posts: widget.croppedFiles,user: widget.user,description: descriptionController.text).uploadPost(context);
         },
             child: const Text("Upload Pics"))
       ],

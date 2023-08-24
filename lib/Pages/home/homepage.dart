@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -212,15 +212,15 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           StreamBuilder<Object>(
-            stream: FirebaseFirestore.instance.collection('users').doc(widget.userModel.uid).collection('posts').snapshots(),
+            stream: FirebaseFirestore.instance.collectionGroup('posts').snapshots(),
             builder: (context, snapshot) {
               if(snapshot.hasData){
                 QuerySnapshot postQuery = snapshot.data as QuerySnapshot;
                 return SliverList(
                   delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
-                      Post myPosts = Post.fromMap(postQuery.docs[index].data() as Map<String,dynamic>);
-                      DocumentReference post = FirebaseFirestore.instance.collection('users').doc(widget.userModel.uid).collection('posts').doc(myPosts.postId);
+                      Post allPosts = Post.fromMap(postQuery.docs[index].data() as Map<String,dynamic>);
+                      DocumentReference post = FirebaseFirestore.instance.collection('users').doc(allPosts.userId).collection('posts').doc(allPosts.postId);
                       return Column(
                         children: [
                           const Divider(
@@ -238,13 +238,13 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       CircleAvatar(
                                         backgroundImage: NetworkImage(
-                                          myPosts.profilePic ?? "",
+                                          allPosts.profilePic ?? "",
                                         ),
                                         radius: 15,
                                       ),
                                       const SizedBox(width: 5),
                                       Text(
-                                        myPosts.userName ?? "",
+                                        allPosts.userName ?? "",
                                         style: const TextStyle(color: Colors.white),
                                       ),
                                       const Spacer(),
@@ -255,32 +255,34 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   ),
                                 ),
-                                GestureDetector(
-                                  onDoubleTap: () {},
-                                  child: PinchZoomReleaseUnzoomWidget(
-                                    child: InstaLikeButton(
-                                      height: height / 2 + height / 12,
-                                      iconSize: 100,
-                                      image: NetworkImage(
-                                        myPosts.images?[0] ?? '',
+                                ImageSlideshow(
+                                  height: height / 2 + height / 12,
+                                  indicatorBackgroundColor: Colors.grey,
+                                  indicatorColor: Colors.white,
+                                  children: allPosts.images?.map((imageURL) {
+                                    return PinchZoomReleaseUnzoomWidget(
+                                      child: InstaLikeButton(
+                                        height: height / 2 + height / 12,
+                                        iconSize: 100,
+                                        image: NetworkImage(imageURL),
+                                        onChanged: () {
+                                          setState(() {
+                                            if (allPosts.liked == false) {
+                                              post.update({'liked': true});
+                                              post.update({'likes': FieldValue.increment(1)});
+                                            }
+                                          });
+                                        },
                                       ),
-                                      onChanged: () {
-                                        setState(() {
-                                          if (myPosts.liked == false) {
-                                            post.update({'liked':true});
-                                            post.update({'likes':FieldValue.increment(1)});
-                                          }
-                                        });
-                                      },
-                                    ),
-                                  ),
+                                    );
+                                  }).toList() ?? [], // Convert the mapped Iterable to a List
                                 ),
                                 Row(
                                   children: [
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width/20,
                                     ),
-                                    if (myPosts.liked == true)
+                                    if (allPosts.liked == true)
                                       InkWell(
                                         onTap: () {
                                           setState(() {
@@ -351,7 +353,7 @@ class _HomePageState extends State<HomePage> {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      '${myPosts.likes} likes',
+                                      '${allPosts.likes} likes',
                                       style: const TextStyle(
                                         color: Colors.white,
                                       ),
@@ -365,7 +367,7 @@ class _HomePageState extends State<HomePage> {
                                     alignment: Alignment.centerLeft,
                                     child: ExpandableText(
                                       text:
-                                      '${myPosts.userName} ${myPosts.description}',
+                                      '${allPosts.userName} ${allPosts.description}',
                                       maxLines:
                                       3, // Set the number of lines before the "more" button appears
                                     ),
