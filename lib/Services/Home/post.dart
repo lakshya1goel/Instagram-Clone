@@ -5,7 +5,7 @@ class Post{
   String? userName;
   int? likes;
   String? description;
-  List<String>? images;
+  List<dynamic>? images;
   String? profilePic;
   bool? liked;
   Post({required this.postId,required this.userName,required this.liked,required this.likes,required this.description,required this.images,required this.profilePic});
