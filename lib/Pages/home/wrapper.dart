@@ -64,7 +64,8 @@ class _WrapperState extends State<Wrapper> {
   void _onItemTapped(int index) async {
     if(index == 2){
       callRestorablePicker().then((value) => {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>PickerScreen(selectedAssets: selectedAssets, fileStream: fileStream,user: widget.userModel,)))
+        selectedAssets.isNotEmpty?
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>PickerScreen(selectedAssets: selectedAssets, fileStream: fileStream,user: widget.userModel))):index = 1
       });
       return;
     }
