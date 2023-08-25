@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:insta_assets_picker/insta_assets_picker.dart';
 import 'package:insta_clone/Models/ErrorMessage.dart';
 import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
+import 'package:insta_clone/Pages/home/ProfilePic/picker.dart';
 import 'package:insta_clone/Services/profile_accounts.dart';
 import 'package:insta_clone/Services/profile_highlight.dart';
 import 'package:insta_clone/Services/create_items.dart';
@@ -39,7 +43,7 @@ class _ProfileState extends State<Profile> {
                   ),
                   IconButton(
                       onPressed: (){
-                        _bottomSheet2(context);
+                        //_bottomSheet2(context);
                       },
                       icon: Icon(Icons.keyboard_arrow_down)),
                 ],
@@ -123,15 +127,40 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             children: [
               Stack(
                 children: [
-                  Container(
-                    height: 80,
-                    width: 80,
-                    decoration:BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage(widget.userModel.profilePic.toString()),
-                      ),
-                    ),
+                  StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection("users").doc(widget.userModel.uid).snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.active) {
+                          if (snapshot.hasData) {
+                            return Container(
+                              height: 80.0,
+                              width: 80.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: NetworkImage(widget.userModel.profilePic.toString()),
+                                ),
+                              ),
+                            );
+                          }
+                          else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                  "An error occured! Please check your internet connection."),
+                            );
+                          }
+                          else {
+                            return Center(
+                              child: Text("No Picture"),
+                            );
+                          }
+                        }
+                        else{
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }
                   ),
                 ],
               ),
@@ -236,7 +265,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 }
                 else {
                   return Center(
-                    child: Text("Say hi to your new friend"),
+                    child: Text("Add Details"),
                   );
                 }
               }
@@ -246,7 +275,6 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 );
               }
             }
-
           ),
           SizedBox(height: 12.0),
           Column(
@@ -318,6 +346,54 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+
+  var fileStream = StreamController<InstaAssetsExportDetails?>.broadcast();
+
+  final _instaAssetsPicker = InstaAssetPicker();
+  final _provider = DefaultAssetPickerProvider(maxAssets: 1);
+  late final ThemeData _pickerTheme =
+  InstaAssetPicker.themeData(Theme.of(context).primaryColor).copyWith(
+    appBarTheme: const AppBarTheme(
+        titleTextStyle: TextStyle(color: Colors.white, fontSize: 18)),
+  );
+
+  List<AssetEntity> selectedAssets = <AssetEntity>[];
+
+  Future<void> callRestorablePicker() async {
+    final List<AssetEntity>? result =
+    await _instaAssetsPicker.restorableAssetsPicker(
+      context,
+      title: 'Upload',
+      closeOnComplete: true,
+      provider: _provider,
+      pickerTheme: _pickerTheme,
+      onCompleted: (cropStream) {
+        cropStream.listen((event) {
+          if (mounted) {
+            setState(() {
+              fileStream.add(event);
+            });
+          }
+        });
+      },
+    );
+    if (result != null) {
+      selectedAssets = result;
+      if (mounted) {
+        setState(() {});
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _provider.dispose();
+    _instaAssetsPicker.dispose();
+    super.dispose();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     final TextEditingController nameController = TextEditingController(text: widget.userModel.name.toString());
@@ -376,7 +452,12 @@ class _EditProfileState extends State<EditProfile> {
             ),
             Center(
               child: TextButton(
-                  onPressed: (){},
+                  onPressed: (){
+                    callRestorablePicker().then((value) => {
+                      selectedAssets.isNotEmpty?
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>PickerScreen(selectedAssets: selectedAssets, fileStream: fileStream,user: widget.userModel))):Navigator.pop(context)
+                    });
+                  },
                   child: Text("Edit picture",
                     style: TextStyle(color: Colors.blue),
                   )
@@ -711,118 +792,6 @@ class _CreateState extends State<Create> {
     );
   }
 }
-
-
-void _bottomSheet2(context){
-  showModalBottomSheet(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
-    ),
-    context: context,
-    builder: (BuildContext icon) {
-      return Profile_accounts();
-    },
-  );
-}
-class Profile_accounts extends StatefulWidget {
-  const Profile_accounts({super.key});
-
-  @override
-  State<Profile_accounts> createState() => _Profile_accountsState();
-}
-
-class _Profile_accountsState extends State<Profile_accounts> {
-  List<profile_accounts>accounts=[
-    profile_accounts(image: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/825fb915-d6a8-4bd2-ba12-ba661266a6f9/dfndnu7-e10d71e6-3427-4bda-a7f1-8dc8a55fb968.png/v1/fill/w_894,h_894,q_70,strp/bigred_cute_anime_boy_with_black_hair_and_big_blue_by_sketchesbydani_dfndnu7-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTAyNCIsInBhdGgiOiJcL2ZcLzgyNWZiOTE1LWQ2YTgtNGJkMi1iYTEyLWJhNjYxMjY2YTZmOVwvZGZuZG51Ny1lMTBkNzFlNi0zNDI3LTRiZGEtYTdmMS04ZGM4YTU1ZmI5NjgucG5nIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.8v_PPYlfNxvYxB4wNAtsR4TPaGugUJcqnx6SSJLEWTU', name: '43.paras.57'),
-  ];
-  String account="";
-  int selectedIndex=0;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Color(0xDD000000),
-      height: 170.0,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 10.0,bottom: 10.0),
-            child: Center(
-              child: Container(height: 4.0,width: 40.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5.0),
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: accounts.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Container(
-                      height: 60,
-                      width: 60,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: NetworkImage(accounts[index].image),
-                        ),
-                      ),
-                  ),
-                  title: Text(accounts[index].name,
-                    style: TextStyle(
-                        color: Colors.white
-                    ),),
-                  trailing:
-                  Radio(
-                    value: index,
-                    groupValue: selectedIndex,
-                    onChanged: (value) {
-                      account = accounts[index].name;
-                    },
-                  )
-                );
-              },
-            ),
-          ),
-          Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(15.0),
-                child: Container(
-                  height: 60.0,
-                  width: 60.0,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 0.5),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                      onPressed: (){
-
-                      },
-                      icon: Icon(Icons.add,
-                        color: Colors.white,
-                        size: 40.0,
-                      )
-                  ),
-                ),
-              ),
-              Text('Add account',
-              style: TextStyle(
-                color: Colors.white
-              ),),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 
 void _bottomSheet3(context){
   showModalBottomSheet(
