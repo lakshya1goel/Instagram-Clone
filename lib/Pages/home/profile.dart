@@ -338,91 +338,93 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 35.0,),
-          Center(
-            child: CircleAvatar(
-              radius: 40.0,
-              backgroundImage: NetworkImage(widget.userModel.profilePic.toString()),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 35.0,),
+            Center(
+              child: CircleAvatar(
+                radius: 40.0,
+                backgroundImage: NetworkImage(widget.userModel.profilePic.toString()),
+              ),
             ),
-          ),
-          Center(
-            child: TextButton(
-                onPressed: (){},
-                child: Text("Edit picture",
-                  style: TextStyle(color: Colors.blue),
-                )
+            Center(
+              child: TextButton(
+                  onPressed: (){},
+                  child: Text("Edit picture",
+                    style: TextStyle(color: Colors.blue),
+                  )
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: nameController,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                  decoration: InputDecoration(
-                    labelText: "Name",
-                    labelStyle: TextStyle(
-                      color: Colors.grey,
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: nameController,
+                    style: TextStyle(
+                      color: Colors.white,
                     ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                  ),
-                ),
-                TextFormField(
-                  controller: usernameController,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                  decoration: InputDecoration(
-                    labelText: "Username",
-                    labelStyle: TextStyle(
-                      color: Colors.grey,
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                    decoration: InputDecoration(
+                      labelText: "Name",
+                      labelStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-                TextFormField(
-                  controller: pronounController,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                  decoration: InputDecoration(
-                    labelText: "Pronouns",
-                    labelStyle: TextStyle(
-                      color: Colors.grey,
+                  TextFormField(
+                    controller: usernameController,
+                    style: TextStyle(
+                      color: Colors.white,
                     ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                  ),
-                ),
-                TextFormField(
-                  controller: bioController,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                  decoration: InputDecoration(
-                    labelText: "Bio",
-                    labelStyle: TextStyle(
-                      color: Colors.grey,
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                    decoration: InputDecoration(
+                      labelText: "Username",
+                      labelStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  TextFormField(
+                    controller: pronounController,
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: "Pronouns",
+                      labelStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  TextFormField(
+                    controller: bioController,
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: "Bio",
+                      labelStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
