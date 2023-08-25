@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_clone/Models/UserModel.dart';
+import 'package:insta_clone/Pages/home/UploadPosts/upload_posts.dart';
 import 'package:insta_clone/Pages/home/homepage.dart';
 import 'package:insta_clone/Pages/home/profile.dart';
 import 'package:insta_clone/Pages/home/Reels/ReelPage.dart';
@@ -12,25 +14,15 @@ class Wrapper extends StatefulWidget {
   final User firebaseUser;
   Wrapper({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
 
-
-
   @override
   State<Wrapper> createState() => _WrapperState();
 }
 
 class _WrapperState extends State<Wrapper> {
-  int _selectedIndex = 0;
-  void _onItemTapped(int index) async {
-    if(index == 2){
-       await callRestorablePicker();
-       print(selectedAssets);
-       _selectedIndex = 0;
-       return;
-    }
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+
+  // StreamController<InstaAssetsExportDetails?> fileStream = StreamController();
+  var fileStream = StreamController<InstaAssetsExportDetails?>.broadcast();
+
   final _instaAssetsPicker = InstaAssetPicker();
   final _provider = DefaultAssetPickerProvider(maxAssets: 10);
   late final ThemeData _pickerTheme =
@@ -40,14 +32,7 @@ class _WrapperState extends State<Wrapper> {
   );
 
   List<AssetEntity> selectedAssets = <AssetEntity>[];
-  InstaAssetsExportDetails? exportDetails;
 
-  @override
-  void dispose() {
-    _provider.dispose();
-    _instaAssetsPicker.dispose();
-    super.dispose();
-  }
   Future<void> callRestorablePicker() async {
     final List<AssetEntity>? result =
     await _instaAssetsPicker.restorableAssetsPicker(
@@ -60,13 +45,12 @@ class _WrapperState extends State<Wrapper> {
         cropStream.listen((event) {
           if (mounted) {
             setState(() {
-              exportDetails = event;
+              fileStream.add(event);
             });
           }
         });
       },
     );
-
     if (result != null) {
       selectedAssets = result;
       if (mounted) {
@@ -74,9 +58,32 @@ class _WrapperState extends State<Wrapper> {
       }
     }
   }
+
+
+  int _selectedIndex = 0;
+  void _onItemTapped(int index) async {
+    if(index == 2){
+      callRestorablePicker().then((value) => {
+        selectedAssets.isNotEmpty?
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>PickerScreen(selectedAssets: selectedAssets, fileStream: fileStream,user: widget.userModel))):index = 1
+      });
+      return;
+    }
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  void dispose() {
+    _provider.dispose();
+    _instaAssetsPicker.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Widget> Widgets = [HomePage(userModel: widget.userModel, firebaseUser: widget.firebaseUser,),Search(),Placeholder(),Reels(),Profile()];
+    List<Widget> Widgets = [HomePage(userModel: widget.userModel, firebaseUser: widget.firebaseUser,),Search(),PickerScreen(selectedAssets: selectedAssets,fileStream: fileStream,user: widget.userModel,),Reels(),Profile()];
     return Container(
       color: Colors.black,
       child: Scaffold(
