@@ -17,4 +17,4 @@ jobs:
 
       - name: Build Project
         run: ./gradlew assemble
-        working-directory: C:\Users\DELL\Desktop\Insta_clone\insta_clone
+        working-directory: ${{ github.workspace }}/insta_clone
