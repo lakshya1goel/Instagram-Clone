@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:insta_clone/Models/ErrorMessage.dart';
 import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Services/profile_accounts.dart';
@@ -197,11 +199,21 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(widget.userModel.name.toString(),
-                style: TextStyle(
-                    color: Colors.white,
-                  fontWeight: FontWeight.bold
-                ),
+              Row(
+                children: [
+                  Text(widget.userModel.name.toString(),
+                    style: TextStyle(
+                        color: Colors.white,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  SizedBox(width: 10.0,),
+                  Text(widget.userModel.pronouns.toString(),
+                    style: TextStyle(
+                        color: Colors.grey,
+                    ),
+                  ),
+                ],
               ),
               Text(widget.userModel.bio.toString(),
                 style: TextStyle(
@@ -284,8 +296,28 @@ class _EditProfileState extends State<EditProfile> {
   Widget build(BuildContext context) {
     final TextEditingController nameController = TextEditingController(text: widget.userModel.name.toString());
     final TextEditingController usernameController = TextEditingController(text: widget.userModel.username.toString());
-    final TextEditingController pronounController = TextEditingController();
-    final TextEditingController bioController = TextEditingController();
+    final TextEditingController pronounController = TextEditingController(text: widget.userModel.pronouns.toString());
+    final TextEditingController bioController = TextEditingController(text: widget.userModel.bio.toString());
+
+    void uploadData() async{
+      ErrorMessage.showLoadingDialog(context, "Updating...");
+      String? name=nameController.text.trim();
+      String? username=usernameController.text.trim();
+      String? pronouns=pronounController.text.trim();
+      String? bio=bioController.text.trim();
+
+      widget.userModel.name=name;
+      widget.userModel.username=username;
+      widget.userModel.pronouns=pronouns;
+      widget.userModel.bio=bio;
+
+      await FirebaseFirestore.instance.collection("users").doc(widget.userModel.uid).set(widget.userModel.toMap()).then((value) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      });
+
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -298,7 +330,7 @@ class _EditProfileState extends State<EditProfile> {
         actions: [
           IconButton(
             onPressed: (){
-              Navigator.pop(context);
+              uploadData();
             },
             icon: Icon(Icons.check,
               color: Colors.blue,
