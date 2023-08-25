@@ -196,31 +196,57 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             ],
           ),
           SizedBox(height: 12.0),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(widget.userModel.name.toString(),
-                    style: TextStyle(
-                        color: Colors.white,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  SizedBox(width: 10.0,),
-                  Text(widget.userModel.pronouns.toString(),
-                    style: TextStyle(
-                        color: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
-              Text(widget.userModel.bio.toString(),
-                style: TextStyle(
-                    color: Colors.white,
-                ),
-              ),
-            ],
+          StreamBuilder(
+            stream: FirebaseFirestore.instance.collection("users").doc(widget.userModel.uid).snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.active) {
+                if (snapshot.hasData) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(widget.userModel.name.toString(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          SizedBox(width: 10.0,),
+                          Text(widget.userModel.pronouns.toString(),
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(widget.userModel.bio.toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                else if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                        "An error occured! Please check your internet connection."),
+                  );
+                }
+                else {
+                  return Center(
+                    child: Text("Say hi to your new friend"),
+                  );
+                }
+              }
+              else{
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }
+
           ),
           SizedBox(height: 12.0),
           Column(
