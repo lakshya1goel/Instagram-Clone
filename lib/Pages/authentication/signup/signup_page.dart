@@ -47,26 +47,60 @@ class _signup_pageState extends State<signup_page> {
   }
 
 
-  void signup(String email, String password, String name, String username) async{
+  void signup(String email, String password, String name, String username) async {
     UserCredential? credential;
-    try{
-      credential=await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch(ex){
+
+    // Check if the chosen username is already taken
+    QuerySnapshot usernameQuery = await FirebaseFirestore.instance
+        .collection("users")
+        .where("username", isEqualTo: username)
+        .get();
+
+    if (usernameQuery.docs.isNotEmpty) {
+      Navigator.pop(context);
+      ErrorMessage.showAlertDialog(
+        context,
+        "Username not available",
+        "The chosen username is already taken. Please choose a different username.",
+      );
+      return;
+    }
+
+    try {
+      credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      String uid = credential.user!.uid;
+      UserModel newUser = UserModel(
+        uid: uid,
+        profilePic: "",
+        name: name,
+        email: email,
+        username: username,
+      );
+
+      // Create the new user with the chosen username
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(uid)
+          .set(newUser.toMap())
+          .then((value) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      });
+    } on FirebaseAuthException catch (ex) {
       print(ex.code.toString());
       Navigator.pop(context);
-      ErrorMessage.showAlertDialog(context, "An error occured", ex.message.toString());
+      ErrorMessage.showAlertDialog(
+        context,
+        "An error occurred",
+        ex.message.toString(),
+      );
     }
-
-    if(credential!=null){
-      String uid=credential.user!.uid;
-      UserModel newUser=UserModel(uid: uid, profilePic: "", name: name, email: email, username: username);
-      await FirebaseFirestore.instance.collection("users").doc(uid).set(newUser.toMap()).then((value){
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => LoginPage()));
-      });
-    }
-
-
   }
 
 

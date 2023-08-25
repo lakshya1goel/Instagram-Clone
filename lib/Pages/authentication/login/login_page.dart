@@ -46,32 +46,67 @@ class _LoginPageState extends State<LoginPage> {
   }
 
 
-  void login(String email, String password) async{
+  void login(String emailOrUsername, String password) async {
     UserCredential? credential;
 
     ErrorMessage.showLoadingDialog(context, "Logging In...");
 
-    try{
-      credential=await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch(ex){
+    try {
+      if (emailOrUsername.contains("@")) {
+        credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailOrUsername,
+          password: password,
+        );
+      } else {
+        QuerySnapshot usernameQuery = await FirebaseFirestore.instance
+            .collection("users")
+            .where("username", isEqualTo: emailOrUsername)
+            .get();
+
+        if (usernameQuery.docs.isNotEmpty) {
+          credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: usernameQuery.docs[0]["email"],
+            password: password,
+          );
+        } else {
+          Navigator.pop(context);
+          ErrorMessage.showAlertDialog(
+            context,
+            "An error occurred",
+            "No user found with the provided username.",
+          );
+        }
+      }
+    } on FirebaseAuthException catch (ex) {
       print(ex.code.toString());
       Navigator.pop(context);
-      ErrorMessage.showAlertDialog(context, "An error occured", ex.message.toString());
+      ErrorMessage.showAlertDialog(
+        context,
+        "An error occurred",
+        ex.message.toString(),
+      );
     }
 
-    if(credential!=null){
-      String uid=credential.user!.uid;
-      DocumentSnapshot userData= await FirebaseFirestore.instance.collection("users").doc(uid).get();
-      UserModel userModel=UserModel.fromMap(userData.data() as Map<String, dynamic>);
+    if (credential != null) {
+      String uid = credential.user!.uid;
+      DocumentSnapshot userData = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(uid)
+          .get();
+      UserModel userModel =
+      UserModel.fromMap(userData.data() as Map<String, dynamic>);
 
       print("Login successful!");
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => Wrapper(userModel: userModel, firebaseUser: credential!.user!,)));
-
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              Wrapper(userModel: userModel, firebaseUser: credential!.user!),
+        ),
+      );
     }
-
-
   }
+
 
 
 
@@ -277,51 +312,49 @@ class LanguageSelectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Container(
-          height: 500.0,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.close),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Text(
-                  "Select your language",
-                  style: TextStyle(
-                    fontSize: 22.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: SizedBox(
+        height: 500.0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.close),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(top: 10.0),
+              child: Text(
+                "Select your language",
+                style: TextStyle(
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              Expanded(
-                child: Card(
-                  child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: lang.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(lang[index]),
-                        trailing: Radio(
-                          value: index,
-                          groupValue: selectedIndex,
-                          onChanged: onChanged,
-                        ),
-                      );
-                    },
-                  ),
+            ),
+            Expanded(
+              child: Card(
+                child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: lang.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(lang[index]),
+                      trailing: Radio(
+                        value: index,
+                        groupValue: selectedIndex,
+                        onChanged: onChanged,
+                      ),
+                    );
+                  },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
