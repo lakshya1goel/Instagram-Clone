@@ -79,6 +79,8 @@ class _signup_pageState extends State<signup_page> {
         name: name,
         email: email,
         username: username,
+        pronouns: "",
+        bio: "",
       );
 
       // Create the new user with the chosen username
