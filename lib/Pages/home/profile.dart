@@ -5,7 +5,7 @@ import 'package:insta_clone/Services/profile_accounts.dart';
 import 'package:insta_clone/Services/profile_highlight.dart';
 import 'package:insta_clone/Services/create_items.dart';
 class Profile extends StatefulWidget {
-  const Profile({super.key});
+  const Profile({super.key, required userId});
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -63,7 +63,7 @@ class _ProfileState extends State<Profile> {
 }
 
 class _ProfileGridView extends StatefulWidget {
-  const _ProfileGridView({super.key});
+  const _ProfileGridView();
 
   @override
   State<_ProfileGridView> createState() => _ProfileGridViewState();
@@ -159,7 +159,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   }
 }
 class _StoryHighlights extends StatefulWidget {
-  const _StoryHighlights({super.key});
+  const _StoryHighlights();
 
   @override
   State<_StoryHighlights> createState() => _StoryHighlightsState();
