@@ -71,7 +71,8 @@ class _HomePageState extends State<HomePage> {
 
     // Find the index of the user's story and store it
     for (int i = 0; i < stories.length; i++) {
-      print("story ka username = ${stories[i].storyModelUserName} and mera username ${widget.userModel.username}");
+      print(
+          "story ka username = ${stories[i].storyModelUserName} and mera username ${widget.userModel.username}");
       if (stories[i].storyModelUserName == widget.userModel.username) {
         userStory = stories[i];
         userStoryIndex = i;
@@ -80,7 +81,8 @@ class _HomePageState extends State<HomePage> {
     }
 
     // If the user's story was found, move it to the front of the list
-    if (userStoryIndex != -1 && userStory != null) { // Check for null
+    if (userStoryIndex != -1 && userStory != null) {
+      // Check for null
       stories.removeAt(userStoryIndex);
       stories.insert(0, userStory);
       print("User story moved to the front");
@@ -89,8 +91,6 @@ class _HomePageState extends State<HomePage> {
     }
     return stories;
   }
-
-
 
   @override
   void initState() {
@@ -233,7 +233,8 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 3,
+                                    height: MediaQuery.sizeOf(context).height *
+                                        0.007,
                                   ),
                                   Text(
                                     "${widget.userModel.username}",
@@ -272,7 +273,8 @@ class _HomePageState extends State<HomePage> {
                   ]));
                 } else if (stories[0].storyModelUserName !=
                     widget.userModel.username) {
-                  print("${stories[0].storyModelUserName} aur current to hume pata hi hai ${widget.userModel.username}");
+                  print(
+                      "${stories[0].storyModelUserName} aur current to hume pata hi hai ${widget.userModel.username}");
                   StoryModel newUserStory = StoryModel(
                     storyModelUserName: widget.userModel.username,
                     storyModelProfilePic: widget.userModel.profilePic,
@@ -372,8 +374,12 @@ class _HomePageState extends State<HomePage> {
                                             )),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            15, 4, 0, 0),
+                                        padding: EdgeInsets.fromLTRB(
+                                            15,
+                                            MediaQuery.sizeOf(context).height *
+                                                0.007,
+                                            0,
+                                            0),
                                         child: Text(
                                           stories[index].storyModelUserName ??
                                               '',
@@ -501,8 +507,12 @@ class _HomePageState extends State<HomePage> {
                                             )),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            15, 4, 0, 0),
+                                        padding: EdgeInsets.fromLTRB(
+                                            15,
+                                            MediaQuery.sizeOf(context).height *
+                                                0.007,
+                                            0,
+                                            0),
                                         child: Text(
                                           stories[index].storyModelUserName ??
                                               '',
