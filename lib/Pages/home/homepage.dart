@@ -69,14 +69,6 @@ class _HomePageState extends State<HomePage> {
       // Logged-in user's story exists, reorder the list
       final userStory = stories.removeAt(userStoryIndex);
       stories.insert(0, userStory);
-    } else {
-      // Logged-in user's story doesn't exist, create a new element
-      final newUserStory = StoryModel(
-        storyModelUserName: widget.userModel.username,
-        storyModelProfilePic: widget.userModel.profilePic,
-        storyModelUserStories: [], uid: widget.userModel.uid, // Add empty list of stories
-      );
-      stories.insert(0, newUserStory);
     }
   }
 
@@ -174,40 +166,207 @@ class _HomePageState extends State<HomePage> {
                   return SliverList(delegate: SliverChildListDelegate([]));
                 } else if (!snapshot.hasData || stories.isEmpty) {
                   print('i was here');
-                  return SliverList(delegate: SliverChildListDelegate([InkWell(
-                    onTap: ()async {
-                      XFile? image = await ImagePicker()
-                          .pickImage(
-                          source:
-                          ImageSource.gallery);
-                      UploadStory(
-                          story: image,
-                          user: widget.userModel)
-                          .uploadStory(context);
-                    },
-                    child: CircleAvatar(
-                      radius: StorySize,
-                      child: Container(
-                        decoration:BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey[700]),
-                        child: CircleAvatar(
-                          radius:  StorySize + 0.2,
-                          backgroundColor: Colors.transparent,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.black,
-                            radius:StorySize - 1.5,
-                            child: CircleAvatar(
-                              radius: StorySize - 5,
-                              backgroundImage:
-                              NetworkImage(widget.userModel.profilePic!),
+                  return SliverList(delegate: SliverChildListDelegate([
+                    Stack(
+                      children: [
+                        SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Column(
+                                children: [
+                                  InkWell(
+                                  onTap: ()async {
+                                    XFile? image = await ImagePicker()
+                                        .pickImage(
+                                        source:
+                                        ImageSource.gallery);
+                                    UploadStory(
+                                        story: image,
+                                        user: widget.userModel)
+                                        .uploadStory(context);
+                                    setState(() {
+
+                                    });
+                                  },
+                                  child: CircleAvatar(
+                                    radius: StorySize,
+                                    child: Container(
+                                      decoration:BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.grey[700]),
+                                      child: CircleAvatar(
+                                        radius:  StorySize + 0.2,
+                                        backgroundColor: Colors.transparent,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.black,
+                                          radius:StorySize - 1.5,
+                                          child: CircleAvatar(
+                                            radius: StorySize - 5,
+                                            backgroundImage:
+                                            NetworkImage(widget.userModel.profilePic!),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                  ),
+                                  SizedBox(height: 3,),
+                                  Text("${widget.userModel.username}",style: TextStyle(color: Colors.white),)
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        Positioned(
+                          top: 43,
+                          left: 65,
+                          child: CircleAvatar(
+                            radius: 10,
+                            child: IconButton(
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                padding: EdgeInsets.fromLTRB(0, 0, 0,0),
+                                onPressed: () async {
+                                  XFile? image = await ImagePicker()
+                                      .pickImage(
+                                      source:
+                                      ImageSource.gallery);
+                                  UploadStory(
+                                      story: image,
+                                      user: widget.userModel)
+                                      .uploadStory(context);
+                                }, icon: const Icon(Icons.add,size: 16,color: Colors.white,)),
+                          ),
+                        )
+                      ],
+                    )]));
+                }
+                else if(stories[0].storyModelUserName != widget.userModel.username){
+                    print("yarr ye kar diya meine") ;
+                    StoryModel newUserStory = StoryModel(
+                      storyModelUserName: widget.userModel.username,
+                      storyModelProfilePic: widget.userModel.profilePic,
+                      storyModelUserStories: [], uid: widget.userModel.uid,
+                    );
+                    stories.insert(0, newUserStory);
+                    print(stories);
+                  return SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        SizedBox(
+                          height: height * 0.107,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: stories.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              print(stories.length);
+                              return Stack(
+                                children: [
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: index == 0
+                                            ? EdgeInsets.fromLTRB(20, 0, 0, 0)
+                                            : EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                        child: InkWell(
+                                            onTap: () async {
+                                              print(widget.userModel.toMap());
+                                              XFile? image = await ImagePicker()
+                                                  .pickImage(
+                                                  source:
+                                                  ImageSource.gallery);
+                                              UploadStory(
+                                                  story: image,
+                                                  user: widget.userModel)
+                                                  .uploadStory(context);
+                                              setState(() {
+
+                                              });
+                                            },
+                                            child: CircleAvatar(
+                                              radius: StorySize,
+                                              child: Container(
+                                                decoration: !false
+                                                    ? const BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    gradient: LinearGradient(
+                                                        begin:
+                                                        Alignment.topCenter,
+                                                        end: Alignment
+                                                            .bottomCenter,
+                                                        colors: [
+                                                          Color(0xFF9B2282),
+                                                          Color(0xFFEEA863)
+                                                        ]))
+                                                    : BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.grey[700]),
+                                                child: CircleAvatar(
+                                                  radius: !false
+                                                      ? StorySize
+                                                      : StorySize + 0.2,
+                                                  backgroundColor: Colors.transparent,
+                                                  child: CircleAvatar(
+                                                    backgroundColor: Colors.black,
+                                                    radius: !false
+                                                        ? StorySize - 2.5
+                                                        : StorySize - 1.5,
+                                                    child: CircleAvatar(
+                                                      radius: StorySize - 5,
+                                                      backgroundImage:
+                                                      NetworkImage(stories[
+                                                      index]
+                                                          .storyModelProfilePic!),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(15, 4, 0, 0),
+                                        child: Text(
+                                          stories[index].storyModelUserName ?? '',
+                                          style: const TextStyle(
+                                              color: Colors.white, fontSize: 13),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if(index == 0)Positioned(
+                                    top: 43,
+                                    left: 65,
+                                    child: CircleAvatar(
+                                      radius: 10,
+                                      child: IconButton(
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          padding: EdgeInsets.fromLTRB(0, 0, 0,0),
+                                          onPressed: () async {
+                                            XFile? image = await ImagePicker()
+                                                .pickImage(
+                                                source:
+                                                ImageSource.gallery);
+                                            UploadStory(
+                                                story: image,
+                                                user: widget.userModel)
+                                                .uploadStory(context);
+                                          }, icon: const Icon(Icons.add,size: 16,color: Colors.white,)),
+                                    ),
+                                  )
+                                  else SizedBox(),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  )]));
-                } else {
+                  );
+                }
+                else {
                   print('pagal hai kya yahi to hu mei');
                   return SliverList(
                     delegate: SliverChildListDelegate(
@@ -245,9 +404,7 @@ class _HomePageState extends State<HomePage> {
                                             child: CircleAvatar(
                                               radius: StorySize,
                                               child: Container(
-                                                decoration: !stories[0]
-                                                    .storyModelUserStories![0]
-                                                    .seen!
+                                                decoration: !false
                                                     ? const BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     gradient: LinearGradient(
@@ -263,17 +420,13 @@ class _HomePageState extends State<HomePage> {
                                                     shape: BoxShape.circle,
                                                     color: Colors.grey[700]),
                                                 child: CircleAvatar(
-                                                  radius: !stories[0]
-                                                      .storyModelUserStories![0]
-                                                      .seen!
+                                                  radius: !false
                                                       ? StorySize
                                                       : StorySize + 0.2,
                                                   backgroundColor: Colors.transparent,
                                                   child: CircleAvatar(
                                                     backgroundColor: Colors.black,
-                                                    radius: !stories[0]
-                                                        .storyModelUserStories![0]
-                                                        .seen!
+                                                    radius: !false
                                                         ? StorySize - 2.5
                                                         : StorySize - 1.5,
                                                     child: CircleAvatar(
