@@ -1,69 +1,129 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:insta_clone/Models/UserModel.dart';
+import 'package:insta_clone/Pages/home/Story/home_page_story.dart';
 import 'package:insta_clone/Pages/home/chatting_system/chat_contacts.dart';
 import 'package:insta_like_button/insta_like_button.dart';
-import 'package:insta_clone/Services/Home/home_story.dart';
 import 'package:insta_clone/Services/Home/post.dart';
 import 'package:insta_clone/Utils/expandable_text.dart';
 import 'package:pinch_zoom_release_unzoom/pinch_zoom_release_unzoom.dart';
-import 'Stories.dart';
+import 'Story/home_story.dart';
+import 'Story/story.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'Story/story_view.dart';
 
 class HomePage extends StatefulWidget {
   final UserModel userModel;
   final User firebaseUser;
-  HomePage({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
+  HomePage({Key? key, required this.userModel, required this.firebaseUser})
+      : super(key: key);
   final List<Post> posts = [];
-  List<home_story> stories = [
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-1',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-1',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-1',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-1',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-1',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-1',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-2',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-3',
-        seen: false),
-  ];
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  StreamController postStream = StreamController();
+  late List<StoryModel> stories;
+
+  Future<List<StoryModel>> getUsersWithStories() async {
+    stories = [];
+    final usersSnapshot =
+        await FirebaseFirestore.instance.collection('users').get();
+
+    final usersWithStories =
+        await Future.wait(usersSnapshot.docs.map((userDoc) async {
+      final storiesSnapshot =
+          await userDoc.reference.collection('stories').get();
+
+      if (storiesSnapshot.docs.isNotEmpty) {
+        final stories = storiesSnapshot.docs.map((storyDoc) {
+          final storyData = storyDoc.data();
+          return StoryPageModel.fromMap(storyData);
+        }).toList();
+        print("(((((((((((((()))))))))))");
+        print(userDoc.data()['username']);
+        return StoryModel(
+          storyModelUserName: userDoc.data()['username'],
+          storyModelProfilePic: userDoc.data()['profilePic'],
+          storyModelUserStories: stories,
+          uid: userDoc.data()['uid'],
+        );
+      } else {
+        return null;
+      }
+    }));
+
+    final filteredStories =
+        usersWithStories.where((user) => user != null).toList();
+
+    stories = filteredStories.cast<StoryModel>();
+    print("Starting reorder process");
+
+    StoryModel? userStory; // Declare as nullable
+
+    int userStoryIndex = -1;
+    print(stories.length);
+
+    // Find the index of the user's story and store it
+    for (int i = 0; i < stories.length; i++) {
+      print(
+          "story ka username = ${stories[i].storyModelUserName} and mera username ${widget.userModel.username}");
+      if (stories[i].storyModelUserName == widget.userModel.username) {
+        userStory = stories[i];
+        userStoryIndex = i;
+        break;
+      }
+    }
+
+    // If the user's story was found, move it to the front of the list
+    if (userStoryIndex != -1 && userStory != null) {
+      // Check for null
+      stories.removeAt(userStoryIndex);
+      stories.insert(0, userStory);
+      print("User story moved to the front");
+    } else {
+      print("User story not found in the list");
+    }
+    return stories;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUsersWithStories();
+  }
+
+  final RefreshController _refreshController = RefreshController();
+
   @override
   Widget build(BuildContext context) {
+    getUsersWithStories();
+    Stream<List<StoryModel>> storyStream =
+        Stream.fromFuture(getUsersWithStories());
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     double StorySize = 0.09 * width;
     print('$height & $width');
-    return CustomScrollView(
+    return SmartRefresher(
+      onRefresh: () async {
+        print("nahi idhar aaya");
+        await getUsersWithStories();
+        setState(() {});
+        _refreshController.refreshCompleted();
+      },
+      header: MaterialClassicHeader(),
+      onLoading: () async {
+        print("idhar aa gya meo to hehe");
+        await getUsersWithStories();
+        _refreshController.loadComplete();
+      },
+      controller: _refreshController,
+      child: CustomScrollView(
         slivers: [
           SliverAppBar(
             automaticallyImplyLeading: false,
@@ -81,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const Spacer(),
-                Container(
+                const SizedBox(
                   height: 25,
                   width: 25,
                   child: const Image(
@@ -96,7 +156,11 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ChatContact(userModel: widget.userModel, firebaseUser: widget.firebaseUser,)),
+                        MaterialPageRoute(
+                            builder: (context) => ChatContact(
+                                  userModel: widget.userModel,
+                                  firebaseUser: widget.firebaseUser,
+                                )),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -113,319 +177,661 @@ class _HomePageState extends State<HomePage> {
             ),
             backgroundColor: Colors.black,
           ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                SizedBox(
-                  height: height * 0.107,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: widget.stories.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: index == 0
-                                ? EdgeInsets.fromLTRB(20, 0, 0, 0)
-                                : EdgeInsets.fromLTRB(15, 0, 0, 0),
-                            child: InkWell(
-                                onTap: () async {
-                                  await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => StoriesPage(
-                                              selected_page: index,
-                                              status: widget.stories)));
-                                  setState(() {
-                                    home_story My_story = widget.stories[0];
-                                    List<home_story> remainingItems =
-                                        List.from(widget.stories.sublist(1));
-                                    remainingItems
-                                        .sort((a, b) => a.seen ? 1 : -1);
-                                    widget.stories = [
-                                      My_story,
-                                      ...remainingItems
-                                    ];
-                                  });
-                                },
-                                child: CircleAvatar(
-                                  radius: StorySize,
-                                  child: Container(
-                                    decoration: !widget.stories[index].seen
-                                        ? const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            gradient: LinearGradient(
-                                                begin: Alignment.topCenter,
-                                                end: Alignment.bottomCenter,
-                                                colors: [
-                                                  Color(0xFF9B2282),
-                                                  Color(0xFFEEA863)
-                                                ]))
-                                        : BoxDecoration(
+          StreamBuilder<Object>(
+              stream: storyStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SliverList(delegate: SliverChildListDelegate([]));
+                } else if (snapshot.hasError) {
+                  return SliverList(delegate: SliverChildListDelegate([]));
+                } else if (!snapshot.hasData || stories.isEmpty) {
+                  print('i was here');
+                  return SliverList(
+                      delegate: SliverChildListDelegate([
+                    Stack(
+                      children: [
+                        SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () async {
+                                      XFile? image = await ImagePicker()
+                                          .pickImage(
+                                              source: ImageSource.gallery);
+                                      UploadStory(
+                                              story: image,
+                                              user: widget.userModel)
+                                          .uploadStory(context);
+                                      setState(() {
+                                        getUsersWithStories();
+                                      });
+                                    },
+                                    child: CircleAvatar(
+                                      radius: StorySize,
+                                      child: Container(
+                                        decoration: BoxDecoration(
                                             shape: BoxShape.circle,
                                             color: Colors.grey[700]),
-                                    child: CircleAvatar(
-                                      radius: !widget.stories[index].seen
-                                          ? StorySize
-                                          : StorySize + 0.2,
-                                      backgroundColor: Colors.transparent,
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.black,
-                                        radius: !widget.stories[index].seen
-                                            ? StorySize - 2.5
-                                            : StorySize - 1.5,
-                                        child: Stack(
-                                          children: [
-                                            CircleAvatar(
+                                        child: CircleAvatar(
+                                          radius: StorySize + 0.2,
+                                          backgroundColor: Colors.transparent,
+                                          child: CircleAvatar(
+                                            backgroundColor: Colors.black,
+                                            radius: StorySize - 1.5,
+                                            child: CircleAvatar(
                                               radius: StorySize - 5,
                                               backgroundImage: NetworkImage(
-                                                  widget.stories[index].Imgae),
-                                            ),
-                                            index == 0
-                                                ? Positioned(
-                                                    left: 55,
-                                                    top: 55,
-                                                    child: Icon(
-                                                      Icons.add_circle,
-                                                      color: Colors.blue,
-                                                    ),
-                                                  )
-                                                : SizedBox()
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )),
-                          ),
-                          Text(
-                            widget.stories[index].username,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 10),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          StreamBuilder<Object>(
-            stream: FirebaseFirestore.instance.collectionGroup('posts').snapshots(),
-            builder: (context, snapshot) {
-              if(snapshot.hasData){
-                QuerySnapshot postQuery = snapshot.data as QuerySnapshot;
-                return SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                      Post allPosts = Post.fromMap(postQuery.docs[index].data() as Map<String,dynamic>);
-                      DocumentReference post = FirebaseFirestore.instance.collection('users').doc(allPosts.userId).collection('posts').doc(allPosts.postId);
-                      return Column(
-                        children: [
-                          const Divider(
-                            color: Colors.grey,
-                            thickness: 0.1,
-                          ),
-                          Card(
-                            color: Colors.black,
-                            elevation: 0,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                          allPosts.profilePic ?? "",
-                                        ),
-                                        radius: 15,
-                                      ),
-                                      const SizedBox(width: 5),
-                                      Text(
-                                        allPosts.userName ?? "",
-                                        style: const TextStyle(color: Colors.white),
-                                      ),
-                                      const Spacer(),
-                                      IconButton(
-                                          onPressed: (){
-                                            showDialog(context: context, builder: (BuildContext context){
-                                              return AlertDialog(
-                                                title: Text('Delete karna hai kya isko'),
-                                                actions: [
-                                                  TextButton(onPressed: (){
-                                                    Navigator.pop(context);
-                                                    if(allPosts.userId == widget.userModel.uid){
-                                                      post.delete();
-                                                    }
-                                                    else{
-                                                      showDialog(
-                                                        context: context,
-                                                        builder:(BuildContext context){
-                                                          return AlertDialog(
-                                                            title: Text('Bhkk apni post delete kar saale'),
-                                                            actions: [
-                                                              TextButton(onPressed:()=> {Navigator.pop(context)}, child: Text('Han han thik hai'))
-                                                            ],
-                                                          );
-                                                        },
-                                                      );
-                                                    }
-                                                  }, child: Text('Han kar de yarr')),
-                                                  TextButton(onPressed: (){
-                                                    Navigator.pop(context);
-                                                  }, child: Text('chodd pade rehne de')),
-                                                ],
-                                              );
-                                            });
-                                          },
-                                          icon: Icon(
-                                            Icons.more_vert,
-                                            color: Colors.white,
-                                          )
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                ImageSlideshow(
-                                  height: height / 2 + height / 12,
-                                  indicatorBackgroundColor: Colors.grey,
-                                  indicatorColor: Colors.white,
-                                  children: allPosts.images?.map((imageURL) {
-                                    return PinchZoomReleaseUnzoomWidget(
-                                      child: InstaLikeButton(
-                                        height: height / 2 + height / 12,
-                                        iconSize: 100,
-                                        image: NetworkImage(imageURL),
-                                        onChanged: () {
-                                          setState(() {
-                                            if (allPosts.liked == false) {
-                                              post.update({'liked': true});
-                                              post.update({'likes': FieldValue.increment(1)});
-                                            }
-                                          });
-                                        },
-                                      ),
-                                    );
-                                  }).toList() ?? [], // Convert the mapped Iterable to a List
-                                ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width/20,
-                                    ),
-                                    if (allPosts.liked == true)
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            post.update({'liked':false});
-                                            post.update({'likes':FieldValue.increment(-1)});
-                                          });
-                                        },
-                                        child: const SizedBox(
-                                          height: 27,
-                                          width: 27,
-                                          child: Image(
-                                            image: AssetImage('assets/Icons/Loved.png'),
-                                          ),
-                                        ),
-                                      )
-                                    else
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            post.update({'liked':true});
-                                            post.update({'likes':FieldValue.increment(1)});
-                                          });
-                                        },
-                                        child: const SizedBox(
-                                          height: 27,
-                                          width: 27,
-                                          child: Image(
-                                            image: AssetImage('assets/Icons/love.png'),
-                                          ),
-                                        ),
-                                      ),
-                                    Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: InkWell(
-                                          child: Container(
-                                            height: 32,
-                                            width: 32,
-                                            child: const Image(
-                                              image:
-                                              AssetImage('assets/Icons/chat.png'),
+                                                  widget.userModel.profilePic!),
                                             ),
                                           ),
-                                        )),
-                                    Padding(
-                                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                        child: InkWell(
-                                          child: Container(
-                                            height: 25,
-                                            width: 25,
-                                            child: const Image(
-                                              image:
-                                              AssetImage('assets/Icons/send.png'),
-                                            ),
-                                          ),
-                                        )),
-                                    const Spacer(),
-                                    Container(
-                                      height: 25,
-                                      width: 25,
-                                      child: const Image(
-                                        image: AssetImage('assets/Icons/Saved.png'),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width/20, 0, 0, 0),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '${allPosts.likes} likes',
-                                      style: const TextStyle(
-                                        color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(height: 10),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width/20, 0, 0, 0),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: ExpandableText(
-                                      text:
-                                      '${allPosts.userName} ${allPosts.description}',
-                                      maxLines:
-                                      3, // Set the number of lines before the "more" button appears
-                                    ),
+                                  SizedBox(
+                                    height: MediaQuery.sizeOf(context).height *
+                                        0.007,
                                   ),
-                                )
-                              ],
+                                  Text(
+                                    "${widget.userModel.username}",
+                                    style: TextStyle(color: Colors.white),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ],
-                      );
-                    },
-                    childCount: postQuery.docs.length
-                    ,
-                  ),
-                );
-              }
-              else if(snapshot.hasError){
-                return SliverList(delegate: SliverChildListDelegate([]));
-              }
-              else{
-                return SliverList(delegate: SliverChildListDelegate([]));
-              }
-            }
-          ),
+                        ),
+                        Positioned(
+                          top: 43,
+                          left: 65,
+                          child: CircleAvatar(
+                            radius: 10,
+                            child: IconButton(
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                onPressed: () async {
+                                  XFile? image = await ImagePicker()
+                                      .pickImage(source: ImageSource.gallery);
+                                  UploadStory(
+                                          story: image, user: widget.userModel)
+                                      .uploadStory(context);
+                                },
+                                icon: const Icon(
+                                  Icons.add,
+                                  size: 16,
+                                  color: Colors.white,
+                                )),
+                          ),
+                        )
+                      ],
+                    )
+                  ]));
+                } else if (stories[0].storyModelUserName !=
+                    widget.userModel.username) {
+                  print(
+                      "${stories[0].storyModelUserName} aur current to hume pata hi hai ${widget.userModel.username}");
+                  StoryModel newUserStory = StoryModel(
+                    storyModelUserName: widget.userModel.username,
+                    storyModelProfilePic: widget.userModel.profilePic,
+                    storyModelUserStories: [],
+                    uid: widget.userModel.uid,
+                  );
+                  stories.insert(0, newUserStory);
+                  print(stories);
+                  return SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        SizedBox(
+                          height: height * 0.107,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: stories.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              print(stories.length);
+                              return Stack(
+                                children: [
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: index == 0
+                                            ? EdgeInsets.fromLTRB(20, 0, 0, 0)
+                                            : EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                        child: InkWell(
+                                            onTap: () async {
+                                              if (index == 0) {
+                                                print(widget.userModel.toMap());
+                                                XFile? image =
+                                                    await ImagePicker()
+                                                        .pickImage(
+                                                            source: ImageSource
+                                                                .gallery);
+                                                UploadStory(
+                                                        story: image,
+                                                        user: widget.userModel)
+                                                    .uploadStory(context);
+                                                setState(() {});
+                                              } else {
+                                                await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            StoriesPage(
+                                                                selectedPage:
+                                                                    index,
+                                                                status: stories[
+                                                                        index]
+                                                                    .storyModelUserStories!,
+                                                                stories:
+                                                                    stories)));
+                                              }
+                                            },
+                                            child: CircleAvatar(
+                                              radius: StorySize,
+                                              child: Container(
+                                                decoration: !false
+                                                    ? const BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment
+                                                                .topCenter,
+                                                            end: Alignment
+                                                                .bottomCenter,
+                                                            colors: [
+                                                              Color(0xFF9B2282),
+                                                              Color(0xFFEEA863)
+                                                            ]))
+                                                    : BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color:
+                                                            Colors.grey[700]),
+                                                child: CircleAvatar(
+                                                  radius: !false
+                                                      ? StorySize
+                                                      : StorySize + 0.2,
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  child: CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    radius: !false
+                                                        ? StorySize - 2.5
+                                                        : StorySize - 1.5,
+                                                    child: CircleAvatar(
+                                                      radius: StorySize - 5,
+                                                      backgroundImage:
+                                                          NetworkImage(stories[
+                                                                  index]
+                                                              .storyModelProfilePic!),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.fromLTRB(
+                                            15,
+                                            MediaQuery.sizeOf(context).height *
+                                                0.007,
+                                            0,
+                                            0),
+                                        child: Text(
+                                          stories[index].storyModelUserName ??
+                                              '',
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 13),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (index == 0)
+                                    Positioned(
+                                      top: 43,
+                                      left: 65,
+                                      child: CircleAvatar(
+                                        radius: 10,
+                                        child: IconButton(
+                                            splashColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            onPressed: () async {
+                                              XFile? image = await ImagePicker()
+                                                  .pickImage(
+                                                      source:
+                                                          ImageSource.gallery);
+                                              UploadStory(
+                                                      story: image,
+                                                      user: widget.userModel)
+                                                  .uploadStory(context);
+                                            },
+                                            icon: const Icon(
+                                              Icons.add,
+                                              size: 16,
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                    )
+                                  else
+                                    SizedBox(),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  print('pagal hai kya yahi to hu mei');
+                  return SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        SizedBox(
+                          height: height * 0.107,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: stories.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              print(stories.length);
+                              return Stack(
+                                children: [
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: index == 0
+                                            ? EdgeInsets.fromLTRB(20, 0, 0, 0)
+                                            : EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                        child: InkWell(
+                                            onTap: () async {
+                                              await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          StoriesPage(
+                                                              selectedPage:
+                                                                  index,
+                                                              status: stories[
+                                                                      index]
+                                                                  .storyModelUserStories!,
+                                                              stories:
+                                                                  stories)));
+                                            },
+                                            child: CircleAvatar(
+                                              radius: StorySize,
+                                              child: Container(
+                                                decoration: !false
+                                                    ? const BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment
+                                                                .topCenter,
+                                                            end: Alignment
+                                                                .bottomCenter,
+                                                            colors: [
+                                                              Color(0xFF9B2282),
+                                                              Color(0xFFEEA863)
+                                                            ]))
+                                                    : BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color:
+                                                            Colors.grey[700]),
+                                                child: CircleAvatar(
+                                                  radius: !false
+                                                      ? StorySize
+                                                      : StorySize + 0.2,
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  child: CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    radius: !false
+                                                        ? StorySize - 2.5
+                                                        : StorySize - 1.5,
+                                                    child: CircleAvatar(
+                                                      radius: StorySize - 5,
+                                                      backgroundImage:
+                                                          NetworkImage(stories[
+                                                                  index]
+                                                              .storyModelProfilePic!),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.fromLTRB(
+                                            15,
+                                            MediaQuery.sizeOf(context).height *
+                                                0.007,
+                                            0,
+                                            0),
+                                        child: Text(
+                                          stories[index].storyModelUserName ??
+                                              '',
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 13),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (index == 0)
+                                    Positioned(
+                                      top: 43,
+                                      left: 65,
+                                      child: CircleAvatar(
+                                        radius: 10,
+                                        child: IconButton(
+                                            splashColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            onPressed: () async {
+                                              XFile? image = await ImagePicker()
+                                                  .pickImage(
+                                                      source:
+                                                          ImageSource.gallery);
+                                              UploadStory(
+                                                      story: image,
+                                                      user: widget.userModel)
+                                                  .uploadStory(context);
+                                            },
+                                            icon: const Icon(
+                                              Icons.add,
+                                              size: 16,
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                    )
+                                  else
+                                    SizedBox(),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              }),
+          StreamBuilder<Object>(
+              stream: FirebaseFirestore.instance
+                  .collectionGroup('posts')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  QuerySnapshot postQuery = snapshot.data as QuerySnapshot;
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        Post allPosts = Post.fromMap(postQuery.docs[index]
+                            .data() as Map<String, dynamic>);
+                        DocumentReference post = FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(allPosts.userId)
+                            .collection('posts')
+                            .doc(allPosts.postId);
+                        return Column(
+                          children: [
+                            const Divider(
+                              color: Colors.grey,
+                              thickness: 0.1,
+                            ),
+                            Card(
+                              color: Colors.black,
+                              elevation: 0,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                            allPosts.profilePic ?? "",
+                                          ),
+                                          radius: 15,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          allPosts.userName ?? "",
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ),
+                                        const Spacer(),
+                                        IconButton(
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: Text(
+                                                          'Delete karna hai kya isko'),
+                                                      actions: [
+                                                        TextButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                              if (allPosts
+                                                                      .userId ==
+                                                                  widget
+                                                                      .userModel
+                                                                      .uid) {
+                                                                post.delete();
+                                                              } else {
+                                                                showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return AlertDialog(
+                                                                      title: Text(
+                                                                          'Bhkk apni post delete kar saale'),
+                                                                      actions: [
+                                                                        TextButton(
+                                                                            onPressed: () =>
+                                                                                {
+                                                                                  Navigator.pop(context)
+                                                                                },
+                                                                            child:
+                                                                                Text('Han han thik hai'))
+                                                                      ],
+                                                                    );
+                                                                  },
+                                                                );
+                                                              }
+                                                            },
+                                                            child: Text(
+                                                                'Han kar de yarr')),
+                                                        TextButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Text(
+                                                                'chodd pade rehne de')),
+                                                      ],
+                                                    );
+                                                  });
+                                            },
+                                            icon: Icon(
+                                              Icons.more_vert,
+                                              color: Colors.white,
+                                            ))
+                                      ],
+                                    ),
+                                  ),
+                                  ImageSlideshow(
+                                    height: height / 2 + height / 12,
+                                    indicatorBackgroundColor: Colors.grey,
+                                    indicatorColor: Colors.white,
+                                    children: allPosts.images?.map((imageURL) {
+                                          return PinchZoomReleaseUnzoomWidget(
+                                            child: InstaLikeButton(
+                                              height: height / 2 + height / 12,
+                                              iconSize: 100,
+                                              image: NetworkImage(imageURL),
+                                              onChanged: () {
+                                                setState(() {
+                                                  if (allPosts.liked == false) {
+                                                    post.update(
+                                                        {'liked': true});
+                                                    post.update({
+                                                      'likes':
+                                                          FieldValue.increment(
+                                                              1)
+                                                    });
+                                                  }
+                                                });
+                                              },
+                                            ),
+                                          );
+                                        }).toList() ??
+                                        [], // Convert the mapped Iterable to a List
+                                  ),
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                20,
+                                      ),
+                                      if (allPosts.liked == true)
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              post.update({'liked': false});
+                                              post.update({
+                                                'likes':
+                                                    FieldValue.increment(-1)
+                                              });
+                                            });
+                                          },
+                                          child: const SizedBox(
+                                            height: 27,
+                                            width: 27,
+                                            child: Image(
+                                              image: AssetImage(
+                                                  'assets/Icons/Loved.png'),
+                                            ),
+                                          ),
+                                        )
+                                      else
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              post.update({'liked': true});
+                                              post.update({
+                                                'likes': FieldValue.increment(1)
+                                              });
+                                            });
+                                          },
+                                          child: const SizedBox(
+                                            height: 27,
+                                            width: 27,
+                                            child: Image(
+                                              image: AssetImage(
+                                                  'assets/Icons/love.png'),
+                                            ),
+                                          ),
+                                        ),
+                                      Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: InkWell(
+                                            child: Container(
+                                              height: 32,
+                                              width: 32,
+                                              child: const Image(
+                                                image: AssetImage(
+                                                    'assets/Icons/chat.png'),
+                                              ),
+                                            ),
+                                          )),
+                                      Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 5, 0, 0),
+                                          child: InkWell(
+                                            child: Container(
+                                              height: 25,
+                                              width: 25,
+                                              child: const Image(
+                                                image: AssetImage(
+                                                    'assets/Icons/send.png'),
+                                              ),
+                                            ),
+                                          )),
+                                      const Spacer(),
+                                      Container(
+                                        height: 25,
+                                        width: 25,
+                                        child: const Image(
+                                          image: AssetImage(
+                                              'assets/Icons/Saved.png'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                        MediaQuery.of(context).size.width / 20,
+                                        0,
+                                        0,
+                                        0),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        '${allPosts.likes} likes',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                        MediaQuery.of(context).size.width / 20,
+                                        0,
+                                        0,
+                                        0),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: ExpandableText(
+                                        text:
+                                            '${allPosts.userName} ${allPosts.description}',
+                                        maxLines:
+                                            3, // Set the number of lines before the "more" button appears
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                      childCount: postQuery.docs.length,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return SliverList(delegate: SliverChildListDelegate([]));
+                } else {
+                  return SliverList(delegate: SliverChildListDelegate([]));
+                }
+              }),
         ],
-      );
+      ),
+    );
   }
 }

@@ -9,13 +9,13 @@ import 'package:insta_clone/Models/UserModel.dart';
 import 'package:insta_clone/Pages/authentication/login/login_page.dart';
 import 'package:insta_clone/Pages/home/ProfilePic/picker.dart';
 import 'package:insta_clone/Services/Home/post.dart';
-import 'package:insta_clone/Services/profile_accounts.dart';
 import 'package:insta_clone/Services/profile_highlight.dart';
 import 'package:insta_clone/Services/create_items.dart';
 class Profile extends StatefulWidget {
   final UserModel userModel;
   final User firebaseUser;
   Profile({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
+
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -38,7 +38,7 @@ class _ProfileState extends State<Profile> {
                 children: [
                   Text(
                     widget.userModel.username.toString(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -46,7 +46,7 @@ class _ProfileState extends State<Profile> {
                       onPressed: (){
                         //_bottomSheet2(context);
                       },
-                      icon: Icon(Icons.keyboard_arrow_down)),
+                      icon: const Icon(Icons.keyboard_arrow_down)),
                 ],
               ),
               actions: [
@@ -74,7 +74,7 @@ class _ProfileState extends State<Profile> {
                     labelColor: Colors.white,
                     indicatorColor: Colors.white,
                     tabs: [
-                      Tab(
+                      const Tab(
                         icon: Icon(Icons.grid_on),
                       ),
                       Tab(
@@ -83,7 +83,7 @@ class _ProfileState extends State<Profile> {
                           width: 25.0,
                         ),
                       ),
-                      Tab(
+                      const Tab(
                         icon: Icon(Icons.assignment_ind_outlined),
                       ),
                     ],
@@ -95,8 +95,8 @@ class _ProfileState extends State<Profile> {
           body: TabBarView(
             children: [
               _ProfileGridView(userModel: widget.userModel, firebaseUser: widget.firebaseUser,),
-              _ProfileGridView1(),
-              _ProfileGridView1(),
+              const _ProfileGridView1(),
+              const _ProfileGridView1(),
             ],
           ),
         ),
@@ -145,19 +145,19 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                             );
                           }
                           else if (snapshot.hasError) {
-                            return Center(
+                            return const Center(
                               child: Text(
                                   "An error occured! Please check your internet connection."),
                             );
                           }
                           else {
-                            return Center(
+                            return const Center(
                               child: Text("No Picture"),
                             );
                           }
                         }
                         else{
-                          return Center(
+                          return const Center(
                             child: CircularProgressIndicator(),
                           );
                         }
@@ -165,7 +165,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   ),
                 ],
               ),
-              Expanded(
+              const Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children:  [
@@ -173,7 +173,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                       children: [
                         Text(
                           "11",
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                               color: Colors.white
@@ -190,7 +190,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                       children: [
                         Text(
                           "4,710",
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                               color: Colors.white
@@ -207,7 +207,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                       children: [
                         Text(
                           "150",
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                               color: Colors.white
@@ -225,7 +225,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
               ),
             ],
           ),
-          SizedBox(height: 12.0),
+          const SizedBox(height: 12.0),
           StreamBuilder(
             stream: FirebaseFirestore.instance.collection("users").doc(widget.userModel.uid).snapshots(),
             builder: (context, snapshot) {
@@ -237,21 +237,21 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                       Row(
                         children: [
                           Text(widget.userModel.name.toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold
                             ),
                           ),
-                          SizedBox(width: 10.0,),
+                          const SizedBox(width: 10.0,),
                           Text(widget.userModel.pronouns.toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.grey,
                             ),
                           ),
                         ],
                       ),
                       Text(widget.userModel.bio.toString(),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                         ),
                       ),
@@ -259,25 +259,25 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   );
                 }
                 else if (snapshot.hasError) {
-                  return Center(
+                  return const Center(
                     child: Text(
                         "An error occured! Please check your internet connection."),
                   );
                 }
                 else {
-                  return Center(
+                  return const Center(
                     child: Text("Add Details"),
                   );
                 }
               }
               else{
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               }
             }
           ),
-          SizedBox(height: 12.0),
+          const SizedBox(height: 12.0),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -299,7 +299,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         "Edit Profile",
                         style: TextStyle(
                             color: Colors.white
@@ -307,7 +307,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 8.0,),
+                  const SizedBox(width: 8.0,),
                   SizedBox(
                     width: 164.0,
                     child: TextButton(
@@ -318,7 +318,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                           "Share Profile",
                           style: TextStyle(
                               color: Colors.white
@@ -330,7 +330,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
               ),
             ],
           ),
-          _StoryHighlights(),
+          const _StoryHighlights(),
         ],
       ),
     );
@@ -425,7 +425,7 @@ class _EditProfileState extends State<EditProfile> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text("Edit Profile",
+        title: const Text("Edit Profile",
           style: TextStyle(
             color: Colors.white,
           ),
@@ -435,7 +435,7 @@ class _EditProfileState extends State<EditProfile> {
             onPressed: (){
               uploadData();
             },
-            icon: Icon(Icons.check,
+            icon: const Icon(Icons.check,
               color: Colors.blue,
             ),
           ),
@@ -444,7 +444,7 @@ class _EditProfileState extends State<EditProfile> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 35.0,),
+            const SizedBox(height: 35.0,),
             Center(
               child: CircleAvatar(
                 radius: 40.0,
@@ -459,7 +459,7 @@ class _EditProfileState extends State<EditProfile> {
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>PickerScreen(selectedAssets: selectedAssets, fileStream: fileStream,user: widget.userModel))):Navigator.pop(context)
                     });
                   },
-                  child: Text("Edit picture",
+                  child: const Text("Edit picture",
                     style: TextStyle(color: Colors.blue),
                   )
               ),
@@ -470,10 +470,10 @@ class _EditProfileState extends State<EditProfile> {
                 children: [
                   TextFormField(
                     controller: nameController,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Name",
                       labelStyle: TextStyle(
                         color: Colors.grey,
@@ -485,10 +485,10 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   TextFormField(
                     controller: usernameController,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Username",
                       labelStyle: TextStyle(
                         color: Colors.grey,
@@ -500,10 +500,10 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   TextFormField(
                     controller: pronounController,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Pronouns",
                       labelStyle: TextStyle(
                         color: Colors.grey,
@@ -515,10 +515,10 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   TextFormField(
                     controller: bioController,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Bio",
                       labelStyle: TextStyle(
                         color: Colors.grey,
@@ -541,7 +541,7 @@ class _EditProfileState extends State<EditProfile> {
 
 
 class _StoryHighlights extends StatefulWidget {
-  const _StoryHighlights({super.key});
+  const _StoryHighlights();
 
   @override
   State<_StoryHighlights> createState() => _StoryHighlightsState();
@@ -591,7 +591,7 @@ class _StoryHighlightsState extends State<_StoryHighlights> {
               },
               child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 50.0,
                   ),
                   Row(
@@ -611,7 +611,7 @@ class _StoryHighlightsState extends State<_StoryHighlights> {
                       ),
                       Text(
                         highlights[currentIndex].desc,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -688,7 +688,7 @@ class _StoryHighlightsState extends State<_StoryHighlights> {
                 Text(
                   highlight.desc,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                   ),
                 ),
@@ -703,12 +703,12 @@ class _StoryHighlightsState extends State<_StoryHighlights> {
 
 void _bottomSheet1(context){
   showModalBottomSheet(
-    shape: RoundedRectangleBorder(
+    shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
     ),
     context: context,
     builder: (BuildContext icon) {
-      return Create();
+      return const Create();
       },
   );
 }
@@ -721,29 +721,29 @@ class Create extends StatefulWidget {
 
 class _CreateState extends State<Create> {
   List<create_items>items=[
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
     color: Colors.white,), name: "Reel"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
     color: Colors.white,), name: "Post"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
     color: Colors.white,), name: "Story"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
     color: Colors.white,), name: "Story Highlight"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
     color: Colors.white,), name: "Live"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
     color: Colors.white,), name: "Guide"),
   ];
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Color(0xDD000000),
+        color: const Color(0xDD000000),
       height: 500.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 10.0),
+            padding: const EdgeInsets.only(top: 10.0),
             child: Center(
               child: Container(height: 4.0,width: 40.0,
                 decoration: BoxDecoration(
@@ -753,8 +753,8 @@ class _CreateState extends State<Create> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0),
+          const Padding(
+            padding: EdgeInsets.only(top: 10.0),
             child: Center(
               child: Text(
                 "Create",
@@ -781,7 +781,7 @@ class _CreateState extends State<Create> {
                   },
                   leading: items[index].icon,
                   title: Text(items[index].name,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white
                   ),),
                 );
@@ -796,12 +796,12 @@ class _CreateState extends State<Create> {
 
 void _bottomSheet3(context){
   showModalBottomSheet(
-    shape: RoundedRectangleBorder(
+    shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
     ),
     context: context,
     builder: (BuildContext icon) {
-      return profile_more_options();
+      return const profile_more_options();
     },
   );
 }
@@ -814,37 +814,37 @@ class profile_more_options extends StatefulWidget {
 
 class _profile_more_optionsState extends State<profile_more_options> {
   List<create_items>items=[
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
       color: Colors.white,), name: "Settings and privacy"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
       color: Colors.white,), name: "Threas"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
       color: Colors.white,), name: "Your activity"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
       color: Colors.white,), name: "Archive"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
       color: Colors.white,), name: "QR code"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
       color: Colors.white,), name: "Saved"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
       color: Colors.white,), name: "Meta Verified"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
       color: Colors.white,), name: "Close Friends"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
       color: Colors.white,), name: "Favourites"),
-    create_items(icon: Icon(Icons.account_circle,
+    create_items(icon: const Icon(Icons.account_circle,
       color: Colors.white,), name: "Discover people"),
   ];
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xDD000000),
+      color: const Color(0xDD000000),
       height: 700.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 10.0),
+            padding: const EdgeInsets.only(top: 10.0),
             child: Center(
               child: Container(height: 4.0,width: 40.0,
                 decoration: BoxDecoration(
@@ -863,7 +863,7 @@ class _profile_more_optionsState extends State<profile_more_options> {
                 return ListTile(
                   leading: items[index].icon,
                   title: Text(items[index].name,
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.white
                     ),),
                 );
@@ -941,7 +941,7 @@ class _ProfileGridViewState extends State<_ProfileGridView> {
                   }
                   else{
                     return Container(
-                      child: Center(
+                      child: const Center(
                         child: Text("No post",
                           style: TextStyle(
                             color: Colors.white
@@ -957,14 +957,14 @@ class _ProfileGridViewState extends State<_ProfileGridView> {
               return Center(
                 child: Text(
                   snapshot.error.toString(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                   ),
                 ),
               );
             }
             else{
-              return Center(
+              return const Center(
                 child: Text("No Chats",
                   style: TextStyle(
                       color: Colors.white
@@ -974,7 +974,7 @@ class _ProfileGridViewState extends State<_ProfileGridView> {
             }
           }
           else{
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -993,7 +993,7 @@ class _ProfileGridView1 extends StatefulWidget {
 class _ProfileGridView1State extends State<_ProfileGridView1> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.black,
       body: Center(
         child: Text(

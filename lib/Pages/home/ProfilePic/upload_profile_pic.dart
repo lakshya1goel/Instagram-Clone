@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:insta_clone/Services/Home/post.dart';
 import 'package:uuid/uuid.dart';
 import '../../../Models/UserModel.dart';
 class UploadPost{
@@ -16,7 +15,6 @@ class UploadPost{
     FirebaseFirestore database = FirebaseFirestore.instance;
     FirebaseStorage storage = FirebaseStorage.instance;
     Reference ref = storage.ref();
-    String postId = Uuid().v1();
     List<String> singlePost = [];
 
     int totalUploads = posts.length;
@@ -79,21 +77,30 @@ class UploadPost{
       final downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
       singlePost.add(downloadURL);
       user.profilePic=downloadURL;
+      FirebaseFirestore reference =  FirebaseFirestore.instance;
+      final CollectionReference postCollection = reference.collection('users').doc(user.uid).collection('posts');
+      QuerySnapshot querySnapshot = await postCollection.get();
+      querySnapshot.docs.forEach((doc) {
+        postCollection.doc(doc.id).update({'profilePic': downloadURL});
+      });
     }
-
-    Navigator.of(context).pop();
-
     // Map<String, dynamic> newPost = Post(
     //   postId: postId,
     //   userId: user.uid,
-    //   userName: user.username,
+    //   userNam
+    //   e: user.username,
     //   liked: false,
     //   likes: 0,
     //   images: singlePost,
     //   profilePic: user.profilePic,
     // ).toMap();
-
-    await database.collection('users').doc(user.uid).set(user.toMap());
+    FirebaseFirestore reference =  FirebaseFirestore.instance;
+    final CollectionReference postCollection = reference.collection('users').doc(user.uid).collection('posts');
+    QuerySnapshot querySnapshot = await postCollection.get();
+    querySnapshot.docs.forEach((doc) {
+      postCollection.doc(doc.id).update({'profilePic': user.profilePic});
+    });
+    Navigator.pop(context);
     Navigator.pop(context);
   }
 
