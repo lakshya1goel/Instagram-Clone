@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,9 +28,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<StoryModel> stories = [];
+  late List<StoryModel> stories;
 
   Future<List<StoryModel>> getUsersWithStories() async {
+    stories = [];
     final usersSnapshot =
         await FirebaseFirestore.instance.collection('users').get();
 
@@ -43,12 +45,13 @@ class _HomePageState extends State<HomePage> {
           final storyData = storyDoc.data();
           return StoryPageModel.fromMap(storyData);
         }).toList();
-
+        print("(((((((((((((()))))))))))");
+        print(userDoc.data()['username']);
         return StoryModel(
           storyModelUserName: userDoc.data()['username'],
           storyModelProfilePic: userDoc.data()['profilePic'],
           storyModelUserStories: stories,
-          uid: widget.userModel.uid,
+          uid: userDoc.data()['uid'],
         );
       } else {
         return null;
@@ -59,30 +62,47 @@ class _HomePageState extends State<HomePage> {
         usersWithStories.where((user) => user != null).toList();
 
     stories = filteredStories.cast<StoryModel>();
+    print("Starting reorder process");
+
+    StoryModel? userStory; // Declare as nullable
+
+    int userStoryIndex = -1;
+    print(stories.length);
+
+    // Find the index of the user's story and store it
+    for (int i = 0; i < stories.length; i++) {
+      print("story ka username = ${stories[i].storyModelUserName} and mera username ${widget.userModel.username}");
+      if (stories[i].storyModelUserName == widget.userModel.username) {
+        userStory = stories[i];
+        userStoryIndex = i;
+        break;
+      }
+    }
+
+    // If the user's story was found, move it to the front of the list
+    if (userStoryIndex != -1 && userStory != null) { // Check for null
+      stories.removeAt(userStoryIndex);
+      stories.insert(0, userStory);
+      print("User story moved to the front");
+    } else {
+      print("User story not found in the list");
+    }
     return stories;
   }
 
-  void reorderStories() {
-    final userStoryIndex = stories.indexWhere(
-        (story) => story.storyModelUserName == widget.userModel.uid);
 
-    if (userStoryIndex != -1) {
-      final userStory = stories.removeAt(userStoryIndex);
-      stories.insert(0, userStory);
-    }
-  }
 
   @override
   void initState() {
     super.initState();
     getUsersWithStories();
-    reorderStories();
   }
 
   final RefreshController _refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
+    getUsersWithStories();
     Stream<List<StoryModel>> storyStream =
         Stream.fromFuture(getUsersWithStories());
     double height = MediaQuery.of(context).size.height;
@@ -94,7 +114,6 @@ class _HomePageState extends State<HomePage> {
         print("nahi idhar aaya");
         await getUsersWithStories();
         setState(() {});
-        reorderStories();
         _refreshController.refreshCompleted();
       },
       header: MaterialClassicHeader(),
@@ -187,7 +206,9 @@ class _HomePageState extends State<HomePage> {
                                               story: image,
                                               user: widget.userModel)
                                           .uploadStory(context);
-                                      setState(() {});
+                                      setState(() {
+                                        getUsersWithStories();
+                                      });
                                     },
                                     child: CircleAvatar(
                                       radius: StorySize,
@@ -251,7 +272,7 @@ class _HomePageState extends State<HomePage> {
                   ]));
                 } else if (stories[0].storyModelUserName !=
                     widget.userModel.username) {
-                  print("yarr ye kar diya meine");
+                  print("${stories[0].storyModelUserName} aur current to hume pata hi hai ${widget.userModel.username}");
                   StoryModel newUserStory = StoryModel(
                     storyModelUserName: widget.userModel.username,
                     storyModelProfilePic: widget.userModel.profilePic,

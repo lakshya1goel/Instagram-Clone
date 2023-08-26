@@ -119,7 +119,7 @@ class _CropResultViewState extends State<CropResultView> {
           // ),
           // SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               UploadPost(user: widget.user,posts: widget.croppedFiles).uploadPost(context);
             },
             style: ElevatedButton.styleFrom(
