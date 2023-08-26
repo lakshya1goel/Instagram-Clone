@@ -31,12 +31,12 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<StoryModel>> getUsersWithStories() async {
     final usersSnapshot =
-    await FirebaseFirestore.instance.collection('users').get();
+        await FirebaseFirestore.instance.collection('users').get();
 
     final usersWithStories =
-    await Future.wait(usersSnapshot.docs.map((userDoc) async {
+        await Future.wait(usersSnapshot.docs.map((userDoc) async {
       final storiesSnapshot =
-      await userDoc.reference.collection('stories').get();
+          await userDoc.reference.collection('stories').get();
 
       if (storiesSnapshot.docs.isNotEmpty) {
         final stories = storiesSnapshot.docs.map((storyDoc) {
@@ -47,7 +47,8 @@ class _HomePageState extends State<HomePage> {
         return StoryModel(
           storyModelUserName: userDoc.data()['username'],
           storyModelProfilePic: userDoc.data()['profilePic'],
-          storyModelUserStories: stories, uid: widget.userModel.uid,
+          storyModelUserStories: stories,
+          uid: widget.userModel.uid,
         );
       } else {
         return null;
@@ -55,7 +56,7 @@ class _HomePageState extends State<HomePage> {
     }));
 
     final filteredStories =
-    usersWithStories.where((user) => user != null).toList();
+        usersWithStories.where((user) => user != null).toList();
 
     stories = filteredStories.cast<StoryModel>();
     return stories;
@@ -63,7 +64,7 @@ class _HomePageState extends State<HomePage> {
 
   void reorderStories() {
     final userStoryIndex = stories.indexWhere(
-            (story) => story.storyModelUserName == widget.userModel.uid);
+        (story) => story.storyModelUserName == widget.userModel.uid);
 
     if (userStoryIndex != -1) {
       // Logged-in user's story exists, reorder the list
@@ -78,26 +79,26 @@ class _HomePageState extends State<HomePage> {
     getUsersWithStories();
     reorderStories();
   }
+
   final RefreshController _refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
     Stream<List<StoryModel>> storyStream =
-    Stream.fromFuture(getUsersWithStories());
+        Stream.fromFuture(getUsersWithStories());
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     double StorySize = 0.09 * width;
     print('$height & $width');
     return SmartRefresher(
-
-      onRefresh: ()async{
+      onRefresh: () async {
         print("nahi idhar aaya");
         await getUsersWithStories();
         setState(() {});
         _refreshController.refreshCompleted();
       },
       header: MaterialClassicHeader(),
-      onLoading: ()async{
+      onLoading: () async {
         print("idhar aa gya meo to hehe");
         await getUsersWithStories();
         _refreshController.loadComplete();
@@ -138,9 +139,9 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChatContact(
-                              userModel: widget.userModel,
-                              firebaseUser: widget.firebaseUser,
-                            )),
+                                  userModel: widget.userModel,
+                                  firebaseUser: widget.firebaseUser,
+                                )),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -166,7 +167,8 @@ class _HomePageState extends State<HomePage> {
                   return SliverList(delegate: SliverChildListDelegate([]));
                 } else if (!snapshot.hasData || stories.isEmpty) {
                   print('i was here');
-                  return SliverList(delegate: SliverChildListDelegate([
+                  return SliverList(
+                      delegate: SliverChildListDelegate([
                     Stack(
                       children: [
                         SingleChildScrollView(
@@ -177,43 +179,45 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 children: [
                                   InkWell(
-                                  onTap: ()async {
-                                    XFile? image = await ImagePicker()
-                                        .pickImage(
-                                        source:
-                                        ImageSource.gallery);
-                                    UploadStory(
-                                        story: image,
-                                        user: widget.userModel)
-                                        .uploadStory(context);
-                                    setState(() {
-
-                                    });
-                                  },
-                                  child: CircleAvatar(
-                                    radius: StorySize,
-                                    child: Container(
-                                      decoration:BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.grey[700]),
-                                      child: CircleAvatar(
-                                        radius:  StorySize + 0.2,
-                                        backgroundColor: Colors.transparent,
+                                    onTap: () async {
+                                      XFile? image = await ImagePicker()
+                                          .pickImage(
+                                              source: ImageSource.gallery);
+                                      UploadStory(
+                                              story: image,
+                                              user: widget.userModel)
+                                          .uploadStory(context);
+                                      setState(() {});
+                                    },
+                                    child: CircleAvatar(
+                                      radius: StorySize,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.grey[700]),
                                         child: CircleAvatar(
-                                          backgroundColor: Colors.black,
-                                          radius:StorySize - 1.5,
+                                          radius: StorySize + 0.2,
+                                          backgroundColor: Colors.transparent,
                                           child: CircleAvatar(
-                                            radius: StorySize - 5,
-                                            backgroundImage:
-                                            NetworkImage(widget.userModel.profilePic!),
+                                            backgroundColor: Colors.black,
+                                            radius: StorySize - 1.5,
+                                            child: CircleAvatar(
+                                              radius: StorySize - 5,
+                                              backgroundImage: NetworkImage(
+                                                  widget.userModel.profilePic!),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                  ),
-                                  SizedBox(height: 3,),
-                                  Text("${widget.userModel.username}",style: TextStyle(color: Colors.white),)
+                                  SizedBox(
+                                    height: 3,
+                                  ),
+                                  Text(
+                                    "${widget.userModel.username}",
+                                    style: TextStyle(color: Colors.white),
+                                  )
                                 ],
                               ),
                             ),
@@ -227,31 +231,35 @@ class _HomePageState extends State<HomePage> {
                             child: IconButton(
                                 splashColor: Colors.transparent,
                                 highlightColor: Colors.transparent,
-                                padding: EdgeInsets.fromLTRB(0, 0, 0,0),
+                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                 onPressed: () async {
                                   XFile? image = await ImagePicker()
-                                      .pickImage(
-                                      source:
-                                      ImageSource.gallery);
+                                      .pickImage(source: ImageSource.gallery);
                                   UploadStory(
-                                      story: image,
-                                      user: widget.userModel)
+                                          story: image, user: widget.userModel)
                                       .uploadStory(context);
-                                }, icon: const Icon(Icons.add,size: 16,color: Colors.white,)),
+                                },
+                                icon: const Icon(
+                                  Icons.add,
+                                  size: 16,
+                                  color: Colors.white,
+                                )),
                           ),
                         )
                       ],
-                    )]));
-                }
-                else if(stories[0].storyModelUserName != widget.userModel.username){
-                    print("yarr ye kar diya meine") ;
-                    StoryModel newUserStory = StoryModel(
-                      storyModelUserName: widget.userModel.username,
-                      storyModelProfilePic: widget.userModel.profilePic,
-                      storyModelUserStories: [], uid: widget.userModel.uid,
-                    );
-                    stories.insert(0, newUserStory);
-                    print(stories);
+                    )
+                  ]));
+                } else if (stories[0].storyModelUserName !=
+                    widget.userModel.username) {
+                  print("yarr ye kar diya meine");
+                  StoryModel newUserStory = StoryModel(
+                    storyModelUserName: widget.userModel.username,
+                    storyModelProfilePic: widget.userModel.profilePic,
+                    storyModelUserStories: [],
+                    uid: widget.userModel.uid,
+                  );
+                  stories.insert(0, newUserStory);
+                  print(stories);
                   return SliverList(
                     delegate: SliverChildListDelegate(
                       [
@@ -272,53 +280,70 @@ class _HomePageState extends State<HomePage> {
                                             : EdgeInsets.fromLTRB(15, 0, 0, 0),
                                         child: InkWell(
                                             onTap: () async {
-                                              print(widget.userModel.toMap());
-                                              XFile? image = await ImagePicker()
-                                                  .pickImage(
-                                                  source:
-                                                  ImageSource.gallery);
-                                              UploadStory(
-                                                  story: image,
-                                                  user: widget.userModel)
-                                                  .uploadStory(context);
-                                              setState(() {
-
-                                              });
+                                              if (index == 0) {
+                                                print(widget.userModel.toMap());
+                                                XFile? image =
+                                                    await ImagePicker()
+                                                        .pickImage(
+                                                            source: ImageSource
+                                                                .gallery);
+                                                UploadStory(
+                                                        story: image,
+                                                        user: widget.userModel)
+                                                    .uploadStory(context);
+                                                setState(() {});
+                                              } else {
+                                                await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            StoriesPage(
+                                                                selectedPage:
+                                                                    index,
+                                                                status: stories[
+                                                                        index]
+                                                                    .storyModelUserStories!,
+                                                                stories:
+                                                                    stories)));
+                                              }
                                             },
                                             child: CircleAvatar(
                                               radius: StorySize,
                                               child: Container(
                                                 decoration: !false
                                                     ? const BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    gradient: LinearGradient(
-                                                        begin:
-                                                        Alignment.topCenter,
-                                                        end: Alignment
-                                                            .bottomCenter,
-                                                        colors: [
-                                                          Color(0xFF9B2282),
-                                                          Color(0xFFEEA863)
-                                                        ]))
+                                                        shape: BoxShape.circle,
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment
+                                                                .topCenter,
+                                                            end: Alignment
+                                                                .bottomCenter,
+                                                            colors: [
+                                                              Color(0xFF9B2282),
+                                                              Color(0xFFEEA863)
+                                                            ]))
                                                     : BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.grey[700]),
+                                                        shape: BoxShape.circle,
+                                                        color:
+                                                            Colors.grey[700]),
                                                 child: CircleAvatar(
                                                   radius: !false
                                                       ? StorySize
                                                       : StorySize + 0.2,
-                                                  backgroundColor: Colors.transparent,
+                                                  backgroundColor:
+                                                      Colors.transparent,
                                                   child: CircleAvatar(
-                                                    backgroundColor: Colors.black,
+                                                    backgroundColor:
+                                                        Colors.black,
                                                     radius: !false
                                                         ? StorySize - 2.5
                                                         : StorySize - 1.5,
                                                     child: CircleAvatar(
                                                       radius: StorySize - 5,
                                                       backgroundImage:
-                                                      NetworkImage(stories[
-                                                      index]
-                                                          .storyModelProfilePic!),
+                                                          NetworkImage(stories[
+                                                                  index]
+                                                              .storyModelProfilePic!),
                                                     ),
                                                   ),
                                                 ),
@@ -326,37 +351,48 @@ class _HomePageState extends State<HomePage> {
                                             )),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.fromLTRB(15, 4, 0, 0),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            15, 4, 0, 0),
                                         child: Text(
-                                          stories[index].storyModelUserName ?? '',
+                                          stories[index].storyModelUserName ??
+                                              '',
                                           style: const TextStyle(
-                                              color: Colors.white, fontSize: 13),
+                                              color: Colors.white,
+                                              fontSize: 13),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  if(index == 0)Positioned(
-                                    top: 43,
-                                    left: 65,
-                                    child: CircleAvatar(
-                                      radius: 10,
-                                      child: IconButton(
-                                          splashColor: Colors.transparent,
-                                          highlightColor: Colors.transparent,
-                                          padding: EdgeInsets.fromLTRB(0, 0, 0,0),
-                                          onPressed: () async {
-                                            XFile? image = await ImagePicker()
-                                                .pickImage(
-                                                source:
-                                                ImageSource.gallery);
-                                            UploadStory(
-                                                story: image,
-                                                user: widget.userModel)
-                                                .uploadStory(context);
-                                          }, icon: const Icon(Icons.add,size: 16,color: Colors.white,)),
-                                    ),
-                                  )
-                                  else SizedBox(),
+                                  if (index == 0)
+                                    Positioned(
+                                      top: 43,
+                                      left: 65,
+                                      child: CircleAvatar(
+                                        radius: 10,
+                                        child: IconButton(
+                                            splashColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            onPressed: () async {
+                                              XFile? image = await ImagePicker()
+                                                  .pickImage(
+                                                      source:
+                                                          ImageSource.gallery);
+                                              UploadStory(
+                                                      story: image,
+                                                      user: widget.userModel)
+                                                  .uploadStory(context);
+                                            },
+                                            icon: const Icon(
+                                              Icons.add,
+                                              size: 16,
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                    )
+                                  else
+                                    SizedBox(),
                                 ],
                               );
                             },
@@ -365,8 +401,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   );
-                }
-                else {
+                } else {
                   print('pagal hai kya yahi to hu mei');
                   return SliverList(
                     delegate: SliverChildListDelegate(
@@ -388,53 +423,56 @@ class _HomePageState extends State<HomePage> {
                                             : EdgeInsets.fromLTRB(15, 0, 0, 0),
                                         child: InkWell(
                                             onTap: () async {
-                                              if(stories[0].storyModelUserStories!.isEmpty){
-                                              }
-                                              else{
-                                                await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) => StoriesPage(
-                                                            selectedPage: index,
-                                                            status: stories[index]
-                                                                .storyModelUserStories!,
-                                                            stories: stories)));
-                                              }
+                                              await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          StoriesPage(
+                                                              selectedPage:
+                                                                  index,
+                                                              status: stories[
+                                                                      index]
+                                                                  .storyModelUserStories!,
+                                                              stories:
+                                                                  stories)));
                                             },
                                             child: CircleAvatar(
                                               radius: StorySize,
                                               child: Container(
                                                 decoration: !false
                                                     ? const BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    gradient: LinearGradient(
-                                                        begin:
-                                                        Alignment.topCenter,
-                                                        end: Alignment
-                                                            .bottomCenter,
-                                                        colors: [
-                                                          Color(0xFF9B2282),
-                                                          Color(0xFFEEA863)
-                                                        ]))
+                                                        shape: BoxShape.circle,
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment
+                                                                .topCenter,
+                                                            end: Alignment
+                                                                .bottomCenter,
+                                                            colors: [
+                                                              Color(0xFF9B2282),
+                                                              Color(0xFFEEA863)
+                                                            ]))
                                                     : BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.grey[700]),
+                                                        shape: BoxShape.circle,
+                                                        color:
+                                                            Colors.grey[700]),
                                                 child: CircleAvatar(
                                                   radius: !false
                                                       ? StorySize
                                                       : StorySize + 0.2,
-                                                  backgroundColor: Colors.transparent,
+                                                  backgroundColor:
+                                                      Colors.transparent,
                                                   child: CircleAvatar(
-                                                    backgroundColor: Colors.black,
+                                                    backgroundColor:
+                                                        Colors.black,
                                                     radius: !false
                                                         ? StorySize - 2.5
                                                         : StorySize - 1.5,
                                                     child: CircleAvatar(
                                                       radius: StorySize - 5,
                                                       backgroundImage:
-                                                      NetworkImage(stories[
-                                                      index]
-                                                          .storyModelProfilePic!),
+                                                          NetworkImage(stories[
+                                                                  index]
+                                                              .storyModelProfilePic!),
                                                     ),
                                                   ),
                                                 ),
@@ -442,37 +480,48 @@ class _HomePageState extends State<HomePage> {
                                             )),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.fromLTRB(15, 4, 0, 0),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            15, 4, 0, 0),
                                         child: Text(
-                                          stories[index].storyModelUserName ?? '',
+                                          stories[index].storyModelUserName ??
+                                              '',
                                           style: const TextStyle(
-                                              color: Colors.white, fontSize: 13),
+                                              color: Colors.white,
+                                              fontSize: 13),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  if(index == 0)Positioned(
-                                    top: 43,
-                                    left: 65,
-                                    child: CircleAvatar(
-                                      radius: 10,
-                                      child: IconButton(
-                                          splashColor: Colors.transparent,
-                                          highlightColor: Colors.transparent,
-                                          padding: EdgeInsets.fromLTRB(0, 0, 0,0),
-                                          onPressed: () async {
-                                            XFile? image = await ImagePicker()
-                                                .pickImage(
-                                                source:
-                                                ImageSource.gallery);
-                                            UploadStory(
-                                                story: image,
-                                                user: widget.userModel)
-                                                .uploadStory(context);
-                                          }, icon: const Icon(Icons.add,size: 16,color: Colors.white,)),
-                                    ),
-                                  )
-                                  else SizedBox(),
+                                  if (index == 0)
+                                    Positioned(
+                                      top: 43,
+                                      left: 65,
+                                      child: CircleAvatar(
+                                        radius: 10,
+                                        child: IconButton(
+                                            splashColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            onPressed: () async {
+                                              XFile? image = await ImagePicker()
+                                                  .pickImage(
+                                                      source:
+                                                          ImageSource.gallery);
+                                              UploadStory(
+                                                      story: image,
+                                                      user: widget.userModel)
+                                                  .uploadStory(context);
+                                            },
+                                            icon: const Icon(
+                                              Icons.add,
+                                              size: 16,
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                    )
+                                  else
+                                    SizedBox(),
                                 ],
                               );
                             },
@@ -483,16 +532,23 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
               }),
-            StreamBuilder<Object>(
-              stream: FirebaseFirestore.instance.collectionGroup('posts').snapshots(),
+          StreamBuilder<Object>(
+              stream: FirebaseFirestore.instance
+                  .collectionGroup('posts')
+                  .snapshots(),
               builder: (context, snapshot) {
-                if(snapshot.hasData){
+                if (snapshot.hasData) {
                   QuerySnapshot postQuery = snapshot.data as QuerySnapshot;
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        Post allPosts = Post.fromMap(postQuery.docs[index].data() as Map<String,dynamic>);
-                        DocumentReference post = FirebaseFirestore.instance.collection('users').doc(allPosts.userId).collection('posts').doc(allPosts.postId);
+                      (BuildContext context, int index) {
+                        Post allPosts = Post.fromMap(postQuery.docs[index]
+                            .data() as Map<String, dynamic>);
+                        DocumentReference post = FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(allPosts.userId)
+                            .collection('posts')
+                            .doc(allPosts.postId);
                         return Column(
                           children: [
                             const Divider(
@@ -517,46 +573,71 @@ class _HomePageState extends State<HomePage> {
                                         const SizedBox(width: 5),
                                         Text(
                                           allPosts.userName ?? "",
-                                          style: const TextStyle(color: Colors.white),
+                                          style: const TextStyle(
+                                              color: Colors.white),
                                         ),
                                         const Spacer(),
                                         IconButton(
-                                            onPressed: (){
-                                              showDialog(context: context, builder: (BuildContext context){
-                                                return AlertDialog(
-                                                  title: Text('Delete karna hai kya isko'),
-                                                  actions: [
-                                                    TextButton(onPressed: (){
-                                                      Navigator.pop(context);
-                                                      if(allPosts.userId == widget.userModel.uid){
-                                                        post.delete();
-                                                      }
-                                                      else{
-                                                        showDialog(
-                                                          context: context,
-                                                          builder:(BuildContext context){
-                                                            return AlertDialog(
-                                                              title: Text('Bhkk apni post delete kar saale'),
-                                                              actions: [
-                                                                TextButton(onPressed:()=> {Navigator.pop(context)}, child: Text('Han han thik hai'))
-                                                              ],
-                                                            );
-                                                          },
-                                                        );
-                                                      }
-                                                    }, child: Text('Han kar de yarr')),
-                                                    TextButton(onPressed: (){
-                                                      Navigator.pop(context);
-                                                    }, child: Text('chodd pade rehne de')),
-                                                  ],
-                                                );
-                                              });
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: Text(
+                                                          'Delete karna hai kya isko'),
+                                                      actions: [
+                                                        TextButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                              if (allPosts
+                                                                      .userId ==
+                                                                  widget
+                                                                      .userModel
+                                                                      .uid) {
+                                                                post.delete();
+                                                              } else {
+                                                                showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return AlertDialog(
+                                                                      title: Text(
+                                                                          'Bhkk apni post delete kar saale'),
+                                                                      actions: [
+                                                                        TextButton(
+                                                                            onPressed: () =>
+                                                                                {
+                                                                                  Navigator.pop(context)
+                                                                                },
+                                                                            child:
+                                                                                Text('Han han thik hai'))
+                                                                      ],
+                                                                    );
+                                                                  },
+                                                                );
+                                                              }
+                                                            },
+                                                            child: Text(
+                                                                'Han kar de yarr')),
+                                                        TextButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Text(
+                                                                'chodd pade rehne de')),
+                                                      ],
+                                                    );
+                                                  });
                                             },
                                             icon: Icon(
                                               Icons.more_vert,
                                               color: Colors.white,
-                                            )
-                                        )
+                                            ))
                                       ],
                                     ),
                                   ),
@@ -565,41 +646,53 @@ class _HomePageState extends State<HomePage> {
                                     indicatorBackgroundColor: Colors.grey,
                                     indicatorColor: Colors.white,
                                     children: allPosts.images?.map((imageURL) {
-                                      return PinchZoomReleaseUnzoomWidget(
-                                        child: InstaLikeButton(
-                                          height: height / 2 + height / 12,
-                                          iconSize: 100,
-                                          image: NetworkImage(imageURL),
-                                          onChanged: () {
-                                            setState(() {
-                                              if (allPosts.liked == false) {
-                                                post.update({'liked': true});
-                                                post.update({'likes': FieldValue.increment(1)});
-                                              }
-                                            });
-                                          },
-                                        ),
-                                      );
-                                    }).toList() ?? [], // Convert the mapped Iterable to a List
+                                          return PinchZoomReleaseUnzoomWidget(
+                                            child: InstaLikeButton(
+                                              height: height / 2 + height / 12,
+                                              iconSize: 100,
+                                              image: NetworkImage(imageURL),
+                                              onChanged: () {
+                                                setState(() {
+                                                  if (allPosts.liked == false) {
+                                                    post.update(
+                                                        {'liked': true});
+                                                    post.update({
+                                                      'likes':
+                                                          FieldValue.increment(
+                                                              1)
+                                                    });
+                                                  }
+                                                });
+                                              },
+                                            ),
+                                          );
+                                        }).toList() ??
+                                        [], // Convert the mapped Iterable to a List
                                   ),
                                   Row(
                                     children: [
                                       SizedBox(
-                                        width: MediaQuery.of(context).size.width/20,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                20,
                                       ),
                                       if (allPosts.liked == true)
                                         InkWell(
                                           onTap: () {
                                             setState(() {
-                                              post.update({'liked':false});
-                                              post.update({'likes':FieldValue.increment(-1)});
+                                              post.update({'liked': false});
+                                              post.update({
+                                                'likes':
+                                                    FieldValue.increment(-1)
+                                              });
                                             });
                                           },
                                           child: const SizedBox(
                                             height: 27,
                                             width: 27,
                                             child: Image(
-                                              image: AssetImage('assets/Icons/Loved.png'),
+                                              image: AssetImage(
+                                                  'assets/Icons/Loved.png'),
                                             ),
                                           ),
                                         )
@@ -607,15 +700,18 @@ class _HomePageState extends State<HomePage> {
                                         InkWell(
                                           onTap: () {
                                             setState(() {
-                                              post.update({'liked':true});
-                                              post.update({'likes':FieldValue.increment(1)});
+                                              post.update({'liked': true});
+                                              post.update({
+                                                'likes': FieldValue.increment(1)
+                                              });
                                             });
                                           },
                                           child: const SizedBox(
                                             height: 27,
                                             width: 27,
                                             child: Image(
-                                              image: AssetImage('assets/Icons/love.png'),
+                                              image: AssetImage(
+                                                  'assets/Icons/love.png'),
                                             ),
                                           ),
                                         ),
@@ -626,20 +722,21 @@ class _HomePageState extends State<HomePage> {
                                               height: 32,
                                               width: 32,
                                               child: const Image(
-                                                image:
-                                                AssetImage('assets/Icons/chat.png'),
+                                                image: AssetImage(
+                                                    'assets/Icons/chat.png'),
                                               ),
                                             ),
                                           )),
                                       Padding(
-                                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 5, 0, 0),
                                           child: InkWell(
                                             child: Container(
                                               height: 25,
                                               width: 25,
                                               child: const Image(
-                                                image:
-                                                AssetImage('assets/Icons/send.png'),
+                                                image: AssetImage(
+                                                    'assets/Icons/send.png'),
                                               ),
                                             ),
                                           )),
@@ -648,13 +745,18 @@ class _HomePageState extends State<HomePage> {
                                         height: 25,
                                         width: 25,
                                         child: const Image(
-                                          image: AssetImage('assets/Icons/Saved.png'),
+                                          image: AssetImage(
+                                              'assets/Icons/Saved.png'),
                                         ),
                                       ),
                                     ],
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width/20, 0, 0, 0),
+                                    padding: EdgeInsets.fromLTRB(
+                                        MediaQuery.of(context).size.width / 20,
+                                        0,
+                                        0,
+                                        0),
                                     child: Align(
                                       alignment: Alignment.centerLeft,
                                       child: Text(
@@ -667,14 +769,18 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   SizedBox(height: 10),
                                   Padding(
-                                    padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width/20, 0, 0, 0),
+                                    padding: EdgeInsets.fromLTRB(
+                                        MediaQuery.of(context).size.width / 20,
+                                        0,
+                                        0,
+                                        0),
                                     child: Align(
                                       alignment: Alignment.centerLeft,
                                       child: ExpandableText(
                                         text:
-                                        '${allPosts.userName} ${allPosts.description}',
+                                            '${allPosts.userName} ${allPosts.description}',
                                         maxLines:
-                                        3, // Set the number of lines before the "more" button appears
+                                            3, // Set the number of lines before the "more" button appears
                                       ),
                                     ),
                                   )
@@ -684,21 +790,17 @@ class _HomePageState extends State<HomePage> {
                           ],
                         );
                       },
-                      childCount: postQuery.docs.length
-                      ,
+                      childCount: postQuery.docs.length,
                     ),
                   );
-                }
-                else if(snapshot.hasError){
+                } else if (snapshot.hasError) {
+                  return SliverList(delegate: SliverChildListDelegate([]));
+                } else {
                   return SliverList(delegate: SliverChildListDelegate([]));
                 }
-                else{
-                  return SliverList(delegate: SliverChildListDelegate([]));
-                }
-              }
-            ),
-          ],
-        ),
+              }),
+        ],
+      ),
     );
   }
 }
