@@ -67,7 +67,6 @@ class _HomePageState extends State<HomePage> {
         (story) => story.storyModelUserName == widget.userModel.uid);
 
     if (userStoryIndex != -1) {
-      // Logged-in user's story exists, reorder the list
       final userStory = stories.removeAt(userStoryIndex);
       stories.insert(0, userStory);
     }
@@ -95,6 +94,7 @@ class _HomePageState extends State<HomePage> {
         print("nahi idhar aaya");
         await getUsersWithStories();
         setState(() {});
+        reorderStories();
         _refreshController.refreshCompleted();
       },
       header: MaterialClassicHeader(),
