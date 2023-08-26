@@ -83,7 +83,7 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> Widgets = [HomePage(userModel: widget.userModel, firebaseUser: widget.firebaseUser,),Search(),PickerScreen(selectedAssets: selectedAssets,fileStream: fileStream,user: widget.userModel,),Reels(),Profile(userModel: widget.userModel, firebaseUser: widget.firebaseUser,)];
+    List<Widget> Widgets = [HomePage(userModel: widget.userModel, firebaseUser: widget.firebaseUser,),Search(user: widget.userModel,firebaseUser: widget.firebaseUser,),PickerScreen(selectedAssets: selectedAssets,fileStream: fileStream,user: widget.userModel,),Reels(),Profile(userModel: widget.userModel, firebaseUser: widget.firebaseUser,)];
     return Container(
       color: Colors.black,
       child: Scaffold(

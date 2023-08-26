@@ -16,6 +16,7 @@ class Profile extends StatefulWidget {
   final User firebaseUser;
   Profile({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
 
+
   @override
   State<Profile> createState() => _ProfileState();
 }
@@ -540,7 +541,7 @@ class _EditProfileState extends State<EditProfile> {
 
 
 class _StoryHighlights extends StatefulWidget {
-  const _StoryHighlights({super.key});
+  const _StoryHighlights();
 
   @override
   State<_StoryHighlights> createState() => _StoryHighlightsState();
