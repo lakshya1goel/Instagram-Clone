@@ -3,214 +3,282 @@ import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:insta_clone/Models/UserModel.dart';
+import 'package:insta_clone/Pages/home/Story/home_page_story.dart';
 import 'package:insta_clone/Pages/home/chatting_system/chat_contacts.dart';
 import 'package:insta_like_button/insta_like_button.dart';
-import 'package:insta_clone/Services/Home/home_story.dart';
 import 'package:insta_clone/Services/Home/post.dart';
 import 'package:insta_clone/Utils/expandable_text.dart';
 import 'package:pinch_zoom_release_unzoom/pinch_zoom_release_unzoom.dart';
-import 'Stories.dart';
+import 'Story/home_story.dart';
+import 'Story/story.dart';
+import 'Story/story_view.dart';
 
 class HomePage extends StatefulWidget {
   final UserModel userModel;
   final User firebaseUser;
-  HomePage({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
+  HomePage({Key? key, required this.userModel, required this.firebaseUser})
+      : super(key: key);
   final List<Post> posts = [];
-  List<home_story> stories = [
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-1',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-1',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-1',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-1',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-1',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-1',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-2',
-        seen: false),
-    home_story(
-        Imgae: 'https://bit.ly/3qdxC3s',
-        username: '43.paras.57-3',
-        seen: false),
-  ];
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  StreamController postStream = StreamController();
+  List<StoryModel> stories = [];
+
+  Future<List<StoryModel>> getUsersWithStories() async {
+    final usersSnapshot =
+    await FirebaseFirestore.instance.collection('users').get();
+
+    final usersWithStories =
+    await Future.wait(usersSnapshot.docs.map((userDoc) async {
+      final storiesSnapshot =
+      await userDoc.reference.collection('stories').get();
+
+      if (storiesSnapshot.docs.isNotEmpty) {
+        final stories = storiesSnapshot.docs.map((storyDoc) {
+          final storyData = storyDoc.data();
+          return StoryPageModel.fromMap(storyData);
+        }).toList();
+
+        return StoryModel(
+          storyModelUserName: userDoc.data()['username'],
+          storyModelProfilePic: userDoc.data()['profilePic'],
+          storyModelUserStories: stories, uid: widget.userModel.uid,
+        );
+      } else {
+        return null;
+      }
+    }));
+
+    final filteredStories =
+    usersWithStories.where((user) => user != null).toList();
+
+    stories = filteredStories.cast<StoryModel>();
+    return stories;
+  }
+
+  void reorderStories() {
+    final userStoryIndex = stories.indexWhere(
+            (story) => story.storyModelUserName == widget.userModel.uid);
+
+    if (userStoryIndex != -1) {
+      // Logged-in user's story exists, reorder the list
+      final userStory = stories.removeAt(userStoryIndex);
+      stories.insert(0, userStory);
+    } else {
+      // Logged-in user's story doesn't exist, create a new element
+      final newUserStory = StoryModel(
+        storyModelUserName: widget.userModel.username,
+        storyModelProfilePic: widget.userModel.profilePic,
+        storyModelUserStories: [], uid: widget.userModel.uid, // Add empty list of stories
+      );
+      stories.insert(0, newUserStory);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUsersWithStories();
+    reorderStories();
+  }
+
   @override
   Widget build(BuildContext context) {
+    Stream<List<StoryModel>> storyStream =
+    Stream.fromFuture(getUsersWithStories());
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     double StorySize = 0.09 * width;
     print('$height & $width');
     return CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            automaticallyImplyLeading: false,
-            toolbarHeight: 50,
-            floating: true,
-            snap: true,
-            title: Row(
-              children: [
-                const SizedBox(width: 10),
-                const Image(
-                  height: 55,
-                  width: 110,
-                  image: AssetImage(
-                    'assets/images/home_page/instagram.png',
-                  ),
+      slivers: [
+        SliverAppBar(
+          automaticallyImplyLeading: false,
+          toolbarHeight: 50,
+          floating: true,
+          snap: true,
+          title: Row(
+            children: [
+              const SizedBox(width: 10),
+              const Image(
+                height: 55,
+                width: 110,
+                image: AssetImage(
+                  'assets/images/home_page/instagram.png',
                 ),
-                const Spacer(),
-                Container(
-                  height: 25,
-                  width: 25,
+              ),
+              const Spacer(),
+              const SizedBox(
+                height: 25,
+                width: 25,
+                child: const Image(
+                  image: AssetImage('assets/Icons/love.png'),
+                ),
+              ),
+              const SizedBox(width: 10),
+              SizedBox(
+                height: 25,
+                width: 25,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ChatContact(
+                            userModel: widget.userModel,
+                            firebaseUser: widget.firebaseUser,
+                          )),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    padding: EdgeInsets.zero,
+                  ),
                   child: const Image(
-                    image: AssetImage('assets/Icons/love.png'),
+                    image: AssetImage('assets/Icons/send.png'),
                   ),
                 ),
-                const SizedBox(width: 10),
-                SizedBox(
-                  height: 25,
-                  width: 25,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ChatContact(userModel: widget.userModel, firebaseUser: widget.firebaseUser,)),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      padding: EdgeInsets.zero,
-                    ),
-                    child: const Image(
-                      image: AssetImage('assets/Icons/send.png'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            backgroundColor: Colors.black,
+              ),
+            ],
           ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                SizedBox(
-                  height: height * 0.107,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: widget.stories.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: index == 0
-                                ? EdgeInsets.fromLTRB(20, 0, 0, 0)
-                                : EdgeInsets.fromLTRB(15, 0, 0, 0),
-                            child: InkWell(
-                                onTap: () async {
-                                  await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => StoriesPage(
-                                              selected_page: index,
-                                              status: widget.stories)));
-                                  setState(() {
-                                    home_story My_story = widget.stories[0];
-                                    List<home_story> remainingItems =
-                                        List.from(widget.stories.sublist(1));
-                                    remainingItems
-                                        .sort((a, b) => a.seen ? 1 : -1);
-                                    widget.stories = [
-                                      My_story,
-                                      ...remainingItems
-                                    ];
-                                  });
-                                },
-                                child: CircleAvatar(
-                                  radius: StorySize,
-                                  child: Container(
-                                    decoration: !widget.stories[index].seen
-                                        ? const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            gradient: LinearGradient(
-                                                begin: Alignment.topCenter,
-                                                end: Alignment.bottomCenter,
-                                                colors: [
-                                                  Color(0xFF9B2282),
-                                                  Color(0xFFEEA863)
-                                                ]))
-                                        : BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.grey[700]),
-                                    child: CircleAvatar(
-                                      radius: !widget.stories[index].seen
-                                          ? StorySize
-                                          : StorySize + 0.2,
-                                      backgroundColor: Colors.transparent,
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.black,
-                                        radius: !widget.stories[index].seen
-                                            ? StorySize - 2.5
-                                            : StorySize - 1.5,
-                                        child: Stack(
-                                          children: [
-                                            CircleAvatar(
-                                              radius: StorySize - 5,
-                                              backgroundImage: NetworkImage(
-                                                  widget.stories[index].Imgae),
+          backgroundColor: Colors.black,
+        ),
+        StreamBuilder<Object>(
+            stream: storyStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SliverList(delegate: SliverChildListDelegate([]));
+              } else if (snapshot.hasError) {
+                return SliverList(delegate: SliverChildListDelegate([]));
+              } else if (!snapshot.hasData) {
+                return const Text('No stories available.');
+              } else {
+                return SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      SizedBox(
+                        height: height * 0.107,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: stories.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            print(stories.length);
+                            return Stack(
+                              children: [
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: index == 0
+                                          ? EdgeInsets.fromLTRB(20, 0, 0, 0)
+                                          : EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                      child: InkWell(
+                                          onTap: () async {
+                                            if(stories[0].storyModelUserStories!.isEmpty){
+                                            }
+                                            else{
+                                              await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => StoriesPage(
+                                                          selectedPage: index,
+                                                          status: stories[index]
+                                                              .storyModelUserStories!,
+                                                          stories: stories)));
+                                            }
+                                          },
+                                          child: CircleAvatar(
+                                            radius: StorySize,
+                                            child: Container(
+                                              decoration: !stories[0]
+                                                  .storyModelUserStories![0]
+                                                  .seen!
+                                                  ? const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  gradient: LinearGradient(
+                                                      begin:
+                                                      Alignment.topCenter,
+                                                      end: Alignment
+                                                          .bottomCenter,
+                                                      colors: [
+                                                        Color(0xFF9B2282),
+                                                        Color(0xFFEEA863)
+                                                      ]))
+                                                  : BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.grey[700]),
+                                              child: CircleAvatar(
+                                                radius: !stories[0]
+                                                    .storyModelUserStories![0]
+                                                    .seen!
+                                                    ? StorySize
+                                                    : StorySize + 0.2,
+                                                backgroundColor: Colors.transparent,
+                                                child: CircleAvatar(
+                                                  backgroundColor: Colors.black,
+                                                  radius: !stories[0]
+                                                      .storyModelUserStories![0]
+                                                      .seen!
+                                                      ? StorySize - 2.5
+                                                      : StorySize - 1.5,
+                                                  child: CircleAvatar(
+                                                    radius: StorySize - 5,
+                                                    backgroundImage:
+                                                    NetworkImage(stories[
+                                                    index]
+                                                        .storyModelProfilePic!),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
-                                            index == 0
-                                                ? Positioned(
-                                                    left: 55,
-                                                    top: 55,
-                                                    child: Icon(
-                                                      Icons.add_circle,
-                                                      color: Colors.blue,
-                                                    ),
-                                                  )
-                                                : SizedBox()
-                                          ],
-                                        ),
+                                          )),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(15, 4, 0, 0),
+                                      child: Text(
+                                        stories[index].storyModelUserName ?? '',
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 13),
                                       ),
                                     ),
+                                  ],
+                                ),
+                                if(index == 0)Positioned(
+                                  top: 43,
+                                  left: 65,
+                                  child: CircleAvatar(
+                                    radius: 10,
+                                    child: IconButton(
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        padding: EdgeInsets.fromLTRB(0, 0, 0,0),
+                                        onPressed: () async {
+                                          XFile? image = await ImagePicker()
+                                              .pickImage(
+                                              source:
+                                              ImageSource.gallery);
+                                          UploadStory(
+                                              story: image,
+                                              user: widget.userModel)
+                                              .uploadStory(context);
+                                        }, icon: const Icon(Icons.add,size: 16,color: Colors.white,)),
                                   ),
-                                )),
-                          ),
-                          Text(
-                            widget.stories[index].username,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 10),
-                          ),
-                        ],
-                      );
-                    },
+                                )
+                                else SizedBox(),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-          ),
+                );
+              }
+            }),
           StreamBuilder<Object>(
             stream: FirebaseFirestore.instance.collectionGroup('posts').snapshots(),
             builder: (context, snapshot) {

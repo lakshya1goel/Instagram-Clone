@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:insta_clone/Services/Home/story.dart';
+import 'package:insta_clone/Pages/home/Story/story.dart';
 import 'package:story/story_image.dart';
 import 'package:story/story_page_view.dart';
-import '../../Services/Home/home_story.dart';
+
+import 'home_story.dart';
 
 class StoriesPage extends StatefulWidget {
-  final int selected_page;
-  final List<home_story> status;
-  StoriesPage({super.key, required this.selected_page,required this.status});
+  final int selectedPage;
+  final List<StoryPageModel> status;
+  final List<StoryModel> stories;
+  const StoriesPage({super.key, required this.selectedPage,required this.status, required this.stories});
 
   @override
   State<StoriesPage> createState() => _StoriesPageState();
-  final List<story> stories = [
-    story(UserName: '43.paras.57', ProfilePic: 'https://bit.ly/43IEnby', Stories: [
-      'https://bit.ly/3rxMlGN','https://bit.ly/3rxMlGN','https://bit.ly/3rxMlGN',
-    ]),
-    story(UserName: '43.paras.57', ProfilePic: 'https://bit.ly/43IEnby', Stories: [
-      'https://bit.ly/43IEnby','https://bit.ly/3rxMlGN','https://bit.ly/3rxMlGN','https://bit.ly/3rxMlGN',
-    ]),
-    story(UserName: '43.paras.57', ProfilePic: 'https://bit.ly/43IEnby', Stories: [
-      'https://bit.ly/3rxMlGN','https://bit.ly/3rxMlGN','https://bit.ly/3rxMlGN',
-    ]),
-  ];
+
 }
 
 
@@ -44,11 +36,10 @@ class _StoriesPageState extends State<StoriesPage> {
     return Scaffold(
       body: StoryPageView(
         itemBuilder: (context, pageIndex, storyIndex) {
-          final user = widget.stories[pageIndex+widget.selected_page];
-          final story = widget.stories[pageIndex+widget.selected_page].Stories[storyIndex];
-          if(storyIndex == widget.stories[pageIndex+widget.selected_page].Stories.length-1){
-            widget.status[pageIndex+widget.selected_page].seen = true;
-
+          final user = widget.stories[pageIndex];
+          final story = widget.stories[pageIndex].storyModelUserStories![0];
+          if(storyIndex == widget.stories[pageIndex].storyModelUserStories!.length-1){
+            widget.status[pageIndex+widget.selectedPage].seen = true;
           }
           return Stack(
             children: [
@@ -59,7 +50,7 @@ class _StoriesPageState extends State<StoriesPage> {
                 child: StoryImage(
                   key: ValueKey(story),
                   imageProvider: NetworkImage(
-                    story,
+                    story.image!,
                   ),
                   fit: BoxFit.fitWidth,
                 ),
@@ -73,7 +64,7 @@ class _StoriesPageState extends State<StoriesPage> {
                       width: 32,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(user.ProfilePic),
+                          image: NetworkImage(user.storyModelProfilePic!),
                           fit: BoxFit.cover,
                         ),
                         shape: BoxShape.circle,
@@ -83,7 +74,7 @@ class _StoriesPageState extends State<StoriesPage> {
                       width: 8,
                     ),
                     Text(
-                      user.UserName,
+                      user.storyModelUserName??"",
                       style: const TextStyle(
                         fontSize: 17,
                         color: Colors.white,
@@ -113,12 +104,12 @@ class _StoriesPageState extends State<StoriesPage> {
                     ),
                   ),
                 ),
-          ]);
+              ]);
         },
         indicatorAnimationController: indicatorAnimationController,
-        pageLength: widget.stories.length - widget.selected_page,
+        pageLength: widget.stories.length - widget.selectedPage,
         storyLength: (int pageIndex ) {
-          return widget.stories[pageIndex+widget.selected_page].Stories.length;
+          return widget.stories[pageIndex+widget.selectedPage].storyModelUserStories!.length;
         },
         onPageLimitReached: () {
           Navigator.pop(context);
