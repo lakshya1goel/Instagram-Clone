@@ -55,7 +55,6 @@ class MyApp extends StatelessWidget {
         "/": (context) => LoginPage(),
         "/login": (context) => LoginPage(),
         "/search": (context) => Search(),
-        "/profile": (context) => Profile(),
         "/signup_page": (context) => signup_page(),
       },
     );

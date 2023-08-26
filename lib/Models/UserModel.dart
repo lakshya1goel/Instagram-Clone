@@ -4,7 +4,9 @@ class UserModel{
   String? username;
   String? email;
   String? profilePic;
-  UserModel({required this.uid, required this.profilePic, required this.name, required this.email, required this.username});
+  String? pronouns;
+  String? bio;
+  UserModel({required this.uid, required this.profilePic, required this.name, required this.email, required this.username, required this.pronouns, required this.bio});
 
   UserModel.fromMap(Map<String, dynamic> map){
     uid=map["uid"];
@@ -12,6 +14,8 @@ class UserModel{
     username=map["username"];
     email=map["email"];
     profilePic=map["profilePic"];
+    pronouns=map["pronouns"];
+    bio=map["bio"];
   }
 
   Map<String, dynamic> toMap(){
@@ -21,6 +25,8 @@ class UserModel{
       "username":username,
       "email":email,
       "profilePic":profilePic,
+      "pronouns":pronouns,
+      "bio":bio,
     };
   }
 }
